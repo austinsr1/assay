@@ -1,0 +1,19 @@
+{
+  "token": "",
+  "token_file": "google-token.json",
+  "alert_center_token": "",
+  "gmail_token": "",
+  "service_account_file": "",
+  "subject": "",
+  "scopes": [
+    "https://www.googleapis.com/auth/apps.alerts",
+    "https://www.googleapis.com/auth/gmail.readonly"
+  ],
+  "alert_center_base_url": "https://alertcenter.googleapis.com/v1beta1",
+  "gmail_base_url": "https://gmail.googleapis.com/gmail/v1",
+  "alert_type": "User reported phishing",
+  "alert_source": "Gmail phishing",
+  "order_by": "create_time desc",
+  "limit": 5,
+  "timeout_seconds": 30
+}

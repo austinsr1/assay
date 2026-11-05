@@ -1,0 +1,16 @@
+Message-ID: <clean-2@example.test>
+Date: Mon, 02 Nov 2026 09:14:00 -0500
+From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+To: staff@example.edu
+Subject: Delivery Status Notification (Failure)
+Authentication-Results: mx.google.com; dkim=pass header.d=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dmarc=pass
+Auto-Submitted: auto-replied
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+** This is a system-generated message **
+
+Delivery to the following recipient failed permanently:
+   someone@nonexistent.test
+

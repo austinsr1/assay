@@ -1,0 +1,92 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tenable-email"
+version = "0.1.0"
+description = "Local-first triage of user-reported phishing: deterministic forensics, a CPU classifier cascade, local vision, and an LLM only for the ambiguous residual."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["phishing", "email-security", "triage", "local-inference", "mcp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+]
+
+# The deterministic stages, the parser and the CLI have no runtime dependencies
+# beyond the standard library. Optional extras gate anything that needs a
+# third-party package, so a reviewer can install and run the core with nothing
+# but Python.
+dependencies = []
+
+[project.optional-dependencies]
+# The MCP server (``src/tenable_email/mcpserver.py``, stdio transport) is the only
+# thing in the package that needs this. The import of ``mcp`` lives inside one
+# function, so the tool logic, the CLI, the pipeline and the whole test suite
+# work with the extra absent -- which is what keeps ``dependencies = []`` below a
+# claim rather than a decoration. Both majors are resolved at call time:
+# ``mcp.server.fastmcp.FastMCP`` on 1.x and ``mcp.server.mcpserver.MCPServer`` on
+# 2.x, whose ``fastmcp`` stub exists only to say the class moved.
+mcp = ["mcp>=1.0"]
+# Minting a Google access token from a service-account key needs `google-auth`, and
+# the core cannot depend on it. The import lives inside
+# `google_intake.mint_access_token`, so the CLI, the adapter and the suite all work
+# without it: a token given inline, in a file, or through
+# `TENABLE_EMAIL_GOOGLE_ACCESS_TOKEN` needs no extra at all. Installing this one
+# changes behaviour rather than decorating the metadata -- `pip install .[google]`
+# is what makes `service_account_file` in google-intake.json usable.
+google = ["google-auth>=2.35"]
+# pyyaml is a test-only dependency, never a runtime one. It exists so
+# tests/test_contract.py can parse stages.yaml with a real YAML implementation
+# and prove that the standard-library parser in src/tenable_email/contract.py
+# agrees with it field for field. The shipped core must stay dependency-free.
+test = ["pytest>=7", "pyyaml>=6", "pillow>=10"]
+# Two further capabilities are designed but deliberately NOT published as extras.
+# An extra whose libraries nothing imports installs successfully and changes
+# nothing, so it reads as a working feature to anyone who runs the command --
+# which is worse than not offering it. The intended pins are recorded here so the
+# work is not re-researched, and both are listed in the README's Limitations:
+#
+#   qr          = pyzbar>=0.1.9, pillow>=10   (quishing is a top vector; decode
+#                                             deterministically, a VLM is
+#                                             unreliable on dense binary patterns)
+#   attachments = pypdf>=4, python-docx>=1.1  (the reference reads PDF and Word
+#                                             contents; extension checks alone
+#                                             miss the BEC case)
+#
+# Neither extra is published, and neither is what the contract's
+# attachment_structure_inspection stage implements. That stage
+# (src/tenable_email/attachments.py) shells out to the external `rea` analyzer,
+# needs no Python extra at all, is off by default, and reports artifact
+# structure -- it reads no PDF or Word text. The `attachments` pins above are the
+# document-text half of the same gap, still open, and shipping them would be a
+# separate change to the contract as well as to this file.
+# When the stage is off or `rea` is absent the runtime skips it with an explicit
+# reason, and tests/test_mcp_tools.py and tests/test_runner.py pin that wording so
+# it cannot drift back to claiming the capability is missing.
+# The vision tier's image budget. Pillow is used for one thing -- bounding the
+# long edge of an image before it is sent to a local VLM, because prompt tokens
+# scale with pixels -- and the tier degrades gracefully without it: the image is
+# sent as it is and the evidence record says downscaling was skipped. The core
+# ships dependency-free, so this stays an extra.
+vision = ["pillow>=10"]
+
+[project.scripts]
+tenable-email = "tenable_email.cli:main"
+# The MCP server is a separate console script because it is the one entry point
+# that needs the optional ``mcp`` extra. Keeping it out of ``tenable-email``
+# means ``tenable-email demo`` runs on a machine where the extra was never
+# installed, and a reviewer can see the two are different dependencies.
+tenable-email-mcp = "tenable_email.mcpserver:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

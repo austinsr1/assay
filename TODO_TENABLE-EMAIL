@@ -1,0 +1,1920 @@
+<!-- planned: eval/fetch.py eval/internal/ -->
+
+# TODO_TENABLE-EMAIL — Local-First Phishing Triage (SWARM Global 2026)
+
+## Verbose: [OFF]
+Set to [ON] to get running commentary during execution. When ON, the agent appends status lines to the Session Log after each sub-task and writes a Session Summary at the end of every run.
+
+## Operating Rules
+
+1. **One bundle per session.** Pick exactly one bundle from the Active Work Bundles below and complete ALL tasks within it. Do not start a second bundle until the current one is fully done.
+2. **Project directory on first grab.** When an item is selected to work on, create (or verify) the project directory. Immediately update this TODO file with the folder path next to the task.
+3. **Skill files live in the project directory.** All skill markdown files and associated scripts are saved inside the project's own directory, not in a global agent skills directory. Example: `SKILL.md` at the project root.
+4. **Document hosts immediately.** If a host or VM is provisioned during work, log its name and address in the Session Log and in the project's skill file. This information is critical for future sessions.
+5. **50-step hard cap.** Each run has approximately 50 steps (tool calls, reasoning turns) before context resets. Count your turns. Save progress to disk frequently — any discovery not written down by step 50 is lost.
+6. **Resume from project files.** When picking up an item that already has a directory, read the existing skill file and project contents first to understand where you left off before continuing.
+7. **Save early and often.** After each significant discovery or breakthrough, update the skill file immediately. Do not wait until the end of a session.
+8. **Verbose mode.** If the `## Verbose` flag below is set to `[ON]`, provide a running commentary during execution. After each completed sub-task, append a brief status line to the Session Log with what was done, any output or errors seen, and what comes next.
+9. **Session summary.** At the end of every run (whether successful or not), write a short paragraph under the Session Summary heading at the bottom of this file describing: which bundle was worked on, what was accomplished, what failed (if anything), and what to do next.
+10. **Write unit tests for projects.** When working on a multi-session project (not a one-off), write unit tests for core logic that can be tested without network access. Save them as `tests/test_<name>.py`. Run them after any significant code change.
+11. **Tests must pass before deploy.** `pytest tests/` must return exit code 0 with zero failures before any commit or deploy. No skipping "pre-existing" failures — fix them first.
+12. **Run the full test suite on every change.** Running targeted tests instead of `pytest tests/` hides failures you didn't cause. Always run the full suite.
+13. **Create a git repo for every project.** When creating a new project directory, immediately `git init && git add -A && git commit`. Commit after every meaningful change.
+14. **No real mail, no employee addresses, no credentials, no live alert data in any commit.** Replay recordings are generated against `fixtures/synthetic/` only — a recording contains the prompt, and the prompt contains the message. See the data policy in `NOTES.md`. The Exchange scans full git history and rejects automatically.
+15. **No private infrastructure detail in tracked files.** Internal hostnames, IP addresses, tunnel configuration, service paths and colleague names stay out of files destined for the public repository. Until the Bundle G split, they live in `NOTES.md`, which is tracked but not yet published. This file is written to be publishable as-is.
+
+## Completed Tasks
+
+### Bundle A — Research, scaffold and deterministic core (COMPLETED 2026-11-02)
+**Project directory:** project root. Host layout and model endpoints are in the
+"Build topology" section of `NOTES.md`.
+
+Verified all contest and Exchange requirements from primary sources, read the reference playbook's own `prompt.txt`, verified five classifier candidates against the Hugging Face API, analyzed the three SWARM Black Hat winners, and built the deterministic core with a passing test suite.
+
+- [x] A1: Read contest rules, `CONTRIBUTING.md`, `validator.py`; distill into `docs/RULES.md`
+- [x] A2: Read reference `prompt.txt` and README; build 32-row parity matrix in `docs/PARITY.md`
+- [x] A3: Obtain reference baseline numbers and record provenance in `docs/REFERENCE-BASELINE.md`
+- [x] A4: Verify five spam/phishing classifier candidates at source; record in `docs/MODELS.md`
+- [x] A5: Analyze the three Black Hat winners; adoption table in `docs/PRIOR-WINNERS.md`
+- [x] A6: Correct the stale VLM-availability claim in the operator's private inference inventory; backup kept
+- [x] A7: Validate both candidate listing shapes against the real `validator.py`; `docs/LISTING-VALIDATION.md` + `tools/validate-listing.sh`
+- [x] A8: `src/tenable_email/evidence.py` — four provenances, append-only, `assert_citable()` invariant
+- [x] A9: `src/tenable_email/parse.py` — stdlib `email` intake, truncation recorded not silent, large parts hashed
+- [x] A10: `src/tenable_email/signals.py` — auth, lookalike, display spoof, links, redirect unwrap, attachments, forwarding, bulk headers, boilerplate, injection surface
+- [x] A11: `src/tenable_email/config.py` — every org-specific value externalized; all model endpoints default to `None`
+- [x] A12: `fixtures/generate.py` — 12 synthetic cases on reserved domains with known labels
+- [x] A13: `tests/test_signals.py` and `tests/test_doc_references.py` — 37 tests passing; found and fixed 3 real bugs in the signal layer, plus dangling doc references and private-infrastructure leaks in public-bound files
+
+**Build Details:**
+| Attribute | Value |
+|-----------|-------|
+| Tests | `pytest tests/` — 38 passed, 0 failed |
+| Requires | Python 3.10+; no runtime dependencies for the deterministic core |
+| Commits | `8225ef4`, `6cd53b3`, `cb87b6f`, `c60e93b`, `a578063` |
+| Layout note | Deviates from the `bin/`/`tmp/`/`archive/`/`data/` convention deliberately: this is a Python package (`src/`, `tests/`, `docs/`, `fixtures/`, `eval/`, `tools/`) destined for public release |
+
+### Bundle B — Stage contract and verdict assembly (COMPLETED 2026-11-02)
+**Project directory:** project root
+Make the chain machine-readable and enforce it, following the 1st-place mechanism. Turns the deterministic signals from Bundle A into a disposition with an evidence record.
+
+- [x] B1: `stages.yaml` — eight stages, each declaring capability, provider, read-only/write, approval binding
+- [x] B2: `src/tenable_email/contract.py` — load and validate `stages.yaml`; component registry with read-only/write classification
+- [x] B3: `tools/validate_contract.py` — assert README, SKILL.md and code all contain exactly the stages of `stages.yaml`, in order, under the same titles; every named provider exists and is classified; every mutating stage declares human approval with matching language
+- [x] B4: `tests/test_contract_drift.py` — inject a dropped stage, a renamed tool, a stripped approval; assert validation FAILS. Proves the validator has teeth
+- [x] B5: `src/tenable_email/verdict.py` — `THREAT`/`SPAM`/`CLEAN`/`MANUAL_REVIEW`/`UNKNOWN`, float confidence plus derived `high`/`medium`/`low` band, `reasons[]`, `analysis` narrative, echoed `id`/`subject`/`sender`/`reported_by`
+- [x] B6: Assemble `src/tenable_email/signals.py` output into `Evidence` with VERIFIED provenance; record UNAVAILABLE for tiers with no endpoint; `src/tenable_email/pipeline.py`
+- [x] B7: Untrusted-content fence in the prompt builder `src/tenable_email/prompts.py` — the parity gap the predecessor engine lacked entirely
+- [x] B8: the <TRUNCATED/> marker emitted to models when input was cut; `truncated` propagated into the verdict so a partial analysis is never reported complete
+- [x] B9: Full suite green; commit
+- [x] B10: Wire the injection signal into the verdict as a **reported threat class**, not only an internal gate: an `attack_type` value, an entry in `reasons[]`, and a line in the `analysis` narrative. Deterministic-only hits are capped at low confidence and require corroboration, because the scanner cannot distinguish an instruction aimed at an agent from a newsletter quoting one. `clean_security_newsletter_discussing_injection` must NOT disposition as `THREAT`. See `docs/MODELS.md`.
+
+**Build Details:**
+| Attribute | Value |
+|-----------|-------|
+| Tests | `pytest tests/` — 207 passed, 0 failed (was 43) |
+| Contract | 8 stages, 1 write stage, 1 approval gate; `tools/validate_contract.py` exits 0 |
+| Parser proof | the minimal `stages.yaml` parser agrees with PyYAML field for field; `pyyaml` added to the `[test]` extra only |
+| Runtime deps | none added — `dependencies = []` still empty |
+| Corpus | 4 clean, 1 spam, 7 threat-labelled: 4 THREAT, 3 MANUAL_REVIEW, 0 CLEAN; the injection newsletter is MANUAL_REVIEW at 0.4, never THREAT |
+| Not in this bundle | no CLI (Bundle D), no model tier called, writeback provider is a placeholder pending open decision 2 |
+
+### Bundle C — Model tiers, record/replay and ensemble (COMPLETED 2026-11-02)
+**Project directory:** project root
+Every inference tier behind one interface, a content-addressed replay store with
+real committed recordings, the `spam` class, and an ensemble that combines facts and
+opinions asymmetrically.
+
+- [x] C1: `src/tenable_email/tiers.py` — one client interface for every tier; per-tier timeout (default 30 s, configurable), one retry on transport error, and failure returned as a value (`available=True, ok=False`, reason set) rather than raised, so `build_evidence` records `UNAVAILABLE`. A tier with no endpoint returns `available=False` and names the config field. No endpoint has a default anywhere
+- [x] C2: classifier clients — `FraudFoxTier` (`POST {base}/predict`, body limited to `thresholds.body_char_limit`), `UrlReputationTier` (`POST {base}/url`, one call per unwrapped destination, capped and the cap recorded), `PromptInjectionTier` (`POST {base}/prompt-injection`). Each normalizes into a `Judgment` and keeps the service's own score fields verbatim in `TierResult.raw`
+- [x] C2b: optional injection-classifier tier `injection_classifier` — config-gated through `ModelEndpoints.injection_classifier_url`, defaults to UNAVAILABLE, reads both an ONNX-HTTP label/score response and an OpenAI-compatible chat answer. Client code only: no model downloaded, benchmarked or claimed, per `docs/MODELS.md`
+- [x] C2c: the redirect-concealment rule — `links.unwrapped_redirects` whose resolved host is in `links.hosts_matching_neither` is `THREAT` at 0.85 `CREDENTIAL_HARVEST`, with a reason naming the wrapper and the true destination. A bare host mismatch is decisive in neither direction: it is not a threat, and it no longer blocks a clearance. Counter-fixture `clean_unrelated_link_no_concealment` added and dispositions `CLEAN`
+- [x] C3: LLM client `LlmTier` — OpenAI-compatible `/v1/chat/completions`, `temperature: 0`, `chat_template_kwargs: {"enable_thinking": false}` sent whenever the endpoint is flagged as supporting it (per-endpoint flag, defaulting to on), `max_tokens >= 1024` enforced in code (`enforce_thinking_budget`) when reasoning is left on, JSON-first parse with fence tolerance and a brace-scan fallback, and unparseable output returning `ok=False` with a specific error instead of a defaulted verdict
+- [x] C4: VLM client `VlmTier` — multimodal `/v1/chat/completions` with a base64 `image_url` part, long edge bounded to `thresholds.image_max_dimension` when Pillow is importable (`vision` extra) and the skip recorded in the evidence detail when it is not; asked to transcribe verbatim then judge brand impersonation; output kept as `MODEL_JUDGMENT` with any transcribed URL fed back through the deterministic lookalike logic
+- [x] C5: `src/tenable_email/replay.py` — content-addressed store keyed on `sha256(tier, model, canonical_json(payload))` (sorted keys, no incidental whitespace, strict: `bytes` raises rather than being stringified); one committed JSON file per entry under `fixtures/replay/` plus `fixtures/replay/index.json`; `endpoint_role` is a role label and the store **refuses to write** an entry containing a configured endpoint, an API key, an IP literal or a private path; hit/miss counters; a miss is `ok=False` with `replay miss: no recording for this input`, never a network call and never a fabricated answer
+- [x] C6: `tools/record-replay.sh` plus `tools/record_replay.py` — endpoints from the environment only, sorted fixture iteration, per-tier recorded/failed totals printed. **52 real recordings committed**: classifier 14, url_reputation 9, prompt_injection 14, vision 1, llm 14, zero failures. The three-way and injection-classifier tiers had no reachable endpoint and are unrecorded, not stubbed
+- [x] C7: `spam` class path — deterministic bulk headers first, then the three-way classifier tier, then the LLM three-way vote, with the reason in code: the Enron-trained models measured 0.959 and 0.880 false-positive rates out of domain, while RFC 8058 / `Precedence: bulk` are near-zero-FP on the case that dominates a reported queue. `spam_bulk_marketing` reaches `SPAM` with **no tier invoked**, asserted at the transport seam
+- [x] C8: `src/tenable_email/ensemble.py` — `EnsemblePolicy.false_negative_cost = 6.0` with the cost reasoning, `clearance_bar` *derived* from it (0.857) against the 0.60 needed to flag; disagreement or sub-band confidence routes to `MANUAL_REVIEW`; unanimity adopts the weakest vote's confidence rather than a mean; VERIFIED dispositions are floors and vetoes; the BEC shape cannot be cleared by tiers agreeing with each other
+- [x] C9: `threat_image_credential_harvest` fixture — `fixtures/assets/fake_login_page.png` embedded as an inline image part with a Content-ID plus a short text body; parses to exactly one inline image whose `sha256` matches the asset; the generator reads the bytes and needs no Pillow, and skips the one fixture with a printed note if the asset is absent
+- [x] C10: suite green in replay mode, `tools/validate_contract.py` exits 0, `docs/results/latest.md` regenerated, `docs/PARITY.md` rows 5/6/16 updated, `docs/EVIDENCE.md` records the measured per-tier latencies, token counts and tier-versus-label concordance; commit and push
+
+**Build Details:**
+| Attribute | Value |
+|-----------|-------|
+| Tests | `python3 -m pytest tests/ -o addopts= -q` — **332 passed, 0 failed** (was 207); `tools/record-results.sh` exits 0 |
+| New modules | `src/tenable_email/tiers.py`, `src/tenable_email/replay.py`, `src/tenable_email/ensemble.py` |
+| New tests | `tests/test_tiers.py` (49), `tests/test_replay.py` (23), `tests/test_ensemble.py` (20), `tests/test_recordings.py` (18), +15 in `tests/test_pipeline.py` (42 to 57) = 125 new |
+| Runtime deps | none added — `dependencies = []` still empty; `pillow` appears only as the new `vision` extra (and already in `qr`) |
+| Recordings | 52 entries in `fixtures/replay/` plus `fixtures/replay/index.json`, all committed, none gitignored, all from `fixtures/synthetic/` |
+| Endpoints reached | phishing classifier, URL reputation, prompt-injection engine, VLM, 27B chat — all recorded live. Not reachable: three-way classifier, injection classifier |
+| Latencies (median) | classifier 125 ms, url_reputation 171 ms, prompt_injection 161 ms, vision 3.10 s, llm 4.27 s |
+| Corpus | 14 fixtures: 5 clean, 1 spam, 8 threat-labelled |
+| Dispositions | the deterministic baseline held on all 12 pre-existing fixtures except `threat_redirect_wrapped` → `THREAT` 0.85 `CREDENTIAL_HARVEST`; the replay run reproduces the same table with model contributions on 13 of 14 |
+| Offline path | with no endpoints and no network every tier is recorded `UNAVAILABLE` by name; with `replay_dir=fixtures/replay` and still no endpoints, five tiers answer from disk byte-identically |
+| Tests updated | two assertions in `tests/test_pipeline.py` pinned behaviour this bundle was told to change — see the Session Log row |
+
+### Bundle D - Offline runner, receipt contract and CLI (COMPLETED 2026-11-03)
+**Project directory:** project root
+The path a judge runs. No credentials, no network, no harness.
+
+- [x] D0: **The CLI defaults `--replay-dir` to `config.default_replay_dir()`** so the committed corpus engages with no configuration. The resolver is looked up at call time, not bound as a default argument, so the degradation path is testable without touching the filesystem. With no corpus (an installed wheel carries no fixtures) the run prints one clear `corpus not found` line and every tier records UNAVAILABLE - asserted in `tests/test_cli.py`, and pinned for the library in `tests/test_offline_default_path.py`
+- [x] D1: `src/tenable_email/cli.py` - `run <dir|.eml>`, `show <case>`, `record`, `validate-contract`, `demo`; argparse, `dependencies = []` still empty. `src/tenable_email/__main__.py` makes `python3 -m tenable_email` work, and the console script declared in `pyproject.toml` now resolves. `record` and `validate-contract` load the scripts in `tools/` by path and call their `main` rather than reimplementing them
+- [x] D2: `src/tenable_email/receipt.py` - one durable case record per message: content-derived receipt id, source **file name** (never a directory), sha256 verdict digest over canonical JSON, sha256 corpus-manifest digest, stage history with a reason for every skip, proposed actions, approval state, provider results, timestamps kept outside the identity. JSON and Markdown; `from_json` reads a saved record back and refuses another schema version
+- [x] D3: `src/tenable_email/runner.py` - the offline state machine. Refuses a skipped non-optional stage, an altered corpus manifest, a widened target set, a replayed approval, a stale or mismatched approval digest, a later stage presented before an earlier one completed, and the write stage completed by assertion. No live call anywhere: the whole corpus runs with `socket.create_connection` replaced by a raiser
+- [x] D4: Refuse **simulated evidence offered as closure**. A receipt may not close when `Evidence.simulated` is set, when it cites a finding whose provenance is UNKNOWN or UNAVAILABLE, when the disposition is UNKNOWN, or when a truncated verdict claims completeness. `Evidence.simulated` is now set where it belongs: `ReplayStore.attested()` is the line - a recording the store's index does not list is authored, not observed - and `tiers.Tier` reports it as `source=unattested-recording`. A replayed recording stays legitimate, asserted per fixture
+- [x] D5: Transactional refusals - `Refusal(reason, stage, receipt_id)` and `Transition` are returned, not raised; `RunnerError` is reserved for programmer error. Every check returns before `_commit`, so a refusal writes no receipt file, appends no journal line and mutates neither the stored record nor the caller's - asserted by snapshotting the run directory byte-for-byte around a refusal
+- [x] D6: Human-approval gate - `src/tenable_email/writeback.py`: `ProposedAction` records generated from a verdict, an `Approval` bound to approver + verdict digest + target set + action kinds + single-use token, and a provider interface whose only implementation is `DryRunProvider`, selected by default. Executes nothing; a missing, spent, mismatched, widened or partial approval is refused before any provider is called. No credential is read, and a test asserts a planted key reaches no record
+- [x] D7: `demo` over all 14 fixtures, deterministic column and corpus-backed column side by side: 11 agree, 2 escalated on a threat label (reported separately - not folded into agreement, not counted as a miss), 1 disagreed. No case's disposition moved between the columns, which is the claim the committed recordings have to survive
+- [x] D8: Full suite green, `tools/record-results.sh` artifacts regenerated, README and `docs/PARITY.md` rows 1/27/28/29/30/31 updated, commit and push
+
+**Build Details:**
+| Attribute | Value |
+|-----------|-------|
+| Tests | `python3 -m pytest tests/ -o addopts=` - **471 passed, 0 failed** (was 343) |
+| New modules | `src/tenable_email/cli.py`, `src/tenable_email/receipt.py`, `src/tenable_email/runner.py`, `src/tenable_email/writeback.py`, `src/tenable_email/__main__.py` |
+| New tests | `tests/test_receipt.py` (52), `tests/test_runner.py` (28), `tests/test_writeback.py` (18), `tests/test_cli.py` (30) = 128 new |
+| Runtime deps | none added - `dependencies = []` still empty; argparse and the standard library only |
+| Demo output | `python3 -m tenable_email demo`: 14 rows, 11 agree / 2 escalated / 1 disagreed, 14 of 14 receipts closed, 0 refusals, with the network blocked at the transport seam |
+| Closure rules | simulated evidence; a cited UNKNOWN or UNAVAILABLE finding; an UNKNOWN disposition; a truncated verdict claiming THREAT, SPAM or CLEAN. Replay is explicitly **not** simulated |
+| Writeback | gate implemented; the only provider shipped is `dry-run`; the destination stays `NOTES.md` open decision 2 and this bundle did not resolve it |
+| Bug found by a test | `corpus_manifest()` sorted a list of dicts directly, so a corpus directory with no label file raised TypeError; caught by `tests/test_receipt.py`, fixed to sort by name |
+
+
+### Bundle F - MCP server and agent skill (COMPLETED 2026-11-03)
+**Project directory:** project root
+The artifact surface an external agent can call, and the workflow judgment the
+tools cannot encode. Thin adapter over the Bundle D core, not a second engine.
+
+- [x] F1: `src/tenable_email/mcpserver.py` - nine tools as plain functions returning JSON-serializable dicts: `analyze_eml`, `analyze_eml_directory`, `explain_verdict`, `check_auth`, `lookalike_domain`, `analyze_urls`, `classify_local`, `list_contracts`, `get_case_record`. Every response is one envelope (`ok`, `tool`, `error`, payload); errors are values, never exceptions across the boundary
+- [x] F2: stdio entry point - `python3 -m tenable_email.mcpserver` and the `tenable-email-mcp` console script. With the `mcp` extra absent it prints `pip install -e .[mcp]` and exits 1; `--list-tools` advertises the surface with the extra absent
+- [x] F3: `SKILL.md` (323 lines) - escalation rather than re-asking, reading tier disagreement, the four provenances with UNAVAILABLE distinct from UNKNOWN, authentication-is-not-legitimacy and the reference playbook's wrong domain rule, the newsletter-quoting-a-payload case and corroboration, populating a VIP list from HR/AD-LDAP/workspace admin and the four reasons not to scrape public org pages, truncated-is-never-complete, and the eight stage titles in contract order
+- [x] F4: `tests/test_mcp_tools.py` (104) and `tests/test_mcp_server.py` (14) - shape, offline operation, no endpoints, no bodies or attachment bytes asserted against every fixture, structured errors, `list_contracts` agreeing with `stages.yaml` field for field, and a snapshot-plus-blocked-sockets test that no tool writes anything
+- [x] F5: README gains the MCP server section, and `SKILL.md` plus `src/tenable_email/mcpserver.py` in the layout, the server's outbound-data-flow statement, and a correction to the limitation that claimed Bundle F would prompt for approval; `docs/listing-drafts/mcp-server.md` now lists all nine tools and re-validates against the upstream validator
+- [x] F6: suite green with zero skips, `tools/validate_contract.py` exits 0 and now validates `SKILL.md` rather than reporting it absent, review bundle rebuilt, artifacts re-recorded, commit and push
+
+**Build Details:**
+| Attribute | Value |
+|-----------|-------|
+| Tests | `python3 -m pytest tests/ -o addopts= -q` - **595 collected, 595 passing, 0 skipped** (was 477) |
+| Runtime deps | none added - `dependencies = []` still empty; the `mcp` import sits inside one function, so `import tenable_email.mcpserver` needs nothing |
+| Verified install | `uv venv` + `pip install -e . --no-deps` gives a working `tenable-email demo` (11 agree, 2 escalated, 1 disagreed) and a `tenable-email-mcp` that names the extra instead of raising |
+| Read-only | forced `replay=True` per call (no live transport, no store write path) and no runner constructed with a root; asserted by hashing the work directory, the replay corpus, the fixture corpus and `docs/results/` around a sweep of all nine tools with sockets blocked |
+| No message content | evidence keys that quote the body (`injection`, `link_details`, `forwarding`, `bec_language`, every model judgment) return a digest and a reason; asserted against each fixture's body lines and attachment bytes, raw and base64 |
+| Contract | `tools/validate_contract.py` exits 0 and prints the SKILL.md stage-list match; the "SKILL.md is not present" note is gone |
+| Deviation | `tests/test_contract_drift.py` pinned the absent-SKILL.md note; committed separately, and its replacement asserts more than it replaced (present file validated, drift reported by name, absent file still reported as skipped) |
+| Deviation | F4 asked for `tests/test_mcp_server.py` to skip when `mcp` is absent, while F also required zero skips in the repo suite and exactly the six designed skips in the bundle. The numbers win: nothing skips. The wrapper's single import is satisfied by the real package when installed and by a stand-in injected through `sys.modules` when not, so `from mcp.server.fastmcp import FastMCP` still executes |
+| Not in this bundle | no writeback provider, no interactive approval prompt, no resolution of `NOTES.md` open decision 2; `DryRunProvider` remains the only provider |
+
+### Bundle I - External red-team response (COMPLETED 2026-11-03)
+
+Not a planned bundle. An external hostile-code review and red-team assessment
+arrived against the bundle at `7a7ad42` and found five P0 and six P1 findings,
+all producing unsafe `CLEAN 0.90` dispositions on adversarial input. Everything
+else stopped.
+
+- [x] I1: reproduced the two load-bearing findings from source before changing
+      anything. `assess_alignment` computed `dkim_aligned` and `spf_aligned` and
+      then discarded both, defining `auth_passes` as `dmarc PASS or (spf PASS and
+      dkim PASS)` - so SPF PASS from `attacker.test` authorised `example.edu`.
+      `combine()` let only the adjudication tier reopen a decisive verdict.
+- [x] I2: alignment-aware `auth_passes`, and an explicit DMARC FAIL can no longer
+      be overridden by unrelated passes (RFC 7489 s3.1).
+- [x] I3: `pipeline._clearance_supported` is now the single owner of the clearance
+      condition, used by both the rule that issues the disposition and the gate
+      that decides whether to ask a model. Those were two copies of one condition
+      that could drift silently. Clearance now requires positive evidence: the
+      sender is the organization or on the trust list, and every destination is
+      accounted for by that relationship. Passing authentication establishes
+      domain control, not benign intent.
+- [x] I4: clearance veto in `ensemble` - a specialist may move a decisive CLEAN or
+      SPAM to MANUAL_REVIEW but may never author a verdict over verified facts.
+      Restricted to `INDEPENDENT_EVIDENCE_TIERS`, which measurement reduced to the
+      vision tier alone: the first version let any specialist veto and destroyed
+      two correct clearances, and `url_reputation` was excluded after the
+      committed recordings showed it returning 0.962 for a DocuSign signing link.
+- [x] I5: `fixtures/adversarial/` - fifteen generated hostile messages, each from
+      a subdomain of the protected domain with genuinely passing authentication.
+      Kept separate from `fixtures/synthetic/` so the corpus count many tests
+      assert and the URL sets that key the replay recordings are untouched.
+      Fourteen closed and asserted directly, one open under **strict xfail** so a
+      fix fails the run until the status is moved consciously.
+- [x] I6: R08 - eleven distinct bypasses from one root cause, where the external
+      review found one. `extract_links` read only `<a href>` and bare text URLs,
+      so `<form action>`, meta refresh, iframe, script, object, embed, base, img,
+      CSS `url()` and inline event handlers were all invisible and every one
+      cleared at 0.90 with `link_count: 0`. All enumerated now, each labelled
+      with its element in `Link.element`.
+- [x] I7: R09 - `unwrap_redirect` iterative and bounded with cycle detection;
+      nested wrappers previously resolved to the inner *trusted* wrapper.
+- [x] I8: R01 - first-mention-wins per mechanism, since a receiving MTA prepends
+      its header; later disagreement sets `conflicting` and blocks clearance.
+      Removed a regex that fabricated SPF PASS from prose, and the mapping of
+      `action=reject` policy onto DMARC FAIL.
+- [x] I9: R04 - every MIME alternative scanned, hits labelled by part. R05 -
+      truncation tracked per part and aggregated, and a truncated message can no
+      longer support a clearance at all. R06 - an unexamined high-risk attachment
+      blocks a clearance whoever sent it, without becoming a THREAT trigger.
+- [x] I10: two review agents run against the fix itself. Five defects found in
+      code written an hour earlier: the veto covered CLEAN but not the equally
+      decisive SPAM, a vetoed verdict reported HIGH-band 0.90 for a deferral,
+      `combine()` raised KeyError on a decisive MANUAL_REVIEW, an unexamined
+      inline image supported a clearance, and two operator-visible strings
+      misdescribed the code. All fixed with regression tests.
+- [x] I11: overclaims removed. `stages.yaml` described sandboxed PDF/Word
+      extraction and README advertised QR decoding plus `.[qr]` and
+      `.[attachments]` extras; `pyzbar`, `pypdf` and `python-docx` are imported
+      nowhere in `src/`. Both extras deleted, pins preserved in a comment, stage 6
+      rewritten to say it is declared but not implemented. The runtime never lied
+      - it skips stage 6 with a reason a test pins.
+- [x] I12: `docs/RED-TEAM-RESPONSE.md` tracks all eleven findings and four
+      operational items with what was verified against each. Eight fixed, three
+      mitigated, none unaddressed.
+- [x] I13: `tools/record-results.sh` hardened. Commit `a1cb399` recorded exit
+      code 1 because the staleness guard necessarily fails on the first run after
+      a test-count change and a piped invocation hides the exit code. The script
+      now detects that bootstrap and re-runs once after writing, counts expected
+      failures separately from skips, and writes junit to a temp file so the
+      committed pair always describes one run.
+- [x] I14: multi-writer git topology. A bare repository is now the single shared
+      target and every working copy is a peer that pulls from it, replacing a push
+      straight into a checked-out tree. `tools/sync-trees.sh` reports all three
+      trees, exits non-zero on any divergence including a remote that merely lags,
+      and refuses to pull over uncommitted work - tested by planting a file and
+      confirming both the refusal and that it survived.
+
+641 tests passing, 1 xfailed, 0 skipped. Coverage cost measured rather than
+assumed: three of five clean-labelled fixtures still clear outright and corpus
+agreement is unchanged at 10 agree / 2 escalated / 2 disagreed, so the tightening
+did not buy safety by escalating legitimate mail. A floor test pins that.
+
+
+### Bundle J - Email source adapter contract (COMPLETED 2026-11-03)
+**Project directory:** project root
+
+Made the engine's provider-independence explicit and testable rather than incidental.
+The engine already took RFC 822 bytes and never knew their origin; this names that
+seam, proves it, and documents how to extend it.
+
+- [x] J1: `src/tenable_email/sources.py` - `SourceItem` (external_id, raw bytes,
+      provenance label, reporter, received_at, metadata), `EmailSource` protocol,
+      `EmlDirectorySource` reference adapter, `SourceError` carrying a recordable
+      reason, `register_source` and `source_for`
+- [x] J2: intake is read-only - `source_for` refuses `mutates = True`, and
+      registration does not bypass the check
+- [x] J3: CLI `run --source NAME` and `--limit N`; omitting `--source` preserves the
+      existing file-and-directory behaviour exactly, asserted by comparing full
+      output byte for byte between the two paths
+- [x] J4: `Outcome` carries an origin label instead of a `Path`, so a message need
+      not come from a file; `drive_message` delegates to `drive_item` rather than
+      keeping a second copy of the receipt walk
+- [x] J5: `tests/test_sources.py` - 26 tests, including one that writes a platform
+      adapter inside the test and asserts the engine's verdict is identical through
+      it and through the directory adapter. That is the test that decides whether
+      `EmailSource` is an abstraction or a wrapper
+- [x] J6: `docs/ADAPTERS.md` - the contract, per-platform notes for Google
+      Workspace, Microsoft 365, IMAP and PhishER, and the reasoning for shipping no
+      untested skeleton. All eight documentation links verified HTTP 200
+- [x] J7: README adapter section, repository layout, and an explicit statement in
+      "Upstream services this project calls" that no platform adapter is bundled or
+      reachable from a default configuration - undisclosed outbound calls are an
+      Exchange rejection trigger
+
+Two defects found while building, both mine, both fixed rather than tested around:
+`SourceItem.parse` restated the 8000-character body limit instead of taking the
+parser's default, which would have made the two intake paths truncate at different
+lengths the moment a deployment changed the threshold; and the first version of the
+mutating-source test asserted against a copy of the guard instead of the guard, which
+proves nothing - it now drives the real check through the real registry.
+
+### Bundle H - Operator case ledger (COMPLETED 2026-11-03)
+**Project directory:** project root
+
+Google Alert Center's only writable annotation is a four-value enum about whether the
+*alert* was useful - verified from the reference workflow's own GraphQL schema, not
+assumed. There is no comment field and no place to record a disposition, so the
+reference playbook's "post our analysis back to the platform" step has no destination
+here. That is not a gap in the reference: it posts comments and tags into KnowBe4
+PhishER, a commercial product that supplies them. We do not stand on that product, so
+we keep our own record.
+
+This is also the instrument the project was missing. The external red-team review found
+the pipeline auto-clearing adversarial mail, and the durable fix for that class of bug
+is not another rule - it is a record of what the machine concluded beside what a person
+finally concluded, so agreement is measured over time rather than discovered by an
+outsider with hostile test cases.
+
+- [x] H1: `src/tenable_email/ledger.py` - `CaseLedger` over stdlib `sqlite3`; tables
+      `cases`, `resolutions`, `notes`, `events`; WAL journal mode so a store two
+      analysts share cannot corrupt when one is interrupted
+- [x] H2: the machine verdict is append-only, enforced by SQLite triggers that abort
+      any UPDATE or DELETE on `cases`. Enforced by the database rather than by the
+      caller's discipline, so the invariant survives a contributor who has not read
+      this file
+- [x] H3: no message body or attachment byte reaches disk - digests and metadata only,
+      asserted by reading the ledger file as **raw bytes** rather than through the API,
+      because an API-level check only proves the API behaves
+- [x] H4: two status axes borrowed from PhishER - `pipeline_status` (has the machine
+      finished) and `action_status` (has a person closed it), because conflating them
+      loses the queue an analyst actually works from
+- [x] H5: an append-only `events` trail with a causer, since applying a label and
+      notifying an analyst are things a SOC needs to see and neither is a verdict;
+      plural `notes`, since a case accumulates a conversation over days
+- [x] H6: `agreement_summary()` keeps the dangerous number out of every rate -
+      how many messages the machine cleared were then found hostile by a person.
+      Threat and spam counted separately among clearances, because a newsletter is a
+      nuisance and a credential harvester is an incident. A rate with no denominator is
+      reported as absent rather than zero
+- [x] H7: `LedgerProvider(WritebackProvider)`, `name="ledger"`, `mutates=True`.
+      Performs `record_case`; returns `performed=False` naming the kind for
+      `apply_label`, `notify_analyst` and `post_comment` rather than faking success
+- [x] H8: registered in `writeback.PROVIDERS` through a deferred import, because
+      `src/tenable_email/ledger.py` imports `src/tenable_email/writeback.py` for the
+      provider interface, so an eager import would be circular. Default unchanged
+- [x] H9: five CLI verbs - `ledger list/show/resolve/note/agreement`, with `--json` on
+      the three a script would read and a readable queue table by default. A case id
+      may be given in the shortened form the table prints; a substring matching more
+      than one case is refused rather than guessed
+- [x] H10: `tests/test_ledger.py` - 41 tests, including the full human round trip
+      driven through the CLI, and a test that a human can find a clearance that was
+      wrong and see it surface as its own number
+- [x] H11: `docs/REFERENCE-BASELINE.md` records what was borrowed from PhishER's data
+      model and what was rejected, including their idempotency-by-string-matching,
+      which breaks the moment a prompt's wording changes
+
+**One design decision worth not losing.** Recording happens when a case is *opened*,
+not when an outward action is approved. A ledger holding only approved cases would be a
+biased sample - the careful analyst approves the ones they looked at - and the
+false-negative figure computed from it would be meaningless. Writing our own local
+store is not an outward mutation and needs no approval; labelling a mailbox does, and
+still goes through the gate. This was found by running the documented command and
+getting fourteen receipts and zero cases, not by reading the code.
+
+Two bugs found the same way: `provider_for()` builds providers with no arguments, so
+the ledger could not receive the run root and the documented invocation failed at
+construction; and SQLite does not concatenate adjacent string literals the way Python
+does, which made both trigger messages a syntax error.
+
+One existing test adapted rather than deleted. It asserted that no provider mutates at
+all, which was true when dry-run was the only one. The policy it protected is narrower
+and still holds - nothing here reaches out and changes a system the operator does not
+own - so it is restated as that, and now also asserts the ledger has no transport
+attribute of any kind.
+
+A claim in the listing draft became false the moment this landed ("the only provider is
+a dry run") and was corrected in the same commit, since a stale claim is the defect
+class this project keeps finding in itself.
+
+**Built afterwards:** the human-facing web view and the static snapshot export, as
+Bundle L. The store and its `--json` surface were the prerequisite, and nothing in
+this bundle had to change for the view to land on top of them.
+
+### Bundle L - Ledger web view and static snapshot export (COMPLETED 2026-11-03)
+**Project directory:** project root.
+
+The queue an analyst works from was a table in a terminal, and the measurement that
+justifies the ledger was a line of text. Both have a face now: a local `http.server`
+view with no JavaScript at all, and one self-contained HTML file for a reviewer who
+will not run a server. The absence of a script context is the primary defence rather
+than an austerity measure - every page renders attacker-controlled subjects, sender
+display names, link targets and the narrative built from them, so a page with no
+script context has no script-execution surface, and an escaped payload in a subject
+stays inert text instead of a payload one missed escape away from running.
+
+- [x] L1: `src/tenable_email/webui.py` - the queue with query-parameter filters, one
+      case in full, the agreement measurement, and `render_snapshot`, over stdlib
+      `http.server`. `dependencies = []` is still empty
+- [x] L2: a Content-Security-Policy on every response including the error responses,
+      denying everything by default, with `nosniff`, `X-Frame-Options: DENY`,
+      `no-referrer` and `no-store` beside it. Nothing external is referenced at all:
+      the stylesheet is inline, and there is no favicon, webfont, image or
+      protocol-relative URL
+- [x] L3: loopback bind unless an explicit flag is given, refused inside the module
+      because this view has no authentication, and reported by the CLI as
+      `ERROR: refusing_to_bind_remote: ...` with exit 1 rather than a traceback
+- [x] L4: writes limited to resolving a case and adding a note, both CSRF-protected
+      with a token held in an `HttpOnly; SameSite=Strict` cookie and mirrored into a
+      hidden field, because a localhost port is reachable from any page the analyst
+      opens. The machine verdict has no edit path here because it has none in the
+      schema
+- [x] L5: the two CLI verbs that make the module reachable - `ledger serve` and
+      `ledger snapshot` on the existing subparser, both through `_open_ledger` so
+      `--root` and `--ledger` behave as they do for the other five. `snapshot` prints
+      the path and the byte count and refuses to overwrite an existing file without
+      `--force`, because a snapshot somebody attached to an incident record is
+      evidence
+- [x] L6: `tests/test_webui.py` - 37 tests. The escaping tests parse tags rather than
+      grep substrings, because the payload must survive as readable text while staying
+      inert; the two structural assertions - no live script element, no external
+      resource - run over every route, so a new page cannot quietly add either
+- [x] L7: the four failing tests diagnosed rather than assumed. Three were one helper
+      bug: `_get()` called `urlopen` without catching `HTTPError`, so every test
+      expecting a 404 or a 400 crashed instead of asserting, while the sibling
+      `_post()` already handled it. The fourth was `dataclasses.FrozenInstanceError`
+- [x] L8: README layout, the ledger section, the outbound-data-flow list, `docs/PARITY.md`
+      row 33 and this file brought current
+- [x] L9: the recorded evidence artifact no longer publishes a hostname; see the
+      Session Log row, because this one bit twice
+- [x] L10: `serve` flushes the address it prints, which is the only way to learn the
+      port when `--port 0` asked the operating system for one and the process then
+      blocks forever. Found by running the end-to-end demonstration rather than by
+      reading the code: with stdout redirected to a file the documented invocation
+      printed nothing, because a pipe is block-buffered
+
+**The truncation test was wrong in two ways, and the receipt was not one of them.**
+`Thresholds` is frozen, so assigning a 40-character body limit raised instead of
+taking effect. Rebuilding the config with `dataclasses.replace` then exposed the
+second problem: the test parsed the fixture at the default 8000-character limit and
+triaged it against the 40-character threshold, so nothing was actually truncated while
+the signal layer still reported it as truncated - and the verdict reasoned that "294
+characters were retained of 294", a partial reading that had not happened, with a
+self-contradicting count. `triage_file` parses at the limit the configuration declares,
+which is the path a reviewer runs, so the numbers are now real (40 of 294) and the
+test asserts them instead of skipping when they are absent. Checked before being
+blamed, and innocent: `Receipt.for_verdict` carries `truncated=bool(verdict.truncated)`
+through, `record_receipt` stores it, `_hydrate` reads it back. A partial reading is
+recorded as partial at every link, now asserted at all three.
+
+**Two review-round prose traps were closed on the way.** `src/tenable_email/cli.py`
+documented "Five subcommands" and listed none of `ledger`, which became false when
+Bundle H landed. And `tools/record-results.sh` opens by claiming it records no
+hostname, while pytest's junit XML carried a `hostname=` attribute with the build
+account's name in it for every run - redacted first into a placeholder, which turned
+out to be invalid inside an XML attribute value and took the artifact's own parser
+with it, then removed outright.
+
+**Follow-up - visual polish and the committed screenshot set (2026-11-03).** The view
+landed functionally correct and visually unfinished. A vision-model inspection of the
+rendered pages produced a defect list, and every item on it was real and observed in a
+browser rather than inferred from the code.
+
+- [x] L11: the queue - human-readable timestamps with the stored value preserved in a
+      `datetime` attribute and a tooltip, a dedicated flags column so a status pill
+      cannot reflow with the prose of a subject, fixed table layout with a declared
+      width for every column that must not ellipsise, ellipsised subjects and senders
+      that still link to the full text, zebra banding and a hover row, raised greys,
+      one accent colour for the current tab instead of two colours for two tabs, and a
+      real type scale: system sans for the tool's own prose, monospace reserved for
+      data quoted out of a message, so the two are never confused
+- [x] L12: the agreement view - every rate prints its denominator, because the
+      denominators were changing silently between cards (agreement over 5 resolved
+      cases, cleared and accused over 2 and 2), plus a line stating that rates run over
+      resolved cases only and that an open case counts as neither agreement nor
+      disagreement; red demoted to the hero figure alone; the secondary figures demoted
+      against it; the four cards on a 2x2 grid so nothing is forced to equal height with
+      dead space inside; prose measured to 65ch; a footer anchoring the page
+- [x] L13: narrow screens - rows restack into labelled cards below 1024px through a CSS
+      media query and `data-label` attributes on every cell, with no script involved.
+      Measured after the fix: the document's `scrollWidth` equals the viewport at 1440,
+      1280, 1024, 1023, 900, 768, 414, 390, 360 and 320 px, against 833 px at a 390 px
+      viewport before it, where the machine badge clipped to `manual_re...` and hid the
+      verdict
+- [x] L14: five real-browser screenshots committed under `docs/images/`, referenced
+      from the case-ledger section of the README with alt text, and a new guard in
+      `tests/test_doc_references.py` asserting that every image a tracked document
+      shows is actually tracked - the defect class that bit the corpora twice - verified
+      by canary rather than by reading it
+
+Nothing that was a decision moved. No JavaScript, no external resource, no fetched
+font, the Content-Security-Policy on every response, `escape()` as the only route to
+the page, the loopback default, the CSRF token and redirect-after-post are all
+unchanged, and all 37 original tests in `tests/test_webui.py` pass untouched - it went
+from 37 to 60 by addition, not by amendment. The contrast rule is computed from the
+stylesheet tokens rather than eyeballed: every text colour clears 4.5:1 against every
+surface it is printed on.
+
+One compromise worth stating here rather than discovering in the diff. `escape()` makes
+a value inert inside an attribute, but a subject reading `<img src=x onerror=...>` still
+*looks* like markup to whoever reviews the emitted HTML, and this repository's own
+structural test cannot tell the two apart and must not be weakened to accommodate a
+tooltip. So a value whose text resembles markup gets no tooltip at all, and its full
+text stays reachable one click away on the case page. Pinned by
+`test_text_that_looks_like_markup_is_never_placed_in_an_attribute`.
+
+The screenshot set was built by running the fourteen synthetic fixtures through the
+ledger provider and then resolving cases directly against `CaseLedger`: two threats
+confirmed as threats with notes, one clearance confirmed clean, one clearance
+overturned to a threat by a human - the case the agreement view exists to surface - one
+deferral resolved as spam, and three notes by three different authors. Content was
+verified before committing, not assumed: each PNG carries only the IHDR, IDAT and IEND
+chunks with no text metadata of any kind, and a raw byte scan of all five finds no
+absolute home path, no RFC1918 address, no hostname, no username, no localhost and no
+port.
+
+### Bundle M - Evaluate as a selective prediction system (COMPLETED 2026-11-03)
+**Project directory:** `eval/`.
+
+The reframing rather than another number. This pipeline already behaves as a
+selective classifier: the deterministic layer settles what it can, model tiers
+opine on the rest, and anything unsettled becomes `manual_review` and goes to a
+person. So `manual_review` is a **deferral**, not a fourth label beside `clean`,
+`spam` and `threat`, and the operative numbers are **coverage** - the share of
+the queue automated with no human in the loop - and **selective risk**, the error
+rate among those automated. A single-threshold accuracy hides exactly the question
+an operator asks, and it also dissolved an uncomfortable measurement: "the models
+changed no disposition" is a null result under accuracy and a legible statement
+about the frontier under a risk-coverage curve.
+
+- [x] M1: `eval/selective.py` - coverage, class-conditional selective risk, the
+      risk-coverage curve, AURC, the oracle AURC, E-AURC, selective risk at fixed
+      coverage (25/50/75/90/100%) and coverage at fixed risk budgets
+      (0.1/0.5/1/2/5%). Stdlib `math` only; `dependencies = []` is still empty
+- [x] M2: class-conditional reporting - `false_negative_rate_among_accepted` and
+      `false_accusation_rate_among_accepted`, each over its own denominator, so a
+      cleared phish and an accused invoice are never averaged. The ledger refuses
+      to average them; the evaluation must not either
+- [x] M3: deferral composition - how many deferred messages are truncated,
+      escalated, model-assisted or adversarial, and their labels, so "the deferred
+      slice is the hard slice" is shown rather than asserted
+- [x] M4: wired into `eval/run.py` and rendered through `eval/report.py`, which
+      recalculates nothing - now asserted by a test that feeds it an internally
+      contradictory payload and requires the contradiction to survive verbatim
+- [x] M5: the calibration limit carried in the artifact as `calibrated: false`,
+      printed beside every operating point, and pinned in both directions: present
+      wherever the flag is false, absent when a payload claims calibration, so the
+      sentence is the flag talking and not decoration
+- [x] M6: both committed corpora measured and committed in `eval/metrics.json`,
+      with the standing caveat that 32 self-generated messages establish the
+      method and not an accuracy estimate for real mail
+- [x] M7: the empty Markdown report diagnosed, the latent renderer defect fixed,
+      and 12 tests added over `eval/report.py` in `tests/test_eval.py`
+- [x] M8: README's Measured-behaviour section extended with the selective view and
+      its measured values, `docs/EVAL-SUITES.md` given the research corrections,
+      `docs/PARITY.md` row 32 brought current, `eval/selective.py` added to the
+      repository layout block
+
+**Bug 1, found while building it: a label set that silently did not cover a
+corpus.** `DEFERRALS`, `ACCUSATIONS` and `HOSTILE_LABELS` were defined in both
+`eval/run.py` and `eval/selective.py`, and had already drifted - the harness said
+hostile meant `{threat, spam}` while the metrics also knew `{hostile, phishing,
+malicious}`. Every case in `fixtures/adversarial/` is labelled `hostile`, so all 18
+came back undecidable and selective risk was `None` on precisely the corpus where
+the risk is most interesting. It did not look broken; it looked like an honest
+"this corpus has no ground truth". Fixed by giving the label sets one
+owner - `eval/selective.py`, imported by `eval/run.py` - by reporting
+`undecidable` next to every rate, and by a test asserting it is zero on both
+corpora. The lesson is general: when a classifier over a taxonomy matches
+nothing, the absence of a match and the presence of no answer must be
+distinguishable, and the safe direction to fail is to count what was not understood
+rather than to fold it into the denominator.
+
+**Bug 2, found by reading the number: a negative E-AURC.** The oracle first used
+the textbook closed form `e0 + (1-e0)ln(1-e0)`, which assumes a selector can reach
+full coverage by lowering its threshold. This one cannot: deferral is a decision
+about evidence, not about confidence, so the adversarial curve stops at 11.1%
+coverage. Comparing that curve against an oracle integrated to 1.0 gave a negative
+excess - impossible, since the oracle is the minimum by construction. The oracle is
+now computed over the curve's own coverage grid, like for like, and `excess_aurc`
+returns an `inconsistent` marker instead of clamping a negative, so the next time
+the comparison is wrong it announces itself. The lesson: a formula copied from a
+paper carries that paper's assumptions, and a property test (`E-AURC >= 0` over
+four corpus shapes) catches what a worked example cannot - a worked example only
+shows you the number you expected.
+
+**What the original scoping paragraph got wrong, corrected here rather than
+repeated.** It claimed the deterministic layer "already reaches the right answer on
+all 32 messages, so selective risk at full coverage is zero and the curve is flat".
+True of the synthetic corpus, false of the adversarial one. Measured, both
+configurations, from `eval/metrics.json`: synthetic 14 messages, 10 automated and
+4 deferred, coverage **71.4%**, selective risk **0.0%**, AURC 0.0000, oracle 0.0000,
+E-AURC 0.0000, 5 curve points, and every risk budget in the reported range
+achievable at 71.4% coverage; adversarial 18 messages, 2 automated and 16 deferred,
+coverage **11.1%**, selective risk **50.0%**, AURC **0.0417**, oracle **0.0139**,
+E-AURC **0.0278**, 3 curve points, and **no automated-error budget in the reported
+range achievable**. The single wrong automated decision on the hostile corpus is the
+disclosed open finding `forged_auth_single_header`, cleared at the system's highest
+confidence, 0.90 - which is why E-AURC is positive there and is the documented
+"these are policy labels, not probabilities" caveat, now measured instead of merely
+stated. The flat curve and the honest limit therefore survive where they belong - on
+the synthetic corpus, where nothing is automated wrongly because there is nothing
+contentious to automate - and README and `docs/PARITY.md` row 32 say it that way.
+
+**The null result this bundle produced is the result.** Thirty-two messages we wrote
+ourselves demonstrate the method and cannot evidence it. Selective prediction over
+these corpora tells an operator how the machinery behaves, not how the system
+performs; the numbers become evidence only against an external corpus, which is
+Bundle N and is why M was written as depending on it rather than replacing it.
+
+**A third defect, found while writing the tests for the section.** The
+deferred-slice sentence printed "16 escalated by a model tier, 0 model-assisted" -
+contradicting itself three words apart, because `Verdict.escalated` is set from the
+disposition as well as from tier disagreement, and the deterministic-only
+configuration has no reachable model at all. The measurement was right; the prose
+invented a cause. What it taught: a rendered sentence is a claim, and the test that
+catches it has to assert the configuration really contains no model before asserting
+what the sentence says about one.
+
+**The empty report was not a rendering bug, and the rendering bug was latent.** The
+brief's command used `--markdown`, which `eval/run.py` has never had: Markdown is
+the default, `--json` is the only format flag, so argparse exited 2 with a usage
+error on stderr and left `sed` nothing to filter. The actual defect in that path was
+that `eval/report.py` returned no lines when a payload had no `selective` key, making
+an absent measurement indistinguishable from one with nothing to report - the same
+shape as a check that swallows its own exit status. Reproduced by deleting the key
+from a live payload; it now raises `MissingSelectiveMetrics` naming the corpus and
+the regeneration command, and `require_selective=False` is the only way past it,
+which still prints that the block is absent. There is no path through that function
+that produces silence.
+
+### Bundle Q - Optional deep attachment analysis via REA (COMPLETED 2026-11-03)
+**Project directory:** project root; the component is `src/tenable_email/attachments.py`.
+
+Closes the capability gap the README had been admitting for five bundles: the
+engine inventoried an attachment (filename, content type, size, sha256, truncated)
+and never looked inside it. It now can, through an optional workflow that shells out
+to the local `rea` CLI (`morluto/rea`, npm `rea-agents`, MIT, whose own disclaimer names
+malware and incident analysis as a use case), with `dependencies`
+still empty and the shipped default path unchanged.
+
+**Verified facts about the tool, re-verified against the upstream source tree on the
+build host in this run rather than inherited from the scoping note.** `rea --version`
+reports 6.8.0 and the CLI runs on this host's Node.js v22.23.1, which is *below* its
+declared engine floor (`^22.23.4 || ^24.22.1 || >=26.12.1`); `engines` is advisory, so
+the floor is stated in the README as a requirement rather than smuggled in as an
+assumption that it was met. `rea inspect-artifact <path> --json` on a ZIP built from
+the committed attachment corpus returned an inventory whose two reported digests
+equal the sha256 this engine computed while parsing, exit code 0. `rea capabilities
+--json` declares four providers and nineteen operations in
+`{"capabilities":[{"provider":{...},"groups":[{"operations":[...],"effects":[...],
+"available":bool,"reason":...,"availability_code":...}]}]}`; the effects that
+disqualify an operation appear on 2 of those 19, and only 7 operations declare no
+effects at all. Its `available` flag is confirmed not a readiness signal: the same
+host reports ghidra and hopper available while `rea inspect /bin/ls` rejects both,
+exit code 1, with `code: provider_unavailable` and ghidra `not_configured`. Measured
+and now recorded: `rea inspect-artifact` **refuses a plain-text attachment**
+(`code: target_unavailable`, "Cannot open artifact: unsupported binary format"), so
+the useful range is containers and binaries, not document text.
+
+**What each subtask delivered, and what was actually checked.**
+
+- [x] Q1: four benign fixtures generated by `fixtures/generate.py` into a third corpus,
+      `fixtures/attachments/` - a ZIP built with stdlib `zipfile` (`ZIP_STORED`, every
+      `ZipInfo` field pinned so the bytes do not depend on the zlib build or the OS),
+      a plain-text part, a 32 KiB part for the retention limit, and a
+      `Content-Disposition` filename that is a path traversal. The corpus is generated,
+      and a test regenerates it and compares bytes, so a hand-edited fixture fails the
+      build. Kept out of `fixtures/synthetic/` deliberately: adding cases there moves
+      the corpus count several tests assert and re-keys the committed replay recordings.
+      **Deviation, stated:** the scoping note said "zero of the 32 tracked `.eml`
+      fixtures carry an attachment". That is wrong - three do (a 38-byte `.docm` stub, a
+      10-byte `.docm` stub and an 8876-byte inline PNG). What is true is that none
+      carries a *container*, and that nothing in the corpus is large enough to exercise
+      `truncated`. An over-limit fixture at the shipped 8 MiB limit would be 11 MB of
+      base64 in a history-scanned public repository, so the oversized part is 32 KiB and
+      the truncation path is exercised by lowering `MAX_RETAINED_PART_BYTES` over the
+      same real bytes, with the digest recomputed independently from the raw message.
+- [x] Q2: `src/tenable_email/attachments.py` implements the reserved
+      attachment-inspection slot in `src/tenable_email/contract.py` (registered as
+      `attachment_structure_inspector` once the document-text name was corrected -
+      see the reviewer note at the end of this entry). Quarantine via
+      `tempfile.mkdtemp` plus `O_CREAT|O_EXCL` at 0o600, refused outright if the temp
+      root resolves inside the repository or the working directory; staged under a name
+      derived from the digest, with only a sanitized extension from the sender's
+      filename; invoked as `rea <operation> <staged-path> --json` under a configurable
+      timeout, with an **allowlist environment** (PATH, a home, a temp root, a locale)
+      so no configured model API key reaches a third-party process; cleanup on every
+      path, and a cleanup that fails reports its path in the result *and* in the record.
+      **Deviation, stated:** the brief said mode 0o600 for the directory. A directory at
+      0o600 has no search bit, so nothing can open the file inside it - the directory is
+      0o700 and the payload file is 0o600, both asserted from inside the child process
+      via `stat`, not assumed.
+- [x] Q3: digest binding. `subject.digest.sha256` **and**
+      `normalized_result.subject.root_sha256` must both be present, well-formed and
+      equal to the digest computed during parsing, or the response is discarded with
+      `digest_mismatch` - `raw` emptied, no projection, nothing partially used. A
+      marker string planted in a refused response was searched for in the evidence
+      record, the serialized verdict, the reasons and both receipt renderings.
+- [x] Q4: the safety gate is the intersection, and the denylist binds first. Effects
+      `may_access_network`, `may_show_ui` or `mutates_artifact` refuse; the hardcoded
+      allowlist (the six operations the scoping note verified) refuses anything else;
+      `capture-*`, `debug-*`, `*-adb-*` and `analyze-web-bundle` are refused by name
+      whatever they declare - matched against a canonical spelling in which `_` and
+      `-` are the same character, because REA declares `capture_native_ui_scenario` and
+      names the command `capture-native-ui-scenario`. `available` is never consulted.
+      The declaration is cached per process and per resolved binary. Refusals are
+      asserted to have reached **no subprocess**, by reading the stub's own call log.
+      **Bug this found in my own first draft:** `allowed_operations` compared REA's
+      declared effects against the allowlist spelling, so a declaration of
+      `may_access_network` read as `may-access-network` and did not match - the gate
+      would have run a networking operation. The test caught it; effects are now
+      canonicalized on both sides and the verbatim declaration is what gets printed.
+- [x] Q5: nine abstention reasons, each produced by a real condition in a test and
+      parametrized off `ABSTENTION_REASONS` itself, so a reason with no scenario fails
+      as "no scenario builds" rather than going untested. Nothing raises into the
+      pipeline: `OSError`, `PermissionError` and `FileNotFoundError` from the child are
+      all recorded, and the disposition is unchanged. The ninth reason,
+      `attachment_not_retained`, is **added** beyond the eight the brief named: a part
+      the parser dropped has no bytes here, and handing REA an empty file to report "an
+      empty container" about a 40 MB attachment is a false statement about the message.
+- [x] Q6: a stub `rea` on PATH exercising the real subprocess, parsing, digest and gate
+      paths, plus four recorded real responses in `fixtures/rea/`. The stub digests
+      whatever file it is handed, so a passing answer is evidence the right bytes
+      crossed the quarantine rather than evidence that two canned strings agreed.
+      `fixtures/rea/README.md` states the only two edits made to the recordings: the
+      provider-unavailable response lost its `details` block (it carried the recording
+      host's toolchain layout, and the component reads none of `details`), and the
+      capabilities recording is the `capabilities` array in its envelope (the real
+      envelope also carries the recording host's absolute paths and a 34 KB block of
+      provider diagnostics). 126 tests in `tests/test_attachments.py`.
+- [x] Q7: README gains an **Optional deep attachment analysis with `rea`** section - off
+      by default, requires Node.js at REA's declared floor, static-only by construction,
+      explicitly not for everyone, with the measured limits named (a `.txt` is refused;
+      `.zip` is not; no disposition moves). `docs/ELI5.md` Part 7 corrected: attachment
+      content extraction is no longer "the genuine capability gap", it is conditionally
+      closed, and the condition is stated with its three caveats. README's Prerequisites
+      and Known-limitations bullets, its repository layout and its exhaustive outbound
+      data-flow list are brought current; `TODO_TENABLE-EMAIL` moved here.
+
+**Not verified, and therefore not claimed.**
+
+- Only `inspect_artifact` was exercised against a real REA. `extract_artifact`,
+  `inspect_keyed_archive` and the three `rea-dotnet-static` operations are in the
+  allowlist because the scoping note verified that they *exist and declare clean
+  effects*; their response shapes are covered by the same projection code and the same
+  golden, but nothing here recorded a real answer from them.
+- Whether REA behaves the same at its declared Node floor is unknown - it was verified
+  one version *below* it.
+- Native binary analysis stays untested-by-design: installing Ghidra is a shared
+  infrastructure change and out of scope, which is why the refusal is recorded as an
+  abstention rather than a finding of absence.
+- POSIX only. The mode assertions are `stat`-based; the behaviour of the quarantine on
+  Windows is unexamined.
+- No malicious payload was ever handed to anything. Every fixture is inert, by policy
+  as well as by choice: this repository's full history is scanned before publication.
+
+**The name overstated what this delivers; the rename is recorded as done.**
+The slot Bundle B reserved in `src/tenable_email/contract.py` carried a document-text
+name. What this component delivers is artifact *structure* - container entries, sizes,
+per-entry digests, declared format - because that is what the tool it wraps actually
+returns for the formats it supports, and a plain-text part is refused outright. README
+and `docs/ELI5.md` Part 7 said so in place of renaming it: a `stages.yaml` contract
+change with a `tools/validate_contract.py` cross-check behind it was Bundle G's surface,
+not this bundle's, and moving one piece of contract prose while leaving three is worse
+than moving none. The follow-up named in the Session Log row for 2026-11-03 moved the
+whole set together - provider `attachment_structure_inspector`, capability
+`attachment_structure_inspection`, stage title *Attachment structure*, the description,
+the three skip-reason strings and the `pyproject.toml` comment - because pre-submission,
+with no external consumer of the names, is the cheapest moment to be accurate.
+
+**Build Details**
+
+| Attribute | Value |
+|-----------|-------|
+| Tests | `pytest tests/` - **1058 collected, 1056 passed, 0 failed, 0 skipped, 2 xfailed** (was 932 collected / 930 passed) |
+| Same suite, PATH scrubbed | 1056 passed, 2 xfailed, 0 failed, 0 skipped with no `node`, `npm` or `rea` reachable - the A3 proof, run rather than asserted |
+| New tests | 126 in `tests/test_attachments.py`; 1 line changed in `tests/test_doc_references.py` (third corpus) |
+| Runtime deps | none - `dependencies = []` unchanged; `tools/check-portability.sh` exit 0 |
+| Contract | `tools/validate_contract.py` exit 0; 8 stages, 1 write stage, 1 approval gate; `stages.yaml` untouched |
+| Real-tool verification | `rea` 6.8.0 through the installed CLI on a ZIP built from the committed fixture; end-to-end through `python3 -m tenable_email run fixtures/attachments` with the env switch on, receipts written, no absolute path in any receipt |
+| Files added | `src/tenable_email/attachments.py`, `fixtures/attachments/` (5), `fixtures/rea/` (5), `tests/test_attachments.py` |
+| Files changed | `fixtures/generate.py`, `.gitignore`, `src/tenable_email/config.py` (3 fields), `src/tenable_email/pipeline.py` (the call, the stage, one narrative count), `src/tenable_email/cli.py` (`config_for` reads the switch), `README.md`, `docs/ELI5.md`, `docs/PARITY.md` (row 7's present-state claim, outside the named doc list - see the reviewer note), `tests/test_doc_references.py` (third corpus) |
+| Left deliberately alone (by this run) | `stages.yaml`, `SKILL.md`, `src/tenable_email/mcpserver.py`, `src/tenable_email/runner.py`, `pyproject.toml`. Four places then described stage 6 as "declared but NOT IMPLEMENTED" - see the reviewer note below. The follow-up recorded in the Session Log moved all of them, together with the two tests that pin the skip reasons. |
+
+**Adjacent defects found and NOT fixed, per the one-bundle rule.** One document outside the named list was corrected anyway, because this bundle made it untrue: `docs/PARITY.md` row 7 read "no content read | **gap**", which contradicted the README section added in the same bundle, so it is now **partial - optional path only** with the remaining gap (PDF/Word *text*) named. Its line 148, "content extraction is still extension-only", was left alone: that is another run's delta note, not a present-state claim, and editing a historical record to match today is the wrong direction. Four documents now
+say something this run made untrue, and each is pinned by a test or by a contract
+cross-check that belongs to a different bundle: `stages.yaml`'s `attachment-content`
+description ("Declared but NOT IMPLEMENTED ... no PDF, Word or QR content is read"),
+`src/tenable_email/mcpserver.py`'s skip reason ("document text extraction is not
+implemented in this build", pinned by `tests/test_mcp_tools.py`), `src/tenable_email/runner.py`'s generic `_skip_reason` fallback (pinned by `tests/test_runner.py`), and the
+`pyproject.toml` comment that lists `attachments = pypdf, python-docx` as the intended
+extra for this stage. The wording was *accurate for every configuration those surfaces
+could produce* - both build their own `Config`, so neither ever runs the analyzer - and
+`SKILL.md` line 46 overstated stage 6 in the other direction ("text from PDF and
+Word"), which predates this bundle. A run that owns the contract prose should move all
+four together; moving one and leaving three is worse than moving none, and the
+follow-up recorded in the Session Log for 2026-11-03 did exactly that, in the same
+stroke as the rename.
+
+## Unresolved Issues
+
+- **Publication boundary: mechanically enforced, two files still internal.** `tests/test_doc_references.py` fails the suite if any tracked file outside an explicit, justified `INTERNAL_FILES` allowlist contains an RFC1918 address, an absolute home path, a web root, an ssh remote, or an organization-specific term. Public-by-default, so a new file that leaks fails until it is cleaned or consciously exempted. Still carrying private topology and therefore excluded: `NOTES.md` and `docs/EVIDENCE.md`. Bundle G must decide per file whether to scrub it into the public set or leave it out of the published repository. Scrubbing `docs/EVIDENCE.md` is worth doing - its measurements are the credibility asset, and replacing concrete endpoints with role names preserves them.
+- **A latent sibling of the hostname leak, deliberately left alone.** The sanitizer in
+  `tools/record-results.sh` also rewrites absolute home paths in `docs/results/junit.xml`
+  to a placeholder written with angle brackets, which is not legal inside an XML
+  attribute value - the same mistake that made commit 228c70a's artifact unparseable.
+  It has never fired, because those paths only reach the artifact through captured
+  failure text and the recorded runs had none, so it stays latent: one failing test
+  whose message carries a home path would produce an artifact that
+  `tests/test_results_evidence.py` cannot parse, mid-recording, at exactly the moment
+  the evidence is most needed. Not fixed here because this bundle's acceptance criteria
+  do not include it and a change to the sanitizer's contract belongs with a run that
+  can prove it against a deliberately failing test.
+- **Artifact type CONFIRMED by operator 2026-11-02: `standard` playbook with an MCP server component.** Both listing drafts pass the real validator; `docs/listing-drafts/playbook.md` is the submission and `docs/listing-drafts/mcp-server.md` becomes the MCP component it references rather than a competing listing. Whether to *also* file a separate `skills/` listing for `SKILL.md` is a separate, non-blocking call - see Remaining Tasks.
+- **Writeback destination DECIDED 2026-11-02: our own case ledger.** Google Alert Center has no comment API, so the reference's "post tag + comment" has no direct analogue. Options in `NOTES.md` open decision 2. Bundle D built the gate around the decision rather than through it: proposed actions, per-action single-use approvals bound to a verdict digest, and the refusal paths all exist, and the only provider is `dry-run`, which records the intention and changes nothing. The operator's decision: keep our own ledger for the SOC to work from, since Gmail offers no 1:1 drop-in for the reference's tag-plus-comment. `record_case` is already the first proposed action and its rationale already describes the durable record; what is missing is a provider behind the gate, a query surface, and capture of the human's final disposition next to the machine's - which is what would let agreement be measured over time. Scoped as Bundle H. An ELI5 for the two operators who need to choose the label namespace is in the private scratch directory. `post_comment` is declared in the action vocabulary for parity with the reference and is deliberately never generated.
+- **One red-team finding remains open, and it is irreducible offline.** A *single* forged `Authentication-Results` header with nothing to contradict it cannot be told apart from a receiver-added one inside a raw `.eml`. Closing it needs the receiving system's own metadata, which is what a deployed Gmail or Alert Center adapter supplies. Contradictory headers now do block a clearance, and a forged pass can no longer outrank a genuine fail. Tracked by an adversarial case under strict xfail.
+- **A second contributor needs an identity and a branch convention.** Daniel's agent runs as the shared build account on the integration host, so a fresh clone inherits the global git identity `Ansible Migration Agent`. Committing under it is permanent: the bare repository has `receive.denyNonFastForwards` set, so the history rewrite that would fix attribution is blocked, and the Exchange scans full history. He must set `user.name` and `user.email` per clone, and should push to `daniel/*` branches rather than `main`. Also note the leak guard is weaker in his clone - the organization-specific terms load from a gitignored file, so a fresh clone runs only the generic checks. Access write-up is in the private scratch directory.
+- **No CI and no pre-receive gate.** Nothing runs the suite before a push lands, so an agent can push a red tree to a branch. "The suite passes" currently means "somebody ran it".
+- **The private git history cannot be published, and this is now handled rather than open.** A scan of all 58 revisions found private infrastructure in the two internal files as expected, but also in 53 historical revisions of `tests/test_doc_references.py`, 51 of `tests/test_results_evidence.py`, 43 of `tests/test_offline_default_path.py` and 34 of `tools/make_review_bundle.py` - all predating the move to load organization terms from a gitignored file. Two commit messages carry private paths, and three commits carry an author email on the internal domain. Deleting the files would not help and path-level filtering would not either, because messages and identities survive it. `tools/make_public_export.py` builds a fresh single-purpose repository from the tracked tree minus internal files, under an operator-supplied identity, scans the resulting history for blobs, messages and identities, and fails closed. Verified: the export runs 659 passed, 1 skipped, 1 xfailed, and its evidence names a commit that is an ancestor of HEAD so it survives the push.
+- **`LICENSE` exists (MIT) and the copyright holder is settled.** `Copyright (c) 2026 Campus Autonomous Defenders (CAD)`, chosen by the operator on 2026-11-04. Team-level rather than a contributor list: three people contributed and the work is joint, so naming a subset misstates it, and naming all three would publish two colleagues' identities in a legal notice they were never asked to appear in - one of those identifiers is already on the repository's list of organization-specific terms that the review-bundle guard strips from published material, so naming it here would contradict the purpose of a guard that exists to keep colleague identifiers out of the public repository. (The list itself is gitignored, deliberately: a guard cannot publish the terms it is checking for. The substance is restated here rather than pointed at, because a reference to a file a fresh clone will not have is a dangling reference.) The team name is already public in both listing drafts, so it credits everyone the listings credit and discloses nothing new. It replaces the earlier "The tenable-email authors", which was a placeholder-shaped formulation standing in for an unsettled decision rather than a decision.
+- **Contribution Agreement acceptance** outstanding for all three team members. Timestamp goes in frontmatter at submission; acceptance itself is an eligibility gate.
+- **Personal non-EMU GitHub account and public repo** not yet created. Blocks Bundle G.
+- **`compatible_clients` cannot name `pi`** — not in the controlled vocabulary. Must declare only clients actually tested, or propose adding a value in the same PR.
+- **Three-way spam classifier not benchmarked.** 641 MB int8 against a host already running the existing classifier services with limited free RAM. Operator approval requested before running. Not blocking after Bundle C: the `spam` class now has three paths in order - deterministic bulk headers, then `spam_three_way` if an endpoint is ever configured, then the adjudication tier's three-way vote - and on the shipped corpus the language-model path alone produced a correct `spam` verdict while `spam_bulk_marketing` needs no model call at all. The tier client, its normalization and its `UNAVAILABLE` record already exist.
+- **`registrable_domain()` is naive** (no Public Suffix List), so `mail.example.co.uk` reduces to `co.uk`. Documented in the docstring; lookalike detection compares second-level labels directly to avoid depending on it.
+- **The shipped classifier tiers over-fire on the synthetic corpus, measured.** The phishing classifier reads a mailer-daemon bounce as phishing at 0.9948 and a security newsletter as phishing at 0.9790; the estate injection engine scores the bounce at 0.9988; the URL reputation estate flags every destination in the corpus because it aggregates as "flag if any engine flags". Numbers, per-tier concordance and the gating consequences are in `docs/EVIDENCE.md`. This is the reason a tier that saw only the body text cannot reopen a disposition the deterministic layer settled from headers, links and MIME facts - and the reason no accuracy claim appears in README.md.
+- **Two tracked files still carry private infrastructure, by design.** `NOTES.md` and `docs/EVIDENCE.md` are the only files the publication-boundary guard exempts, and they are the only two a raw grep for addresses, hostnames and absolute private paths will flag. Everything Bundle C added is clean, including the 52 committed recordings, and the guard proves it on every run. Bundle G's split must resolve these two.
+
+## Active Work Bundles
+
+Bundles A, B, C, D, F, I, J, H, L, M and Q are complete and recorded under
+Completed Tasks. M is the selective-prediction evaluation: `eval/selective.py`,
+wired into `eval/run.py`, rendered by `eval/report.py`, committed in
+`eval/metrics.json` and documented in README. Nothing about its numbers is a
+performance claim - 32 self-generated messages demonstrate the method, and the
+evidence needs Bundle N. Q is the optional deep attachment analysis: off by
+default, unreachable unless an operator installs an external analyzer and names it
+in the environment, and unable to move a disposition even when it answers - so it
+changes no number in README's measured tables.
+
+A `LICENSE` file exists, so the reason G was called mandatory is now satisfied; what
+remains of G is operator work, not build work - a personal GitHub account, the
+Contribution Agreement timestamp, six `PLACEHOLDER` values, and pushing the export.
+The operator-only items are listed at the foot of Remaining Tasks, because a tracked
+document must not point at a gitignored file that a fresh clone will not have.
+
+What is left in the build is scoped under Remaining Tasks: **Bundle N**, the
+external corpora, whose **phase 1 landed 2026-11-03** - the fetch harness, the closed
+licence gate, the synthesized-envelope wrapper, the external block in
+`eval/metrics.json` and the committed provenance record. It is still the precondition
+for any claim the evaluation makes, because what phase 1 could measure was the
+deterministic text surface on out-of-domain input and nothing else: 0 of 203 benign
+LLMail false-positive emails accused with 203 of 203 deferred, and **0 model judgments
+across all 603 external messages**, so the model A/B and the three permitted Parquet
+corpora (N7-N10) remain open. Bundle E's public-corpora work (E1, E2, E3) is the same
+route seen from the harness side, and it is the only way to turn Bundle M's
+risk-coverage curve from a demonstration into evidence. Then Bundle K, the on-demand
+escalation rung. The case-ledger web view landed as Bundle L.
+
+**The critical path changed on 2026-11-03, and it is no longer build work.** The
+operator confirmed the schedule: PR deadline **Wed 2026-11-04 14:00** (hard), teams
+hear back the same day at 16:00, recorded pitches due **Thu 2026-11-05 09:00** if
+needed, pitch day **Thu 10:15-13:45** in 15-minute slots, awards **Fri 11:00**. Team:
+**Campus Autonomous Defenders (CAD)**. The remaining work that is on that path is
+**Bundle O**, the pitch preparation and the ELI5 writeup - O1 to O5 are written by the
+orchestrating agent, and the implementing side owns O6, the team name, which landed
+2026-11-03. Bundle O changes no behaviour and cannot break the suite; Bundle N and
+Bundle K are behind it, and neither is on the critical path any more.
+
+## Remaining Tasks (for future runs)
+
+- **Bundle E — Evaluation harness. PARTIALLY COMPLETE 2026-11-03.**
+  - **E0 (metrics over the committed corpora) — DONE.** `eval/run.py` measures
+    both labelled corpora in two configurations (deterministic-only and
+    corpus-backed) with no network, no credentials and no inference host;
+    `eval/report.py` renders Markdown and recalculates nothing; `eval/metrics.json`
+    is committed and a test asserts it still matches the code, so the numbers
+    cannot drift while looking like evidence. Reports the metrics the red-team
+    review asked for by name: auto-clearance rate, escalation volume, and
+    false-negative rate among auto-closed messages, each paired with a coverage
+    floor because a tool that escalates everything satisfies every safety
+    assertion and is useless. `tests/test_eval.py` (18 tests) pins zero false
+    negatives, zero false accusations, the clearance floor, that no adversarial
+    case clears unless declared open, that the deterministic configuration really
+    uses no model, that the corpus-backed one really does, that the artifact is
+    not stale, and that it leaks no host identity. **Measured finding worth
+    acting on: corpus-backed produces identical dispositions to
+    deterministic-only while 13 of 14 messages consult a model, so on this corpus
+    the models are cost without measured benefit.** That is the floor rule
+    working, and it is the reason no accuracy claim is made - but it also means
+    E1 and E2 are the only route to a real claim about what the models add.
+  - **E3 (fetch public corpora) — NOT STARTED.** `eval/fetch.py` does not exist
+    and is deliberately not stubbed: most of the surveyed datasets are copyleft or
+    non-commercial and must be downloaded at evaluation time into the gitignored
+    `eval/internal/`. Scope and licences are in `docs/EVAL-SUITES.md`.
+  - **E1 (injection A/B) — gated on Bundle D being complete.** Two models
+    (`marklkelly/bert-tiny-injection-detector`, `Horizon-Labs/prompt-injection-guard-small`)
+    against four configs of `Horizon-Labs/prompt-injection-eval-suite`:
+    `notinject` (339 rows, zero positives — does it flag ordinary security
+    documentation?), `bipia` (3178 rows, indirect injection in **email**
+    contexts), `llmail_phase2` (real adaptive email attacks),
+    `boundary_pairs_test` (240 agentic minimal pairs). Report ROC-AUC, F1, FPR at
+    a stated threshold, recall at 1% FPR, median latency and peak RSS. Run on the
+    16-core build host, not the 8 vCPU integration host. `bipia` is CC-BY-SA-4.0
+    and must never be committed. The harness is a dev tool; the shipped pipeline
+    must not require it. Full scope in `docs/MODELS.md`.
+  - **E2 (phishing eval).** Public corpus adapters (Enron-Spam, Nazario, UCI SMS,
+    LingSpam); per-stage and per-tier metrics; cascade threshold selection against
+    a stated accuracy target (BARGAIN); report generation. Public corpora only in
+    the repo; live-mail results stay in `eval/internal/`, gitignored, and out of
+    the listing.
+  - If B, C and D land early, **E1 is the highest-value remaining work** —
+    independent verification of small security models on email-relevant injection
+    is something none of the prior winners did.
+- **Bundle H - Operator case ledger. DONE 2026-11-03.** Recorded under Completed
+  Tasks with its full detail. The human-facing view it left open is now **built**, as
+  Bundle L: `src/tenable_email/webui.py`, `ledger serve` and `ledger snapshot`. The
+  constraints agreed with the operator were met rather than renegotiated - stdlib
+  `http.server` only so `dependencies = []` stays true, loopback bind by default, and
+  escaping treated as a security requirement with its own tests rather than as polish,
+  because this UI renders attacker-controlled subjects, senders and narratives and an
+  unescaped render is an XSS hole in a tool whose entire theme is that untrusted
+  content must be fenced. The static HTML snapshot export a reviewer who will not run
+  a server asked for exists too.
+- **Bundle K - Escalate to a full LLM on demand. NOT STARTED, scoped 2026-11-03.**
+  Requested by the operator: a way to dig deeper on one case when the local tiers
+  came back with nothing. Worth doing on its own merits, and the event is sponsored
+  by Anthropic, so a first-class path to a larger model is something a reviewer will
+  look for.
+
+  **The framing, which is the operator's and is better than the feature request.**
+  Right tools for the right job. You save the frontier model for the problems that
+  are actually big, because if the only tool you have is a hammer then every message
+  looks like a nail. This project is already a cost ladder - a deterministic layer
+  that costs nothing, small local models that cost milliseconds, and an adjudication
+  tier - and Bundle K is the missing top rung, not a fallback for when the others
+  fail. Escalation is a deliberate choice an analyst makes about one hard case.
+
+  **That framing also resolves the uncomfortable measurement.** `eval/metrics.json`
+  shows the corpus-backed run producing identical dispositions to deterministic-only
+  while 13 of 14 messages consult a model: cost without measured benefit. Read as a
+  hammer problem, that is not an argument against the models, it is a diagnosis -
+  the mid-tier tools are being asked about messages the deterministic layer already
+  settled, and nothing larger is available for the ones that genuinely need it. The
+  honest version of the pitch is that each message should be handled by the cheapest
+  tool that can handle it *correctly*, with a frontier model reserved for the cases
+  that earn one.
+
+  **The comparison with the reference is exact and verifiable.** In the exported
+  workflow JSON of `disassembledd/knowbe4-phisher-email-analysis`, the Bedrock node
+  is called with `batchSize: 1` on a five
+  minute schedule for every unresolved reported message, and the model is Claude
+  Sonnet 4. There is no cheaper rung: every message, including the ones a header
+  check would settle, goes to a frontier model. That is a single tool applied to
+  every problem, and it is the clearest possible contrast with a ladder. Worth
+  stating in the listing, with the citation, because it is a difference in
+  architecture rather than a claim about accuracy.
+
+  **What already exists, so this is not built from nothing.** `Verdict.escalated` is
+  a field; `src/tenable_email/ensemble.py` already allows a model to escalate a
+  deterministic verdict while forbidding it from clearing one; and every inference
+  endpoint in `src/tenable_email/config.py` is optional, arrives from the
+  environment, and carries no default address. So an escalation tier needs no new
+  configuration mechanism - it needs a way to be *invoked on purpose*.
+
+  **What is missing is the deliberate path.** Today escalation is something the
+  pipeline decides during a run. There is no way for an analyst looking at a
+  `manual_review` case to say "ask something bigger about this one", and no record
+  that they did.
+
+  Scope:
+  - [ ] K1: an `escalation` endpoint role in `ModelEndpoints`, defaulting to `None`
+        like every other. No default address, per NOTES.md hard rule 2 - an operator
+        points it at whatever they have, which may be a large local model or a
+        hosted one. The local-only policy is preserved by *default*, not by
+        prohibition: nothing here decides for the operator what they may run.
+  - [ ] K2: `tenable-email escalate <case-id|path> [--endpoint ROLE]` - re-runs the
+        full chain for one case with the escalation tier enabled, and prints what
+        changed relative to the recorded verdict.
+  - [ ] K3: the result is recorded as an **event on the existing case**, not a
+        replacement verdict. The machine verdict is append-only and a bigger model
+        disagreeing is exactly the kind of thing the ledger exists to preserve. The
+        event names the model role, the new disposition, and whether it changed.
+  - [ ] K4: replay recordings must work for the escalation tier too, so a reviewer
+        with no large model can still see the path exercised. Record against the
+        committed corpus the same way the other tiers do.
+  - [ ] K5: the outbound-data-flow section of the README must state plainly that
+        enabling this tier sends message content to an operator-chosen endpoint.
+        Undisclosed outbound calls are an Exchange rejection trigger, and an
+        escalation path to a hosted model is precisely the kind of thing that must
+        be documented rather than discovered.
+  - [ ] K6: the web view surfaces it as a button on a case page when the tier is
+        configured, and shows the escalation event in the trail when it is not.
+
+  **Constraint:** this must not become a route around the clearance gate. An
+  escalation may raise severity or add evidence; it may not clear a message the
+  deterministic layer refused to clear, for the reason already written into
+  `src/tenable_email/pipeline.py` - absence of evidence cannot be filled by model
+  confidence, and a more confident model does not change what was never observed.
+
+- **Bundle N - External corpora, re-scoped by the research. PHASE 1 and PHASE 1b
+  COMPLETE 2026-11-04; PHASE 2 OPEN (N8-N10, and N8 is now the only blocker).**
+
+  **Phase 1 - the fetch-and-evaluate harness behind a closed licence gate - is done.**
+  - [x] N1 `eval/fetch.py`: stdlib-only fetcher for a **closed** allowlist of five
+        datasets, writing only under the gitignored `eval/internal/`. Per file it
+        records the dataset id, the revision-pinned source URL, the upstream revision
+        (the API's `sha` for the repo), the observed `cardData.license` **and** the
+        verification date, byte size, sha256, row count with the method that produced
+        it, and fetched_at. Idempotent (a matching digest for the same revision is a
+        no-op); a mismatched digest for the same revision **fails loudly and does not
+        overwrite**; each LFS file's digest is cross-checked against the object id the
+        repository records for it. The gate refuses `SetFit/enron_spam` (observed
+        licence `None`), `zefang-liu/phishing-email-dataset` (lgpl-3.0) and anything
+        unlisted, by name; `geodesic-research/bipia` (cc-by-sa-4.0) is refused unless
+        `--allow-sharealike`, which prints what obligation it is accepting and says the
+        decision is the operator's. It also re-reads the declaration at fetch time and
+        refuses if it moved.
+  - [x] N2 `eval/external.py`: wraps each row in a minimal synthesized `.eml` and runs
+        the pipeline. No second metrics implementation - entries come out in
+        `run.corpora()`'s shape and `measure_corpus` does the triage, so
+        `eval/selective.py` consumes them unchanged and a false-positive rate means one
+        thing across committed and external corpora. Seeded sampling is a recorded
+        keyed-hash rule (`sha256(seed:corpus:index)`), cap 500, seed and rule written
+        into every descriptor.
+  - [x] N3 `eval/run.py --external`: a top-level `external` block beside the committed
+        ones, each corpus labelled with licence, revision, digest, sample spec, label
+        authority and the limitation. Default `measure()` output is byte-identical to
+        before - the synthetic and adversarial numbers did not move.
+  - [x] N4 `eval/report.py`: renders it, recomputes nothing, and raises
+        `MalformedExternalMetrics` when a corpus lacks its licence, revision, digest,
+        sample spec or limitation - or when the limitation no longer says the sentences
+        that make it true. An artifact built without `--external` says so rather than
+        going silent.
+  - [x] N5 `eval/PROVENANCE.json`: the committed manifest (ours, not the data). A test
+        asserts nothing under `eval/internal/` is tracked, that the directory cannot be
+        staged without `-f`, and that the provenance record's shape is exactly the
+        declared fields - so corpus text cannot ride in unnoticed.
+  - [x] N6 measured, with the numbers recorded in `docs/EVAL-SUITES.md` and README:
+        **false positives over the 203 benign LLMail FP-test emails: 0 of 203 (0.0%),
+        with 203 of 203 (100.0%) deferred to a human and 0 cleared**; 0 of 259 benign
+        jailbreak-split prompts accused; 0 of 141 hostile-labelled jailbreak prompts
+        cleared. `corpus-backed` emitted **0 model judgments across all 603 external
+        messages** - the recordings are content-addressed and none exists for text never
+        sent to an endpoint, so the tier A/B that motivated this bundle has still not run.
+  - Suite: **1058 collected, 1056 passed -> 1128 collected, 1126 passed, 0 failed, 0
+        skipped, 2 xfailed** (70 new in `tests/test_external_eval.py`, 1 existing
+        staleness test in `tests/test_eval.py` re-scoped to the offline blocks, with the
+        external scope pinned in its own test).
+
+  **Phase 1b - unlock the three Parquet-only datasets and measure them - is done.**
+  - [x] B1 `eval/fetch.py --rows` reads the **datasets-server ROWS API** (splits, then
+        rows paginated at 100 per request) as JSON over plain HTTP, and caches each split
+        in a rows directory under the gitignored eval/internal/ tree. No Parquet
+        decoding, no snappy,
+        `dependencies` still `[]`. The manifest and `eval/PROVENANCE.json` record, per
+        corpus: the exact URL template with its placeholders, the split names actually
+        used, `num_rows_total`, the page list with every requested offset/length URL, the
+        retrieved row count, the cache path + sha256 and the retrieval timestamp.
+  - [x] B2 the licence gate is **unchanged**: same five allowlisted ids, same observed
+        licence values and dates, `SetFit/enron_spam` (observed `None`) and the LGPL set
+        still refused by name, BIPIA still behind `--allow-sharealike`. The rows path runs
+        the same `prepare()` - re-read of `cardData.license`, refusal on a moved
+        declaration, refusal of gated/private repos - because a second way of reaching the
+        same corpora is not a second permission.
+  - [x] B3 the six `unavailable` Parquet entries are now measured corpora; `unavailable`
+        is empty in the committed artifact, and the test that pinned the old state was
+        rewritten to assert the new one (a file listed as unread may not also be listed as
+        measured) rather than deleted.
+  - [x] B4 label mapping declared in the allowlist table and published per corpus: NotInject
+        has no label column so all 339 rows map to `clean` (zero positives by construction,
+        over-defense only); deepset `1` -> `hostile`, `0` -> `clean` and **not** `threat`;
+        Bengali `smish` -> `hostile`, `normal`/`promo` -> `clean` by a recorded
+        `label_default`. Note the shape trap the brief did not mention: the ROWS API returns
+        deepset's label as the **integer** 1, so a mapping written literally against `'1'`
+        would have matched nothing and measured zero rows in silence.
+  - [x] B5 measured and reported per corpus: dispositions **and** the text-surface
+        injection-indicator count with its denominator, plus a per-dataset rollup so the
+        decision figures (339, 263 vs 399, 561 vs 840) appear with their denominators.
+  - Suite: **1128 collected, 1126 passed -> 1202 collected, 1200 passed, 0 failed, 0
+        skipped, 2 xfailed** (74 new in `tests/test_external_rows.py`, one existing
+        unavailable-list test rewritten, one mutation list extended).
+
+  **Phase 2 - what is left, in priority order.**
+  - [x] N7 resolved without a Parquet reader, by the decision this task explicitly allowed
+        ("or a decision not to write one"): the rows come from the datasets-server ROWS API
+        instead. NotInject (339), deepset (546 + 116) and the Bengali test split (1,401) are
+        fetched, retrieved, cross-checked and **measured**. The footer row counts still agree
+        with `docs/EVAL-SUITES.md` and now also with the service, split by split - that is
+        the only comparison available across two different encodings of the same rows, and
+        the cost is recorded in `eval/PROVENANCE.json`, the manifest and every corpus
+        descriptor: the pinned sha256 is the **repository** file, and the measured text came
+        from Hugging Face's **converted** Parquet. Deepset's licence disagreement was NOT
+        settled - it is printed beside every deepset figure, and a human must settle it
+        before anything derived from these rows is redistributed.
+  - [ ] N8 run the model tiers, which is the point of the harness: the same corpora
+        through `Horizon-Labs/prompt-injection-guard-small` and the estate classifiers,
+        recording AUC/F1/**FPR at a stated threshold** as `docs/EVAL-SUITES.md` asks,
+        with the `deterministic-only` numbers above as the baseline they are compared to.
+        Until then no claim about a model tier's false-positive rate in this repository
+        is measured on out-of-domain data. **This is now the only open blocker in the
+        bundle** - phase 1b removed the decoder question, and `eval/metrics.json` carries a
+        required `external.model_tier` block stating in terms that the A/B has not run, so
+        no table can imply otherwise.
+  - [ ] N9 the LLMail labelled submissions file (68.6 MB, MIT, allowlisted, not fetched
+        by default) for the attack side at scale, using N2's sampling.
+  - [ ] N10 the Nazario corpus, SpaPhish v4 and PhreshPhish from the research notes
+        below - all still to be verified at source, none of them in the gate yet.
+
+  The research corrected two things this project had recorded, and both corrections
+  matter:
+  - `docs/EVAL-SUITES.md` describes Horizon-Labs/phishing-scam-detector-base as
+    bundling 26 datasets. **That could not be verified.** The current model card
+    describes a 307M model trained mostly on 98,379 synthetic messages plus 59,403
+    web snippets, with three labels, evaluated against several public sets. A
+    synthetic training set is not a ground-truth evaluation corpus, so the file needs
+    correcting before anyone relies on it.
+  - The two research passes **disagree about MiniCPM5-1B's architecture**: one says
+    standard `LlamaForCausalLM` with no custom kernels and official GGUF support, the
+    other says custom hybrid attention needing custom ONNX operators. That is the
+    single most decision-relevant fact for adopting it, so it must be checked against
+    the model card directly rather than resolved by picking a side.
+
+  Usable corpora, by tier, with the licensing question answered for publishing derived
+  metrics rather than redistributing data:
+  - **Raw .eml phishing:** the Nazario corpus (`https://monkey.org/~jose/phishing/`),
+    reported CC BY 4.0 - best real-English phishing source found. Phishing-only, so it
+    must be paired with an independently licensed legitimate set. Enron-Spam is
+    spam-versus-ham and belongs in that pairing role only, never as a phishing
+    benchmark.
+  - **Newer, cross-language:** SpaPhish v4 (Mendeley `hz2d6gz7pc/5`, April 2026),
+    1,395 messages - 731 phishing, 664 legitimate, 2014-2025, CC BY 4.0. Structured
+    rather than raw .eml, so it will not exercise the header parser, but it is a real
+    out-of-language generalization holdout.
+  - **Injection tier:** LLMail-Inject (`microsoft/llmail-inject-challenge`, MIT) and
+    the Horizon-Labs prompt-injection eval suite (24,773 rows across configs; per-config
+    licenses, BIPIA-derived rows CC BY-SA). Already partly surveyed in
+    `docs/EVAL-SUITES.md`; needs running, not finding.
+  - **URL reputation tier:** PhreshPhish (248k phishing / 366k benign URLs, July 2024
+    to December 2025, with realistic base-rate splits from 0.05% to 5%). This is the
+    tier with a *measured* false-positive problem - committed recordings show it
+    returning 0.962 for a legitimate DocuSign signing URL - and it has had no benchmark
+    at all. PhishTank terms permit commercial use of its data; OpenPhish is
+    non-commercial only, so it cannot back a submission that may be used commercially.
+  - **Ruled out:** LingSpam (spam/ham, no MIME headers, no verifiable modern license),
+    UCI SMS (CC BY 4.0 but SMS and spam/ham), MeAJOR (108,685 messages but a merged
+    historical corpus with a reported discrepancy between its paper's claimed sources
+    and the release's observed tags).
+
+  **Do not mix spam, phishing and prompt injection into one headline metric.** Three
+  different tasks with three different denominators, and averaging them produces a
+  number that means nothing. Phase 1 honoured this by giving each corpus its own block
+  and its own denominator, and reporting deferrals separately from accusations.
+
+- **Bundle K - Escalate to a full LLM on demand. NOT STARTED, scoped 2026-11-03.**
+  Scoped in full by the entry of the same name above; this bullet records only that K
+  waits in the queue ahead of G and adds nothing to its scope. Commit c9891d8 merged
+  the two headings onto one line; separated again 2026-11-03, verified by grep.
+- **Bundle O - Pitch preparation and the ELI5 writeup. COMPLETE 2026-11-04.**
+    O1-O5 and O7 were finished and verified; the checkboxes had not been updated, so the plan
+    recorded as open work that had already been written. Verification found the pitch script
+    stale against Part 4 and two figures wrong, both corrected.
+  Written for pitch day (Thu 2026-11-05, 15-minute slots: 5-8 minutes of pitch, then
+  grilling on knowledge choices and design). The artifact is a document the team can
+  answer from, not a slide deck. It changes no behaviour, so it cannot break the suite
+  - but it is on the critical path to a graded deliverable, which is the only reason
+  it outranks Bundle N in the queue.
+  - [x] O1: `docs/ELI5.md` - a plain-language walkthrough of the whole system, layer by
+      **DONE, verified 2026-11-04.** `docs/ELI5.md` Part 1 is the layer-by-layer walkthrough. The checkbox was stale, not the work.
+        layer, each with the reason it exists and what would break without it.
+        **Orchestrator-owned - written by the orchestrating agent, not by an
+        implementing bundle. Do not duplicate it.**
+  - [x] O2: the design decisions worth defending, each stated as a decision with its
+      **DONE, verified 2026-11-04.** Part 3 carries ten decisions, 3.1-3.10, each with what was rejected.
+        alternatives and why those lost: why passing authentication is not treated as
+        legitimacy; why absence of evidence cannot be cleared by model confidence while
+        a judgment about content that was actually read can be; why a destination
+        mismatch is a recorded fact and not an accusation; why `manual_review` is a
+        deferral and not a fourth label; why the ledger is local when the reference
+        posts into its platform; why the web view contains no JavaScript; why
+        `dependencies = []` is protected; why the public repository is a fresh history
+        rather than a rewrite. **Orchestrator-owned.**
+  - [x] O3: what was measured, each number with its limit in the same sentence,
+      **DONE, verified 2026-11-04.** Part 4, and every figure in it was re-checked against the A/B artifacts today; the clearance-gate collapse is stated in the pitch, not buried.
+        including the uncomfortable ones: the models changed no disposition on the
+        shipped corpus, and on the hostile corpus the automated subset is half wrong
+        because of one disclosed open finding. **Orchestrator-owned.**
+  - [x] O4: anticipated grilling questions with honest answers, including the ones
+      **DONE and extended 2026-11-04.** Part 6 holds sixteen grilling questions. The one this task named as required - "Can this replace the Claude workflow?" - was missing and is now first, answered as a refusal to claim a head-to-head that does not exist. Added: the clearance-gate defect, what 84.2% is measured on, the five-times-latency tradeoff, and why the public repository shows two commits.
+        without a good answer. "Can this replace the Claude workflow?" is one, and the
+        truthful answer is that there is no head-to-head and a self-generated corpus
+        structurally cannot produce one. **Orchestrator-owned.**
+  - [x] O5: the 5-8 minute structure - what to say, in what order, and what to leave
+      **DONE and rewritten 2026-11-04.** Part 5 is timed 0:00-8:00. It had gone stale against Part 4: it still led with the 14-message synthetic corpus and never mentioned the real-mail result, so the strongest evidence was absent from the script. Now leads with 171/203 at zero false accusations, and every figure in it was mechanically checked to appear in `docs/LIVE-AB.md` or README. Two arithmetic errors were caught that way - a latency written without the space the artifact uses, and "6.25x" derived from a rounded 16% residual when the measured counts give 203/32 = 6.34x.
+        out so questions land on prepared ground. **Orchestrator-owned.**
+  - [x] O6: team name propagated everywhere - **Campus Autonomous Defenders (CAD)** in
+        both listing drafts, in README and in the publication note written by
+        `tools/make_public_export.py`. Done 2026-11-03. No frontmatter field for a team
+        exists in the upstream `validator.py` schema, and `author` is a GitHub handle
+        that stays a PLACEHOLDER for the operator, so the name sits in the body prose.
+  - [x] O7: decide whether a recorded pitch is needed by Thu 09:00.
+      **DECIDED 2026-11-04 by the operator: no recording.** The whole team is on EST and available for the Thursday 10:15-13:45 live slots, so the recorded-pitch path is not needed. The deliverable is this document, which the team answers from during the grilling half of the slot.
+- **Bundle P - Deduplicate repeated reports of the same message. SCOPED 2026-11-03,
+  NOT STARTED.** Asked by the operator: if several people report the same message, are
+  we re-running the full suite and any escalation on it each time, and are we using the
+  repetition as a signal?
+
+  **Current state, verified rather than assumed.** There is no deduplication. Grepping
+  the package for `dedup`, `duplicate`, `seen_before`, `report_count` and
+  `times_reported` finds nothing relevant. The `cases` table does not even store
+  `message_id`, so there is presently no way to group re-reports at all. Re-running the
+  same message is idempotent only *at the ledger write*, and only incidentally: the
+  receipt id is derived from verdict content, so `record_receipt` returns the existing
+  case instead of inserting a second one. The full pipeline still executes every time,
+  including any escalation, and the fact that forty people reported it is thrown away.
+
+  **Why this matters, in the operator's terms rather than as an optimisation.** In a real
+  campaign the same message is reported dozens of times within an hour. Two consequences
+  follow. Cost: every repeat pays for the whole chain again, and the expensive top rung
+  is precisely the one that should not be paid twice for identical bytes. Signal: report
+  volume is itself evidence, and the reference platform tracks it - PhishER's schema
+  carries `matchedCount` on both `links` and `rules`, and `firstSeen`/`lastSeen` per
+  link, which is how a single message becomes a visible campaign rather than a queue of
+  unrelated cases.
+
+  Scope:
+  - [ ] P1: store `content_digest` (sha256 over the raw RFC 822 bytes) and `message_id`
+        on the `cases` table, with an index on the digest. Note the two are different
+        keys with different trust levels - the digest is a fact about the bytes we
+        received, while `message_id` is an RFC 822 header that is routinely absent,
+        duplicated or **forged**, so it must never be the primary dedup key. Group on
+        the digest; record the header as a secondary, weaker association.
+  - [ ] P2: a `reports` table, append-only and foreign-keyed to the case, holding
+        `reported_at`, `reporter` and `source`. One row per report, so a case that
+        forty people reported has forty rows and the first verdict is untouched. This
+        fits the existing append-only invariant rather than working around it.
+  - [ ] P3: short-circuit re-analysis. On a content digest already present, record the
+        new report against the existing case and return the existing verdict without
+        re-running the chain or re-escalating. **This must be opt-in and observable**,
+        not silent: the operator has to be able to see that analysis was skipped and
+        why, and there must be a way to force re-analysis, because a verdict computed
+        against yesterday's reputation data may be stale today. Follow the existing
+        rule that cached live state must be validated for freshness before being
+        reported as current.
+  - [ ] P4: surface `report_count`, `first_reported` and `last_reported` in the case
+        record, the CLI `ledger show`, the web view and `agreement`.
+  - [ ] P5: **report volume is a fact, not an accusation.** Forty reports of a message
+        is a campaign indicator worth showing, and one report is not evidence of
+        anything. It must not raise a disposition or contribute to a THREAT on its own,
+        for the same reason a destination mismatch does not: legitimate mail gets
+        over-reported constantly, and the synthetic corpus already contains a marketing
+        message labelled `spam` precisely because somebody over-reported it. Record it,
+        show it, let a human weigh it. If it ever blocks an automatic clearance, that is
+        a policy change needing its own justification and its own test.
+  - [ ] P6: the same digest must not be escalated twice. Escalation is the expensive
+        rung and Bundle K's whole premise is reserving it for cases that earn it, so
+        re-escalating identical bytes is the clearest possible waste of it.
+  - [ ] P7: tests covering - two reports of the same bytes produce one case and two
+        report rows; the machine verdict is byte-identical after the second report;
+        analysis was genuinely skipped rather than merely re-recorded; a forced
+        re-analysis works and says it re-ran; two *different* messages sharing a forged
+        `message_id` do NOT collapse into one case; and report volume changes no
+        disposition anywhere in either committed corpus.
+  - [ ] P8: migration. Existing ledger files predate these columns, so opening one must
+        add them idempotently rather than failing. A SOC that has weeks of case history
+        must not lose it to a schema change, and a tool that refuses to open its own
+        older store is a tool that gets replaced.
+
+  **Risk note for sequencing.** This touches the ledger schema and the pipeline entry
+  point, which is the most safety-critical code in the repository. It should not land in
+  the same window as packaging work, and it must not be rushed to make a pitch point. If
+  it cannot be finished and properly tested before the freeze, the honest alternative is
+  to describe it in the pitch as scoped-and-designed rather than to ship a half-built
+  dedup path in the code that decides what gets cleared.
+
+- **Bundle G — Packaging and submission.** Split the publication boundary (see Unresolved Issues); README's five required topics plus the exhaustive outbound-data-flow list; MIT LICENSE; scan full git history for secrets and private infrastructure detail; replace PLACEHOLDER values in the listing; re-run `tools/validate-listing.sh`; make repo public; fork, branch `add-<slug>`, PR titled `Add listing: <Name>`, Agreement statement in the body, `contribution_agreement_date` set; notify Tenable on Discord.
+- **Stretch (only if the core is complete by Tue 20:00):** image extraction and the
+  vision tier end to end; PDF/Word attachment content extraction in a sandbox (row 7,
+  the one genuine capability gap - the reference does read attachments by passing them
+  to Claude); `protected_persons` VIP list from config; `feature/google-intake` is
+  merged, so what remains there is Gmail label writeback behind the approval gate
+  rather than the merge itself. QR decode via `pyzbar` was **cut**, not deferred: the README
+  claimed it, nothing implemented it, and the claim was removed rather than the
+  feature built.
+- **Operator-only submission checklist.** These need a decision or an account and no
+  amount of build work substitutes for them. Owned by the operator; the build side is
+  ready for all of them.
+  1. Personal **non-EMU** GitHub account, and the repository created and public. EMU
+     accounts follow the `orgname_username` pattern with an underscore; hyphens are
+     fine. A departmental organization does not satisfy the requirement.
+  2. Contribution Agreement accepted. It is a link, not a document we produce, and
+     there is no signature mechanism: acceptance is a statement in the PR description
+     plus `contribution_agreement_date` in the frontmatter. The contest requires every
+     contributing member to have agreed while the listing holds one date, so a dated
+     internal record bridges that gap. Authority to license is **settled and closed** -
+     do not re-raise it.
+  3. Six `PLACEHOLDER` values: `author` and `github_url` in both listing drafts, plus
+     the two `agents_used[].ref` entries. `tests/test_listing.py` asserts none remain
+     under a **strict xfail**, so filling them turns the build red until that mark is
+     removed deliberately.
+     **PROGRESS 2026-11-03:** the submission account is settled as **`austinsr1`**
+     (personal, no underscore, so not the EMU pattern the Exchange excludes; verified
+     against the GitHub API). Both `author:` fields are filled and
+     `tools/validate-listing.sh` still reports PASS. The four remaining placeholders -
+     `github_url` in both drafts and the two `agents_used[].ref` entries in the playbook
+     draft - all embed the **repository name**, which is not chosen yet, so they cannot
+     be filled until it is. The strict xfail still fails as expected while any
+     placeholder remains; when the last one is filled that mark must be removed in the
+     same commit or the build goes red by design.
+     The operator's submission token is stored OUTSIDE the repository, mode 0600, and
+     its path is recorded only in the gitignored operator checklist - never in a tracked
+     file, never on a command line where argv is visible to `ps`. Tracked content and
+     full git history were both scanned for the token shape after it was supplied and
+     both are clean. That checklist also carries an open security issue for the operator:
+     the token is scoped `admin:org`, `admin:enterprise`, `delete:packages` and more, far
+     beyond the `public_repo` needed to push one repository, and it was pasted into an
+     agent chat so it exists in this session's transcript. Revoke and reissue minimally
+     scoped before submitting.
+  4. `contribution_agreement_date` currently reads `2026-11-04T14:00:00Z` in both
+     drafts, which is the submission **deadline**, not an acceptance time. Easy to
+     miss because it looks plausible.
+  5. `compatible_clients` in the MCP draft must list only clients actually tested, or
+     be narrowed. `pi` is not in the controlled vocabulary.
+  6. ~~Copyright holder in `LICENSE`~~ **settled 2026-11-04**: Campus Autonomous
+     Defenders (CAD), team-level rather than a contributor list. The export tool
+     prints the holder and refuses obvious placeholders, but cannot tell whether the
+     name is the right one, so this stayed an operator decision until it was made.
+  7. Build the export with `tools/make_public_export.py`, verify its own suite inside
+     it, create the empty GitHub repo, push, then fork the Exchange and open the PR
+     titled `Add listing: <Name>`.
+- **Explicitly cut:** systemd timer daemon, BigQuery, any fine-tuning, the Tenable One mock tenant.
+
+**Schedule, confirmed by the operator 2026-11-03.** This supersedes the earlier
+freeze-only view, which did not know the pitch stages. Times are local.
+
+| When | What |
+|---|---|
+| Mon 2026-11-02 11:00 | SWARM Global Kickoff call (held) |
+| Tue 2026-11-03 11:00 | Optional tutorial: best practices for building AI agents |
+| Tue 2026-11-03 20:00 | Feature freeze |
+| **Wed 2026-11-04 14:00** | **PR deadline, CyberAgents Exchange** - hard |
+| Wed 2026-11-04 16:00 | Selected teams hear back |
+| **Thu 2026-11-05 09:00** | **Recorded pitches due, if needed** |
+| **Thu 2026-11-05 10:15-13:45** | **Pitch day, 15 min slots** |
+| **Thu 2026-11-05 13:15** | **OUR SLOT, booked by Daniel** - Zoom, waiting room, 8 min demonstration + 5 min Q&A |
+| Fri 2026-11-06 11:00 | Awards ceremony |
+
+**Team: Campus Autonomous Defenders (CAD)**, confirmed by the operator 2026-11-03.
+
+**Pitch format.** 5-8 minutes of pitch, then grilling on knowledge choices and design
+for the rest of the slot. That is why the preparation artifact is a document the team
+can answer from rather than a slide deck: the questions, not the slides, are where the
+remaining time is spent. Scoped as Bundle O.
+
+The critical path is no longer build work: bundles A, B, C, D, F, H, I, J, L and M are
+complete and the suite is green, so what stands between here and a submission is the
+operator checklist reproduced below and the pitch preparation of Bundle O. Of the
+remaining build items, E1/E2 are credibility, and the ledger web view that was a
+differentiator has landed; neither blocks submission.
+
+## Session Log
+
+| Date (Local) | Task | Status | Notes |
+|---|---|---|---|
+| 2026-11-02 | Research and verification | Done | Contest rules, CONTRIBUTING.md, validator.py, reference prompt.txt, 5 Hugging Face model cards, 3 Black Hat winner listings — all read at source. Found `pranceFox` is really `prancyFox`; found the commonly recommended Enron BERT-Tiny model has FPR **0.959** (circulated as "recall 0.959"); found `cybersectony v2.4.1` FPR 0.880. Found `Horizon-Labs/phishing-scam-detector-base`: 307M, Apache-2.0, native fraud/spam/legitimate, beats its own prompted 27B teacher on real smishing. |
+| 2026-11-02 | Inference inventory correction | Done | The VLM role was documented as unavailable from the live host; verified reachable over the estate tunnel. Qwen3.5-4B: 4.51 s, correct verbatim OCR **and** correct brand-impersonation judgment. New section added to the operator's private inventory; backup kept. |
+| 2026-11-02 | Thinking-budget measurement | Done | `chat_template_kwargs:{"enable_thinking":false}` works on both llama.cpp and vLLM: 4.23 s/210 tok to 0.87 s/18 tok. `/no_think` and `reasoning:false` do nothing. `reasoning_effort:"none"` is vLLM-only. Measured truncation failure: `max_tokens` 400 with 393 reasoning tokens returned content `"**Transcription:**"`. |
+| 2026-11-02 | Listing validation | Done | Both drafts pass the real validator. `integrations: []` passes. `Google Workspace` and `pi` are not in the controlled vocabularies. `tier: vetted` fails without review fields. Standard playbooks reject vendor-type agents and require `agents_used`. Dependency trap: the PyPI package `frontmatter` shadows `python-frontmatter` and breaks the validator. |
+| 2026-11-02 | Bundle A | Done | 5 commits, 33 tests passing. Three bugs found by tests and fixed at the producing boundary: RFC 8058 one-click value, bare-URL scanning over HTML markup with unescaped `&amp;`, and a lookalike substring false positive on `example-outfitters.com`. |
+| 2026-11-02 | TODO scrubbed | Done | Removed the rule requiring a session to read a home-directory readme that does not exist on the build host, so no implementing agent goes looking for it. Also removed private hostnames, addresses, tunnel details, service paths and a colleague's name from this tracked file. Host layout remains in `NOTES.md`. Added operating rule 15 to keep it that way. |
+| 2026-11-02 | Dangling-reference guard | Done | Added `tests/test_doc_references.py`: every backticked path in a tracked actionable document must either exist, appear on an unchecked task line, be declared in a `<!-- planned: ... -->` comment, or be listed in an allowlist that carries a reason. It immediately caught real inaccuracies - bare module filenames where the full `src/tenable_email/` path was meant, and README claiming `stages.yaml` in the present tense when Bundle B has not created it yet. |
+| 2026-11-02 | Publication boundary enforced | Done | Added a public-by-default infrastructure guard: every tracked file outside a justified `INTERNAL_FILES` allowlist is scanned for RFC1918 addresses, absolute home paths, web roots, ssh remotes and organization-specific terms loaded from a gitignored file. Scrubbed `src/`, `tests/`, `README.md` and `docs/REFERENCE-BASELINE.md`. Only `NOTES.md` and `docs/EVIDENCE.md` remain internal. |
+| 2026-11-02 | Prompt-injection models verified | Done | Operator reframed the feature: injection in a reported message is a **threat class to report**, not only a guard on our own adjudication. Verified 7 candidates at source. `marklkelly/bert-tiny-injection-detector` metrics confirmed exactly against its own `eval/metrics.json`, including the honest 2%-prevalence PPV drop to 0.662 / 0.502. **Bastion excluded: AGPL-3.0**, incompatible with an MIT Exchange submission. **Meta Prompt-Guard-2-22M excluded: gated**, and LLMail-Inject email recall 0.011. `ersincivi/mmbert-tiny-inject` is a GitHub repo with no distributed weights. PIGuard is MIT and best on BIPIA email contexts (0.963 at 0.00 FPR) but ships **no official ONNX**. deepset's headline F1 comes with **FPR 1.00** - it flags everything. Recommended at most one tier, `Horizon-Labs/prompt-injection-guard-small`, and not before the freeze. Added fixture 12 and a test pinning the newsletter false positive. 38 tests passing. |
+| 2026-11-02 | Test-evidence artifacts | Done | Added `tools/record-results.sh` and `tests/test_results_evidence.py`. The suite's output is now a committed artifact tied to the commit that produced it: counts, environment, per-test results, git SHA, and whether the code tree was clean. A test asserts recorded totals equal the suite as currently collected and agree with `docs/results/junit.xml`, so adding a test without re-recording fails the build - verified by injecting a canary. Counts parse from junit XML because the project's `addopts = "-q"` collapses per-test lines into dots and a PASSED grep silently returned zero. One assertion deliberately omitted: that the recorded run passed, because such a test reads the previous run's artifact and a bootstrap failure never converges (observed: 5 failures, then a stable 1). 43 tests passing. |
+| 2026-11-02 | Bundle B | Done | `stages.yaml` (8 stages, 1 write stage, 1 approval gate), `src/tenable_email/contract.py` with a dependency-free parser for exactly the subset the file uses, `tools/validate_contract.py` cross-checking the contract against README.md's prose, `src/tenable_email/verdict.py`, `src/tenable_email/pipeline.py`, `src/tenable_email/prompts.py`. 164 new tests, 207 passing. Drift-injection tests prove validation fails on a dropped stage, a reordered stage, a renamed provider, a stripped approval flag, an approval language deleted from the prose, a duplicate id, an unknown model tier and malformed input - and the same mutations run through the CLI, which caught a real bug: the tool ignored `sys.argv`, so it validated the repository contract no matter which file it was given. PyYAML (test extra only) agrees with the minimal parser field for field. `threat_prompt_injection` THREAT/AGENT_MANIPULATION 0.9; `clean_security_newsletter_discussing_injection` MANUAL_REVIEW 0.4 and never THREAT; `threat_bec_valid_auth` and `threat_forwarded_by_user` MANUAL_REVIEW/BEC, never CLEAN; the labelled clean fixtures CLEAN; `spam_bulk_marketing` SPAM. Every unconfigured model tier is recorded UNAVAILABLE, every verdict's cited findings pass `assert_citable()`, and no serialized verdict carries attachment bytes. Near-miss worth recording: rewriting the Session Summary with a text-partition on an unanchored heading match truncated this file at rule 9, because that heading was also quoted twice in prose - restored from git and re-applied with anchored edits. |
+| 2026-11-02 | Bundle C | Done | `src/tenable_email/tiers.py` (one interface, seven tiers, failure returned as a value, per-tier 30 s timeout with one retry, no default endpoint anywhere), `src/tenable_email/replay.py` (content-addressed store, canonical JSON keys, refuses to commit an entry carrying a configured endpoint, an API key, an IP literal or a private path), `src/tenable_email/ensemble.py` (`false_negative_cost = 6.0` with the clearance bar *derived* from it at 0.857, against the 0.60 needed to flag; disagreement escalates; VERIFIED dispositions are floors). 52 real recordings committed from `fixtures/synthetic/` only - classifier 14, url_reputation 9, prompt_injection 14, vision 1, llm 14, zero failures - with the two localhost-only services reached through a tunnel opened by `tools/record-replay.sh`; the three-way and injection-classifier tiers had no reachable endpoint and are unrecorded rather than stubbed. C2c: the concealment rule landed, `threat_redirect_wrapped` is now THREAT 0.85 CREDENTIAL_HARVEST, and a bare host mismatch stopped blocking a clearance, proven by the new `clean_unrelated_link_no_concealment` fixture. C9 added `threat_image_credential_harvest`, which embeds `fixtures/assets/fake_login_page.png` as an inline part without needing Pillow; its recording transcribed the printed URL verbatim and named the impersonated brand. 332 tests passing (was 207), no runtime dependency added, `pillow` only under the new `vision` extra. Two pre-existing assertions had to move because they pinned behaviour this bundle was told to change - `threat_redirect_wrapped` expected MANUAL_REVIEW, and a configured tier was expected to leave no gap finding at all once it had an endpoint, where it now attempts the call and records the attempt as a replay miss - both replaced with strictly stronger assertions, and flagged as a deviation rather than committed silently. Adjacent defects recorded, not fixed: `docs/PARITY.md` row 9 still says redirect unwrapping is "none / gap" though Bundle A shipped it, and `Evidence.simulated` is still never set, which Bundle D4 needs to distinguish a replayed recording from a live answer. |
+| 2026-11-03 | Bundle F | Done | `src/tenable_email/mcpserver.py` - nine read-only tools as plain functions plus the stdio FastMCP wrapper and `tenable-email-mcp`; `SKILL.md` - the escalation, disagreement, provenance, authentication-is-not-legitimacy, corroboration, VIP-list-from-a-directory-not-scraping and truncation judgment, carrying the eight contract stage titles so `tools/validate_contract.py` now validates the skill instead of reporting it absent. `dependencies = []` unchanged: the `mcp` import is inside one function and the suite is green with the extra not installed, verified in a fresh venv installed with `--no-deps`. Two mechanisms rather than a promise keep it from mutating: replay forced on, so the live transport and the store's write path are unreachable, and no runner is ever built with a root - proved by snapshotting four trees around a sweep of all nine tools with sockets blocked. Message content stays in the process: the keys that quote the body come back as digests, asserted against every fixture's body lines and attachment bytes. 595 tests, zero skips, zero failures. Errors are values; a malformed message is a disposition, not an exception. Recorded deviations: the drift test that pinned the absent-skill note, and the skip that would have broken both the repo's zero-skip rule and the bundle's six designed skips.
+| 2026-11-03 | Bundle D | Done | `src/tenable_email/cli.py` (five subcommands, argparse, stdlib only, console script and `python3 -m tenable_email` both live), `src/tenable_email/receipt.py` (per-message record: content-derived id, verdict and corpus-manifest digests, provenance-grouped evidence with value digests, approval state, JSON and Markdown), `src/tenable_email/runner.py` (offline state machine over the contract, six refusal codes, `Refusal` returned rather than raised, transactional to the byte), `src/tenable_email/writeback.py` (proposed actions, single-use approvals bound to a verdict digest, `DryRunProvider` as the only provider). `Evidence.simulated` is now set - by store attestation, not by replay - so a fabricated recording cannot close a case while the 52 committed recordings stay legitimate evidence. 471 tests passing (was 343), no runtime dependency added, README and `docs/PARITY.md` rows 1/27/28/29/30/31 updated. A test caught a real bug in `corpus_manifest()`. The write destination remains open decision 2: this bundle built the gate and left the decision alone. TODO edited with anchored string replacements each asserted to occur exactly once, with line and rule counts checked before and after. |
+| 2026-11-03 | Bundle I - red-team response | Done | External review accepted in full; its central claim was that passing authentication plus absent red flags was being treated as proof of safety, and that a decisive CLEAN could not be reopened. Alignment-aware `auth_passes`, a single-owner clearance condition requiring positive evidence, and a specialist veto restricted by measurement to the vision tier. Eleven bypasses found by a red-team agent from one root cause - link analysis read only `<a href>`. R01/R04/R05/R06/R08/R09 closed; `fixtures/adversarial/` added with strict xfails, a mechanism that fired three times the same night. Two review agents then found five defects in the fix itself. 641 tests, 1 xfailed, 0 skipped. |
+| 2026-11-03 | Multi-writer git topology | Done | Bare repository as the single shared target, replacing a push into a checked-out tree that was safe for one writer and silently dangerous for two. `tools/sync-trees.sh` verifies all three trees and refuses to pull over uncommitted work. Two blockers found while verifying it for a second contributor: the bare repo's `HEAD` pointed at a nonexistent `master`, so a fresh clone checked out an **empty directory** with only a warning; and `fixtures/generate.py` used `Path.write_text(newline=)`, which is 3.10+, taking 122 tests down as collection errors on the integration host's Python 3.9.25. `requires-python` deliberately left at `>=3.10` because 3.9 is past EOL and 3.11/3.12 were already installed there. |
+| 2026-11-03 | Bundle L - ledger web view | Done | `src/tenable_email/webui.py` (841 lines: queue, case, agreement, snapshot; no JavaScript, CSP on every response, inline style only, loopback by default, CSRF on both writes) plus `ledger serve` and `ledger snapshot` in `src/tenable_email/cli.py`. Suite 747 -> **784 collected, 782 passed, 0 failed, 0 skipped, 2 xfailed**; `tests/test_webui.py` 37 tests. Four pre-existing failures diagnosed: three were `_get()` not catching `HTTPError`, one was frozen `Thresholds`; the receipt's `truncated` propagation was checked at all three links and is sound. Three prose-vs-code defects closed: `src/tenable_email/cli.py` claimed five subcommands and omitted `ledger`; `tools/record-results.sh` claimed it recorded no hostname while junit.xml carried one every run; and `serve` printed the bound address it needed in order to be driven from a script without flushing it, so through a pipe the line never arrived. Twelve pushes to `main`, one per logical piece, so a rebasing contributor never inherits a stale fork. |
+| 2026-11-03 | Bundle M - selective prediction | Done | `eval/selective.py` (431 lines, stdlib `math` only) with coverage, class-conditional selective risk, the risk-coverage curve, AURC, an oracle AURC on the curve's own coverage grid, E-AURC, coverage at fixed risk, risk at fixed coverage and deferral composition; wired into `eval/run.py`, which now imports the label sets instead of restating them, and rendered by `eval/report.py`. `eval/metrics.json` regenerated: every pre-existing field byte-identical, the only additions the four `selective` blocks. Measured - synthetic 71.4% coverage at 0.0% risk, AURC 0.0000, E-AURC 0.0000, 5 curve points; adversarial 11.1% coverage at 50.0% risk, AURC 0.0417, oracle 0.0139, E-AURC 0.0278, 3 curve points, no risk budget achievable. Two bugs found and fixed: a `hostile` label missing from the harness's label set made all 18 adversarial cases undecidable, and the closed-form oracle produced a negative E-AURC against a curve capped at 11.1% coverage. One diagnosis: `--markdown` was never a flag, and the real defect was the renderer returning silence for a missing `selective` block, now a named error. Suite 784 recorded -> **827 collected, 825 passed, 0 failed, 0 skipped, 2 xfailed**: 31 in `tests/test_selective.py`, 12 new in `tests/test_eval.py`. Pushed in small pieces, one commit per logical change, so a rebasing contributor never inherits a stale fork. |
+| 2026-11-03 | TODO repair, team name (O6), ledger screenshots | Done | Repaired the merged bullet where the Bundle K entry ran into the Bundle G heading (introduced by c9891d8) so the two are separate bullets with all of both entries' content intact, then replaced the freeze-only deadline paragraph with the operator's confirmed schedule - PR deadline Wed 2026-11-04 14:00 hard, recorded pitches Thu 09:00, pitch day Thu 10:15-13:45 in 15-minute slots, awards Fri 11:00 - with the 5-8-minutes-then-grilling pitch format, and scoped **Bundle O** ahead of Bundle G with O1-O5 marked orchestrator-owned so nobody duplicates them. Propagated **Campus Autonomous Defenders (CAD)** (O6) into both listing drafts, README and the publication note written by `tools/make_public_export.py`: the upstream `validator.py` schema has no team field, only `author`, which is a GitHub handle and stays a PLACEHOLDER for the operator, so the name went into the body prose and no placeholder was filled. Built a 15-case demo ledger (the fourteen synthetic fixtures plus one hostile-markup probe) with five human resolutions including one clearance overturned to threat, and captured nine full-page real-browser screenshots of the web view plus one mobile viewport crop, written outside the repository for the orchestrator to inspect with a vision model - not saved HTML. One measurement worth noting while looking: at a 390 px viewport the queue's document scrollWidth reports 833 px, so the table overflows horizontally on a phone width. No behaviour changed: suite still 825 passed, 2 xfailed, 0 failed, 0 skipped, and `tools/validate-listing.sh` still passes. Seven small commits pushed, one per logical piece. |
+| 2026-11-03 | Bundle L follow-up - ledger view visual polish and committed screenshots | Done | Worked the vision model's defect list to completion in `src/tenable_email/webui.py`. Queue: human timestamps with the full stored value preserved, a dedicated flags column, fixed table layout, ellipsised subjects and senders that still reach the full text, banding and hover, raised greys, one accent for the current tab, and a real type scale with system sans for prose and monospace reserved for quoted message data. Agreement: every rate now prints `of N` because the denominators were changing silently between cards, a line saying rates are over resolved cases only and an open case counts as neither, red demoted to the hero figure alone, secondary figures demoted, the four cards on a 2x2 grid, prose measured to 65ch, and a footer. Narrow screens: rows restack into labelled cards below 1024px by media query and `data-label`, no script - measured `scrollWidth` equals the viewport at 1440, 1280, 1024, 1023, 900, 768, 414, 390, 360 and 320 px against 833 px at 390 px before, where the MACHINE badge clipped and hid the verdict. Team name **Campus Autonomous Defenders (CAD)** now in the header (N1 was the last open piece of O6 in the UI). Five real-browser screenshots committed under `docs/images/` and referenced from the README, each verified to carry only IHDR, IDAT and IEND with no text metadata and no hostname, address, username or path in its bytes; `tools/make_public_export.py` builds clean over 179 blobs across 2 commits with the images present. No decision was weakened: no JavaScript, no external resource, no fetched font, CSP unchanged, `escape()` still the only route, loopback and CSRF unchanged. Suite 825 passed, 2 xfailed -> **851 collected, 849 passed, 0 failed, 0 skipped, 2 xfailed**: 23 new in `tests/test_webui.py` (37 to 60, none amended) and 1 in `tests/test_doc_references.py` guarding that every image a tracked document shows is tracked, canary-verified. Six commits pushed before this record and this one seventh, one per logical piece. |
+| 2026-11-03 | Bundle Q - optional deep attachment analysis | Done | `src/tenable_email/attachments.py` fills the attachment-inspection slot Bundle B reserved (the slot then carried a document-text name, corrected by the row after this one): quarantine (temp dir 0o700, payload 0o600, name from the digest never from the sender's filename, refused outright if the temp root resolves inside the repository), `rea <operation> <path> --json` under a configurable timeout with an **allowlist environment** so no model API key travels into a third-party process, digest binding on both sha256 fields REA reports with the response discarded rather than partly used on a mismatch, and a safety gate that is the intersection of REA's declared effects and this build's hardcoded allowlist, with `capture-*`/`debug-*`/`*-adb-*`/`analyze-web-bundle` refused by name first and the `available` flag ignored because the build host reports ghidra available while `rea inspect` rejects it as `not_configured`. Nine abstention reasons, parametrized off the module's own list so an untested reason fails the build; a refusal asserted to have reached **no subprocess** by reading the stub's call log. Off by default and it moves no disposition: the clearance veto on an unread high-risk attachment is untouched. A bug the tests caught in the first draft: effects were compared across two spellings, so `may_access_network` would not have matched and a networking operation would have run. Corrections to the scoping note: three tracked fixtures did carry attachments (none a container), and the brief's 0o600 directory has no search bit. Measured and recorded in `fixtures/rea/`: real REA 6.8.0 inspects the corpus ZIP and its digests match the fixture's, refuses a plain-text part with `target_unavailable`, refuses native analysis with `provider_unavailable`. Suite 932 collected -> **1058 collected, 1056 passed, 0 failed, 0 skipped, 2 xfailed**, and the same suite green with PATH scrubbed of node/npm/rea; `dependencies` still `[]`; `tools/check-portability.sh` and `tools/validate_contract.py` exit 0. Four stale "not implemented" strings left alone and recorded, not fixed. |
+| 2026-11-03 | Attachment-structure rename (contract honesty) | Done | The Bundle Q slot advertised a capability it does not deliver: its capability and provider names promised text out of PDF and Word documents, and measured with the real analyzer the component reports **artifact structure** - container entries with per-entry paths, sizes and sha256 digests, the declared format, the analyzer's own coverage status and its limitations - and no document text at all, with a plain-text attachment refused outright as an unsupported target. Renamed at the three places a name is declared, `stages.yaml`, the registry in `src/tenable_email/contract.py` and `attachments.PROVIDER` (the two are checked against each other by `tests/test_attachments.py`): capability **`attachment_structure_inspection`**, provider **`attachment_structure_inspector`**. The stage title became **Attachment structure**, which is not a free edit - `tools/validate_contract.py` compares README's and SKILL.md's bold stage lists with the contract *as ordered lists*, so README line 72 (whose tail prose read "PDF and Word text extraction") and SKILL.md line 46 ("text from PDF and Word attachments") moved in the same commit as the title and as the two tests that pin the eight titles. The stage **id** `attachment-content` is deliberately unchanged: it is the identifier the runner, the receipts, `stages_run` and the MCP surface refer to, and `tests/test_contract.py` ties the code's id sets to the file's. Then the four claims the rename made incoherent, moved together as the Q entry said they had to be: `stages.yaml`'s description (off by default behind `TENABLE_EMAIL_DEEP_ATTACHMENT_ANALYSIS`; quarantine of the retained bytes; an external optional Node.js analyzer; structure and not document text; no execution of the artifact, so no safety claim; the response discarded whole unless both digests it reports match the sha256 computed from the message bytes; and when off or absent, an explicit skip reason, an UNKNOWN in the record, and the clearance veto on a high-risk attachment whether it was read or not), `runner._skip_reason`'s fallback (names the provider and the two reasons it did not run instead of claiming it is unimplemented), the MCP server's stage view (true for the surface that builds its own `Config` and so can never enable the stage), the `drive()` docstring's vocabulary, and the `pyproject.toml` comment - where the `pypdf` / `python-docx` pins stay as a genuine future possibility but are now labelled as *not* what this stage implements. The tests that pinned the old skip-reason wording were not weakened: the MCP test now requires the reason to name the configuration **and** forbids the unimplemented claim, and the runner test also asserts no skipped optional stage carries an empty reason, which is the property the old pin existed to protect. Behaviour unchanged and proved rather than asserted: the corpus-wide `test_with_no_rea_no_decision_on_any_fixture_changes` in `tests/test_attachments.py` still runs **36** cases, and a before/after dump of every fixture's disposition, attack type, confidence and band, reasons, escalation, truncation, cited findings, stages run and full evidence record - 36 fixtures under both the default and the enabled configuration - is byte-identical across the rename. Suite **1058 collected, 1056 passed, 0 failed, 0 skipped, 2 xfailed** (unchanged); `tools/validate_contract.py` exit 0; `tools/check-portability.sh` exit 0; `dependencies` still `[]`. Adjacent and NOT fixed, because they are outside this run's named documents: lines 138-141 of `docs/listing-drafts/playbook.md` still say attachment contents are not read and are "declared in the contract as not implemented" (line 218 of `tests/test_listing.py` only requires the words "attachment" and "not read", so a truthful rewrite is available to whoever owns that draft), and line 105 of `docs/RED-TEAM-RESPONSE.md` still states a present-tense "not implemented" from the review that predates Bundle Q - left as the dated history row it is. |
+| 2026-11-03 | Bundle N phase 1 - external corpora behind a licence gate | Done | `eval/fetch.py` fetches a **closed** allowlist of five datasets into the gitignored `eval/internal/` and refuses everything else **by name**, recording per file the revision-pinned source URL, the upstream repo sha, the observed cardData.license with its verification date, byte size, sha256, row count and the method that counted it. Refused today: **SetFit/enron_spam (observed licence 'None' - undeclared is not granted, and it is the most convenient ham set in the survey)**, `zefang-liu/phishing-email-dataset` (lgpl-3.0), `geodesic-research/bipia` (cc-by-sa-4.0, permitted only behind --allow-sharealike, which prints the obligation it is accepting on the operator's behalf), and anything unlisted. The gate re-reads the declaration at fetch time and refuses if it moved, and refuses gated/private sets. Stdlib only: row counts come from JSON/CSV or from the **Parquet footer's own num_rows** read by a Thrift-compact field skimmer, whose output agrees with the datasets-server conversion numbers and with the 339 / 546 / 116 / 1,401 counts this file published from a different source; every LFS file's digest also matched the object id the repository records at that pinned revision (6 of 6). `eval/external.py` wraps each row in a minimal synthesized .eml - the corpora are text, not messages, so no Authentication-Results or DKIM-Signature can exist and **the authentication layer that settles most of the committed corpus cannot fire here**; the exact envelope, the keyed sampling rule and the limitation are recorded per corpus and asserted by tests to be present, not merely to have a field. **Measured: 0 of 203 benign LLMail false-positive emails accused (0.0%), 203 of 203 deferred to a human, 0 cleared; 0 of 259 benign jailbreak prompts accused; 0 of 141 hostile-labelled jailbreak prompts cleared. corpus-backed emitted 0 model judgments over all 603 external messages** because the recordings are content-addressed and none exists for text never sent to an endpoint - so the tier A/B that motivated this bundle still has not run, and 0.0% false positives with 0.0% coverage is one fact seen twice, not a result to pitch. NotInject, deepset and the Bengali smishing set are fetched, pinned and **not evaluated**: Parquet text needs a column decoder a stdlib-only build has no business faking, so they are listed with their row counts as a stated gap (phase 2, N7-N10). deepset carries a live licence disagreement - card says apache-2.0, the conversion metadata says cc-by-4.0 - recorded in the manifest and printed in the report rather than resolved by the tool. Nothing fetched is committed: `git ls-files eval/internal` is empty, a canary file there cannot be staged without -f, and the committed `eval/PROVENANCE.json` is checked field by field so corpus text cannot ride in unnoticed. `eval/metrics.json` grew only by the top-level `external` block - the synthetic and adversarial numbers are byte-identical (verified by a stripped diff), which is why the staleness test was re-scoped by name rather than relaxed. Suite 1058 collected -> **1128 collected, 1126 passed, 0 failed, 0 skipped, 2 xfailed**: 70 new in `tests/test_external_eval.py` and one existing staleness test re-scoped; the suite was also run with `eval/internal/` moved aside and is green there, degrading to a loud not-fetched state rather than to zero rows. `dependencies` still `[]`, the new modules import only `sys.stdlib_module_names` members (asserted), `tools/check-portability.sh` exit 0, `tools/validate_contract.py` exit 0. |
+| 2026-11-04 | Bundle N phase 1b - the ROWS API, and the three Parquet-only corpora measured | Done | `eval/fetch.py --rows` reads the datasets-server **ROWS API** (the splits endpoint, then the rows endpoint at 100 rows per request, offset-paginated) as JSON over plain HTTP and caches each split in a rows directory under the gitignored eval/internal/ tree - no Parquet decoder, no snappy, `dependencies` still `[]`. The rows path runs the **same** gate (`prepare()`: closed allowlist, re-read of `cardData.license`, refusal of a moved declaration, of gated and of private repos); **nothing was added to the allowlist and nothing was loosened** - `SetFit/enron_spam`, the LGPL set and BIPIA are still refused. **Measured 2,402 newly-readable rows: NotInject 339 (113 x 3 splits, zero positives by construction), deepset 662 (263 injection-labelled + 399 not-injection-labelled), Bengali smishing test split 1,401 (561 `smish` + 840 `normal`/`promo`)** - every split's `num_rows_total` equal to the count read out of the pinned repository file's own Parquet footer, zero truncated cells, 29 paginated row requests in total (2 per NotInject split, 6 + 2 for deepset, 15 for the Bengali test split) plus one splits lookup per split and the licence re-reads. **The number this bundle was queued for: our text surface flags 0 of 339 NotInject benign trigger-word prompts (0.0% over-defense)** - and the same surface flags only **3 of 263** deepset injection-labelled rows (1.1%), 13 of 141 jailbreak prompts (9.2%), 1 of 259 benign jailbreak prompts (0.4%), **0 of 561** Bengali smishing messages and 0 of 203 LLMail emails: narrow, not good, and reported as both sides together. End-to-end is **uniform and non-discriminating**: across 3,005 external messages in both configurations, 0 cleared, 0 accused, 3,005 deferred, **0 model judgments** - so the report now prints, beside every such table and required by a test, that a 0.0% false-positive rate where clearance is also 0.0% is an absence of evidence, and a required `external.model_tier` block states that **the A/B has still not run**. Sampling cap raised 500 -> 1,500 so every corpus is measured whole (no phase-1 number moved: the keyed rule keeps all rows when the cap exceeds the population). Both objects are published and their difference stated in `eval/PROVENANCE.json`, the manifest and every corpus descriptor - the pinned sha256 is the **repository** file, the measured text came from Hugging Face's **converted** Parquet, cross-checked on split name and row count only - and deepset's apache-2.0-card / cc-by-4.0-conversion disagreement is printed with its numbers rather than settled, because the conversion service is the party declaring the licence we do not act on. `git ls-files eval/internal` still empty, canary unstager, no row text in any tracked file (scanned against the tracked tree). `eval/metrics.json` synthetic and adversarial blocks byte-identical (verified by a stripped diff of `results`); 875 KB -> 4.3 MB. Suite 1128 -> **1202 collected, 1200 passed, 0 failed, 0 skipped, 2 xfailed**: 74 new in `tests/test_external_rows.py`, one phase-1 unavailable-list test rewritten to assert the new state, one mutation list extended; also green with `eval/internal/` moved aside (1199 passed + the staleness guard), degrading loudly and never to zero rows. `tools/check-portability.sh` and `tools/validate_contract.py` exit 0. |
+
+## Session Summary
+
+Bundle C is complete. Inference is now behind one interface and off the critical
+path of a reviewer's machine. `src/tenable_email/tiers.py` gives every tier the same
+shape - name, config gate, call - and the same failure behaviour: a tier with no
+endpoint returns unavailable and names the config field, and a tier that is
+unreachable, timed out, malformed or unrecorded returns a failure value with the
+reason, which `build_evidence` records as `UNAVAILABLE`. Nothing in the package has a
+default address; endpoints arrive only through `ModelEndpoints.from_env`.
+`src/tenable_email/replay.py` is a content-addressed store keyed on the tier, the
+model id and canonical JSON of the payload - sorted keys, no incidental whitespace,
+strict about bytes - writing one committed JSON file per entry under
+`fixtures/replay/` plus an index, carrying an `endpoint_role` label and refusing to
+write anything containing a configured endpoint, an API key, an IP literal or a
+private path. A miss is a miss: no network fallback, no invented answer, and the
+offline path therefore never depends on a host a judge cannot reach.
+
+Fifty-two real recordings are committed, generated from `fixtures/synthetic/` and
+nowhere else, by `tools/record-replay.sh`, which prints per-tier recorded and failed
+counts. The phishing classifier, the URL reputation engine, the injection engine, the
+4B vision model and the 27B adjudication model were all reached and recorded; the
+three-way classifier and the optional injection classifier had no reachable endpoint,
+so they have no recordings and appear as `UNAVAILABLE` in every record. With
+`replay_dir` pointed at the store and **no endpoints configured at all**, the chain
+produces model judgments on 13 of 14 fixtures and is byte-identical run to run - the
+recording supplies the model id the key needs, which is why replay does not need an
+address.
+
+The `spam` class exists and is reached in the right order: deterministic bulk headers,
+then the three-way tier if configured, then the language model's three-way vote, with
+the reason in the code - Enron-trained models measured 0.959 and 0.880 false-positive
+rates out of domain, while RFC 8058 one-click and `Precedence: bulk` are near-zero-FP
+on the population that dominates a reported queue. `spam_bulk_marketing` is
+dispositioned with no tier invoked, asserted at the transport seam rather than by
+counting findings.
+
+`src/tenable_email/ensemble.py` combines facts and opinions without averaging them.
+`EnsemblePolicy.false_negative_cost` is an explicit 6.0 with its cost reasoning, and
+the clearance bar is *derived* from it - 0.857 to say "clean", against the 0.60 needed
+to send one more message to a human. Disagreement between tiers, or a confidence under
+the medium band, routes to `MANUAL_REVIEW`; unanimity adopts the weakest vote's
+confidence rather than a mean; a disposition settled on VERIFIED findings is a floor
+that a model cannot talk down. Measured concordance (`docs/EVIDENCE.md`) is what shaped
+the last part: the text classifier calls a mailer-daemon bounce phishing at 0.9948 and
+a security newsletter phishing at 0.9790, and the URL estate flags every destination
+in the corpus - so a tier shown the body text alone cannot reopen a message decided
+from headers, links and MIME facts in either direction, and only the adjudication tier,
+which is shown the verified facts alongside the content, may escalate it.
+
+C2c landed with its counter-fixture: a wrapper hiding a destination that belongs to
+neither the sender nor a trusted domain is `THREAT` at 0.85 `CREDENTIAL_HARVEST`,
+naming both the wrapper and the true destination, while a bare mismatch is decisive in
+neither direction - which required removing mismatch from the set of indicators that
+block a clearance, and the new `clean_unrelated_link_no_concealment` fixture proves the
+rule keyed on concealment. C9 added `threat_image_credential_harvest`, whose inline PNG
+is read from `fixtures/assets/` without Pillow, and whose recording transcribed the
+printed URL verbatim and named the impersonated brand.
+
+**332 tests passing** (was 207), zero failures, no runtime dependency added, `pillow`
+only under the new `vision` extra, `tools/validate_contract.py` still exits 0, and
+`docs/results/latest.md` regenerated against the commit that holds the code. Two
+pre-existing assertions were moved because they pinned behaviour this bundle was
+instructed to change; both replacements assert more than what they replaced, and the
+change is flagged in the Bundle C table rather than committed silently.
+
+Next: **Bundle D** - the CLI and the offline receipt-contract runner. It should read
+`src/tenable_email/tiers.py` and `src/tenable_email/ensemble.py` before designing the
+stage state machine, because the cascade now decides *which* stages run per message and
+`stages_run` reports exactly those, and because D4's refusal to close a case on
+simulated evidence needs a marker that does not exist yet: `Evidence.simulated` is
+never set, while every recorded finding's detail already says `source=replay`. Bundle D
+should decide which of the two it enforces on, and record the decision rather than
+inheriting the ambiguity. Two operator decisions still gate later bundles: artifact
+type, and the writeback destination.
+
+---
+
+**Bundle D is complete.** The reviewer's path is now a command.
+`python3 -m tenable_email demo` dispositions all fourteen fixtures with no
+arguments, no configuration and no network, prints the deterministic reading and the
+corpus-backed reading side by side so a judge can see that the recordings do not
+move a settled answer, and reports label agreement as three numbers - 11 agree, 2
+escalated on a threat label, 1 disagreed - rather than folding a conservative
+escalation into "correct". `run` writes one durable case record per message, `show`
+renders one, `record` and `validate-contract` call the existing tools instead of
+duplicating them, and `--strict` gives a timer an exit code to act on.
+
+The receipt contract is the substance of the bundle. A record carries a
+content-derived id, the source **file name** rather than its directory, a sha256
+verdict digest over canonical JSON, a corpus-manifest digest, the chain as it
+actually ran with a reason for every skipped stage, the actions the disposition
+would take outward, and the approval state over those actions. It carries no message
+body and no attachment byte: each finding is stored with a digest of its value, and
+a test rebuilds every fixture's body and attachment data and proves neither appears
+in either serialized form.
+
+The offline runner enforces the contract without calling anything live, and each of
+the six refusals the first-place playbook names is its own tested case: a skipped
+non-optional stage, an altered corpus manifest, a widened target set, a replayed
+approval, a stale or mismatched approval digest, and a later stage presented before
+an earlier one completed. Refusals are values - `Refusal` with its reason, stage and
+receipt id - returned before anything is committed, and `tests/test_runner.py`
+snapshots the run directory byte-for-byte around a refusal to prove no receipt file,
+no journal line and no mutated record is left behind.
+
+D4 landed on the boundary Bundle C flagged as ambiguous, and chose it explicitly: a
+replayed recording is **not** simulated evidence - it is a real model's answer to
+this exact request, captured by a live call and attested by the replay store's own
+index - and what *is* simulated is a recording that index does not list, or an
+answer a caller built by hand. `ReplayStore.attested()` is the check,
+`TierResult.source` carries the result, and the pipeline marks the record simulated
+only then, with a test proving it in both directions so the mechanism cannot be
+mistaken for a runner that refuses everything. The limit is stated where it belongs,
+in the module and in README's known limitations: this proves structure and
+consistency, not the identity of an approver, and an editor who rewrites the index
+along with the file defeats it.
+
+Next: **Bundle E** - the injection A/B against public suites, now unblocked and the
+highest-value remaining work. **Bundle F** should build the MCP server as a thin
+adapter over `src/tenable_email/cli.py` and `src/tenable_email/runner.py` rather
+than a second implementation, and it is where the interactive approval the CLI
+deliberately does not prompt for belongs. The two operator decisions still open are
+artifact type and the writeback destination; Bundle D built the gate and left the
+decision alone.
+
+---
+
+**Bundle F is complete.** The engine is now something an external agent can
+ask questions of. `src/tenable_email/mcpserver.py` exposes nine read-only tools
+over the Bundle D core - the staged triage of one message, a batch over a
+directory, the provenance-grouped evidence behind a saved case record,
+authentication results, lookalike analysis of any domain, deterministic link
+analysis with redirect unwrapping and reputation, the model tiers' separate
+votes, the stage contract as data, and the case record itself in JSON and
+Markdown - behind a stdio FastMCP wrapper and the `tenable-email-mcp` console
+script. The adapter rule was honoured: the tools call `pipeline`, `signals`,
+`receipt`, `runner`, `cli` and `writeback`; they add no second implementation of
+anything, which is why their answers agree with `demo` field for field.
+
+The three properties that make this surface safe to hand to an agent are each
+held by a mechanism and each has a test that would fail if the mechanism were
+removed. **No dependency:** the `mcp` import is the single statement inside one
+function, `dependencies = []` is still empty, importing the module pulls in
+nothing third-party, and a fresh environment installed with `--no-deps` gets a
+green suite, a working `tenable-email demo`, and a server that prints
+`pip install -e .[mcp]` instead of a traceback. **No mutation:** replay is
+forced on, so no tier can reach an endpoint and the store's write path - which
+arrives only after a live call - is unreachable, and no tool constructs an
+`OfflineRunner` with a root; anything the disposition would do outward comes back
+as proposed actions with `executed: false` and the command that runs the gated
+stage, because `disposition-writeback` is the contract's only write stage and an
+MCP client is not the human it requires. **No message content:** the evidence
+keys whose values quote the body come back as digests with the reason attached,
+and the sweep checks every fixture's body lines, attachment bytes and base64
+forms against every response.
+
+`SKILL.md` is the part the tools cannot say: `MANUAL_REVIEW` is an outcome and
+re-asking cannot resolve it, tier disagreement is the escalation signal and
+averaging it away is the failure, `UNAVAILABLE` is not `UNKNOWN` and neither is
+evidence of absence, valid DKIM with a payment request and no links is the
+business-email-compromise shape the reference playbook's domain-matches-therefore-clean
+rule gets wrong, a security newsletter quoting an injection payload is not an
+attack and corroboration is what separates them, a VIP list comes from the HR
+record or the identity directory and not from scraping public org pages because
+that is the attacker's own reconnaissance, an unbounded undocumented outbound
+flow, non-deterministic and therefore fatal to replay, and dual-use pointed the
+wrong way in a published artifact. Its eight stage titles are the contract's, in
+order, so `tools/validate_contract.py` now validates the skill text rather than
+reporting that the file does not exist.
+
+Two deviations, both recorded in the Bundle F table. The drift test that pinned
+the absent-`SKILL.md` note had to move, because creating the file is what this
+bundle was told to do; its replacement asserts more than what it replaced and is
+committed separately from the feature. And the request to skip the wrapper tests
+when `mcp` is absent could not coexist with the requirement that the repository
+suite show zero skips and the review bundle show exactly its six designed skips:
+nothing skips here, and the wrapper's import is satisfied by the real package
+where it is installed and by a stand-in injected through `sys.modules` where it
+is not - so the import statement itself is still what runs.
+
+Both operator decisions that were open are now made. The artifact is a
+**`standard` playbook with an MCP server component**, so
+`docs/listing-drafts/playbook.md` is the submission and the MCP draft becomes the
+component it references rather than a competing listing. The writeback
+destination is **our own case ledger**, since Gmail offers no 1:1 drop-in for the
+reference's tag-plus-comment.
+
+An unplanned **Bundle I** intervened and is complete: an external red-team review
+found the pipeline clearing adversarial mail, and the clearance policy, the link
+analysis, the redirect unwrapping, the authentication merge and the MIME handling
+were all changed as a result. Eight of eleven findings are fixed and three are
+mitigated. `fixtures/adversarial/` now holds fifteen hostile messages, fourteen
+asserted closed and one open under strict xfail - a mechanism that fired three
+times in the same night, on R04, R05 and R06, each time forcing the status to be
+moved consciously rather than the assertion quietly deleted.
+
+The most transferable lesson from Bundle I is that the fix needed reviewing too.
+Two agents run against the clearance change found five defects in code written an
+hour earlier, including a veto that covered CLEAN but not the equally decisive
+SPAM, and a deferral that reported the highest confidence band in the system. A
+comment in `src/tenable_email/ensemble.py` described the adjudication tier
+reopening settled
+messages at length; in the shipped pipeline that path is dead, because a decisive
+disposition skips the language-model tier by construction.
+
+Next, in priority order: **Bundle G** is the only mandatory one - there is no
+`LICENSE` file yet and the Exchange requires one, alongside a full-history secret
+scan and the two placeholder values in the listing drafts. Then **metrics**, both
+the evaluation harness of Bundle E and the smaller measurement the review asked
+for directly: auto-clearance rate, escalation volume, and false-negative rate
+among auto-closed messages, reported together rather than separately, since a
+clearance rate without its error rate is the same mistake as an F1 without its
+false-positive rate. Then **Bundle H**, the ledger. *(Both have since landed -
+see Completed Tasks. This paragraph is the plan as it stood at the time and is
+kept as a record rather than rewritten.)*
+
+Bundle G inherits a listing that advertises nine tools, a README that documents
+the server's outbound position and now states one open finding plainly, and a
+repository whose parity matrix and red-team response are both current.
+
+**Bundle L is complete: the ledger has a face.** `src/tenable_email/webui.py` serves
+the queue, one case in full and the agreement measurement over stdlib `http.server`
+with no JavaScript anywhere, a Content-Security-Policy on every response including the
+error responses, no external reference of any kind, a loopback bind unless an explicit
+flag overrides it, and CSRF on both of its writes. `ledger serve` and `ledger snapshot`
+make it reachable from the command line; the snapshot is one self-contained HTML file
+that refuses to overwrite itself without `--force`. Suite: 784 collected, 782 passed, 0
+failed, 0 skipped, 2 xfailed.
+
+What the next session must not undo, because each of these was a deliberate security
+decision and not an accident: no JavaScript at all, the loopback-only default, the CSP
+on error responses, the CSRF token, and the fact that `docs/results/` is regenerated by
+the tool and never hand-edited. `tests/test_webui.py` asserts all of them structurally
+over every route rather than case by case.
+
+One thing learned about the guards themselves, worth carrying: a leak report that
+quotes the string it matched gets captured into the next recorded artifact, which then
+matches the guard again - a red run that republishes its own accusation and cannot
+converge by re-recording. That is now asserted away by construction, and it is the same
+class of problem as a scanner that contains its own forbidden list.
+
+---
+
+**Bundle M is complete: the evaluation now answers the question an operator
+asks.** `eval/selective.py` treats `manual_review` as what it is - a deferral -
+so the report reads as coverage and selective risk rather than as a single
+accuracy number that cannot distinguish a tool that automates safely from one
+that automates everything or nothing. Measured and committed: synthetic 71.4%
+coverage at 0.0% risk, adversarial 11.1% coverage at 50.0% risk with E-AURC
+0.0278 and no automated-error budget achievable at any level in the reported
+range. The calibration limit ships inside the artifact as `calibrated: false`
+and is printed beside every operating point, in README as well as in the
+rendered report.
+
+What the next session must not undo, each of these a decision and not an
+accident: (1) the label sets are owned by `eval/selective.py` and imported by
+`eval/run.py` - restating them in two places is what made the adversarial
+corpus measure as undecidable; (2) the oracle AURC is computed over the curve's
+own coverage grid, not from `e0 + (1-e0)ln(1-e0)`, because that closed form
+assumes a threshold can reach full coverage and this pipeline's cannot -
+replacing it reintroduces the negative E-AURC; (3) `eval/report.py`
+recalculates nothing, and its refusal to render a payload with no `selective`
+block is the point, not an overreach - `require_selective=False` exists so an
+older artifact can be rendered *on purpose*, and even then the output says the
+block is absent; (4) the non-selective numbers in `eval/metrics.json` are
+byte-identical to the ones the README quotes, and regenerating the artifact
+must not move them; (5) `dependencies = []` is still empty; (6)
+`docs/EVAL-SUITES.md`'s "26 datasets, 17,658 rows" row is **not** retracted -
+the correction is about the claim that the model *bundles* those datasets as
+usable ground truth, and the resolution is a fetch, not a deletion. Do not
+"fix" that row by choosing a side.
+
+One thing went wrong and was left as it is: commit 01a4ad4's message body was
+truncated by a double quote inside a double-quoted `-m`, so the file diff is
+correct and complete while its description stops mid-sentence. The history was
+**not** rewritten: the remote is shared and a second contributor rebases onto
+it, so a force-push would cost that agent more than a truncated message costs
+anyone. Every message after it was written with `git commit -F` and a quoted
+heredoc for that reason.
+
+Next: **Bundle N** - the external corpora, still in Remaining Tasks with its
+licensing analysis intact. Start with the two fetches named in the corrections,
+because they are cheap and one of them decides whether Suite 1's published
+numbers mean what this project has been reading them as. Bundle K remains after
+that. Nothing in Bundle M should be quoted as a performance claim: on a corpus
+we wrote ourselves a flat curve is a property of the corpus, and the method is
+demonstrated rather than evidenced.
+
+---
+
+**Bundle O is scoped and its implementing half (O6) is done; the TODO itself is
+repaired.** This run changed no behaviour. It separated the Bundle K bullet that had been
+merged into the Bundle G heading, replaced the freeze-only deadline note with the
+operator's confirmed schedule - the PR deadline is **Wed 2026-11-04 14:00**, recorded
+pitches are due **Thu 2026-11-05 09:00** if needed, pitch day is **Thu 10:15-13:45** in
+15-minute slots of 5-8 minutes of pitch followed by grilling on knowledge choices and
+design, and awards are **Fri 2026-11-06 11:00** - and added **Bundle O**, the pitch
+preparation and the ELI5 writeup, with O1 to O5 marked as written by the orchestrating
+agent. The team is **Campus Autonomous Defenders (CAD)**; its name now appears in both
+listing drafts, in README and in the export's publication note. The upstream listing
+schema has no team field, so it is body prose, and the `author` PLACEHOLDER is untouched
+because filling it is operator work.
+
+What the next session must know: the critical path is no longer build work. Bundles A, B,
+C, D, F, H, I, J, L and M are complete, the suite is green at 825 passed and 2 xfailed,
+and what is left that is graded is the pitch - Bundle O, then the operator checklist.
+Bundle N (external corpora) is what would turn Bundle M's curve into evidence, and Bundle
+K (on-demand escalation) is the last build rung; neither blocks the PR.
+
+One thing this run left for the operator rather than fixing: `docs/ELI5.md` is referenced
+by Bundle O as an unchecked task, which is how the dangling-reference guard permits it to
+be cited before it exists. When the orchestrator writes it, O1 must be checked off in the
+same commit that creates the file, or the guard goes red - which is the point of the
+mechanism.
+
+Also delivered this run, for the ledger web view: a demo ledger of fifteen cases -
+the fourteen synthetic fixtures plus one message whose subject and sender are markup
+payloads - with five human resolutions, one of them a clearance overturned to threat.
+Over it, ten real-browser screenshots: nine full-page captures of the queue (unfiltered,
+open, resolved), a resolved threat case, the overturned case, the agreement view, the
+markup-payload case, the queue at a 390 px viewport, and the agreement view of a ledger
+where nothing has been resolved yet, plus a viewport-sized crop of the mobile queue.
+They are written outside the repository for the orchestrator to read with a vision model;
+this session captured them and did not judge them.
+
+What the capture measured, as distinct from what it looks like: the markup case shows
+both payloads as text, the rendered page contains zero script elements and zero image
+elements, and no dialog fired - so the "no JavaScript, escaped output" claim held against
+a page built to break it. And at a 390 px viewport the queue reports a document
+scrollWidth of 833 px, so the table overflows sideways at phone width. That last one is
+recorded, not fixed: a layout change belongs with a session that can look at the result,
+and this one was told to capture rather than to assess.
+
+
+---
+
+**The ledger view is polished and its screenshots are committed.** This run changed
+presentation and one test file's worth of guarantees, and no security decision.
+
+What the next session must not undo. (1) The flags column exists because a status pill
+inline with a subject reflowed to a different place in every row and read as part of an
+attacker's sentence - moving it back into the subject cell reintroduces the defect.
+(2) The restack breakpoint is 1024px and a test asserts it is at or above 768px; the
+media query also has to reset the desktop table `min-width`, because that single
+missing reset is what put a sideways scroll back at 390px after everything else looked
+right. (3) Every denominator on the agreement view is printed on purpose - they differ,
+and the page says so, because a reader who compares 60.0% against 0 of 2 as though they
+shared a base draws a conclusion the data does not support. (4) Tooltips are withheld
+from values shaped like markup rather than escaped harder; the escaping rule and the
+test that enforces it are both load-bearing and neither may be weakened for a
+convenience. (5) The contrast test computes ratios from the stylesheet tokens, so
+retuning a colour without checking the ratio fails the build rather than shipping a
+regression. (6) `docs/images/` is now referenced by a tracked document, and
+`test_every_image_a_tracked_document_shows_is_tracked` will fail if a PNG is added to
+the README without being staged.
+
+Verified this run, with the numbers rather than the adjectives: 851 collected, 849
+passed, 0 failed, 0 skipped, 2 xfailed; `tools/validate_contract.py` exit 0;
+`dependencies` still `[]`; the public export examined 179 blobs across 2 commits and
+found nothing. Six commits pushed before this record, seven with it.
+
+### Bundle Q - run summary (2026-11-03)
+
+Worked exactly one bundle: **Q**, optional deep attachment analysis via `rea`, from
+the scoping note that was sitting at the foot of this file. The scoping note is now
+the Completed Tasks entry for Q, and the paragraph beneath it is what this run found
+that the scoping did not know.
+
+What the scoping got wrong, in case the shape is useful to whoever reads it: it said
+zero of the 32 tracked `.eml` fixtures carry an attachment. Three do. The corpus had a
+38-byte macro stub, a 10-byte macro stub and an 8876-byte inline PNG -- so
+`Attachment.data` was never unexercised, what was missing was a *container* and
+anything large enough to be truncated. The distinction matters because it changed the
+fixture design: an 8 MiB part to exercise `truncated` at the shipped limit would be 11
+MB of base64 in a repository whose entire history is scanned before publication, so the
+oversized part is 32 KiB and the limit is lowered over it in a test that recomputes the
+digest from the raw message independently of the parser.
+
+Two more things learned by testing rather than by reading. First, my own first gate
+compared REA's declared effects in one spelling against this build's list in another,
+so a declaration of `may_access_network` read as `may-access-network` and matched
+nothing -- the gate would have run an operation that reaches the network. The stub test
+for exactly that case failed, which is the only reason I know. Second, the brief's
+"directory mode 0o600" is not a usable directory mode: without the search bit the
+analyzer cannot open the file inside it, so the directory is 0o700, the payload is
+0o600, and both are asserted with `stat` from inside the child process rather than
+assumed from the code that set them.
+
+What is verified: the component's own answers come from a stub, but the *shape* of
+those answers is a real REA 6.8.0 response recorded against a ZIP built from the
+committed fixture, and the recorded digests equal that fixture's sha256 -- asserted, so
+the golden and the payload cannot silently stop agreeing. The CLI really ran end to end
+here once, with the switch set by environment variable and a `rea` on PATH, and the
+receipt it wrote contains the finding text quoted in README and no absolute path at
+all. The full suite runs green with PATH scrubbed of `node`, `npm` and `rea`.
+
+What is not verified and is not claimed: only `inspect_artifact` was ever put to a real
+REA; the other five allowlisted operations are gated but unexercised. REA ran here on a
+Node version *below* its declared floor. Native binary analysis and document text
+extraction are both out of reach on this host, and measured rather than guessed: a
+plain-text attachment is refused with `target_unavailable`. The component's name at the
+time of this run therefore overstated what it delivers -- it reports artifact structure,
+not document text -- and README and ELI5 said so in place.
+
+Four places in this repository then described stage 6 as "not implemented"
+(`stages.yaml`, `src/tenable_email/mcpserver.py`,
+`src/tenable_email/runner.py`, a `pyproject.toml` comment), each pinned by
+a test or a contract cross-check that belongs to another bundle. They were accurate for
+every configuration those surfaces could build -- both construct their own `Config`, so
+neither reaches the analyzer -- and they are listed as unfixed work in the Q entry
+rather than quietly corrected here, because moving one piece of contract prose and
+leaving three is worse than moving none. All four were corrected by the follow-up named
+in the Session Log row for 2026-11-03, together with the names that made them
+incoherent.
+
+Suite: 932 collected / 930 passed -> **1058 collected, 1056 passed, 0 failed, 0
+skipped, 2 xfailed**; 126 new tests, one line changed in
+`tests/test_doc_references.py` to track the third corpus. `dependencies` still `[]`,
+`tools/check-portability.sh` exit 0, `tools/validate_contract.py` exit 0.
+
+
+Bundle N phase 1 is complete: the external-corpus harness exists, and it refused more
+than it fetched. `eval/fetch.py` is a stdlib-only fetcher behind a **closed** allowlist -
+a dataset is fetchable only if its `cardData.license` was read from the API on a recorded
+date, and the declaration is re-read at fetch time and compared, so a licence that moved
+upstream stops being permission to fetch. It refused `SetFit/enron_spam` because its
+declared licence is `None`, and that refusal is the artifact's most important line: the
+undeclared set is the most convenient benign English-email corpus in the whole survey, and
+the harness declines it rather than loosening the gate to make a table fuller. Nothing
+downloaded is committed - `eval/PROVENANCE.json` is, which records revisions, URLs,
+digests, sizes, row counts and the refusals, and a test asserts both that nothing under
+`eval/internal/` is tracked and that no field the writer does not declare can appear in the
+record, because provenance is the only place corpus text could smuggle itself into a public
+repo. `eval/external.py` runs the fetched rows through `measure_corpus`, not through a
+second implementation, so the selective metrics and the row shape are the same ones the
+committed corpora use.
+
+The measured result, with its denominator and its cost: **0 of 203 benign LLMail
+false-positive emails were flagged threat or spam, and 203 of 203 went to a person.** The
+mirror numbers are 0 of 259 benign jailbreak prompts accused and 0 of 141
+hostile-labelled jailbreak prompts cleared. What those numbers do not say matters more
+than what they do: the corpora are text rather than RFC 822 messages, so each row had to
+be wrapped in a synthesized `.eml`, no `Authentication-Results` and no `DKIM-Signature` can
+exist inside that envelope, and the deterministic authentication layer - the thing that
+settles most of the committed corpus - has nothing to settle on. Zero false positives and
+zero coverage are the same fact, and the artifact prints both. `corpus-backed` emitted **0
+model judgments across all 603 external messages**, because a recording that does not exist
+is a miss and not a call, so **the model A/B that this whole survey was queued to perform
+has still not run**. Phase 1 recorded three further permitted corpora (NotInject 339,
+deepset 546/116, Bengali smishing 1,401) as fetched, pinned and deliberately **not
+evaluated**, because their Parquet text needs a column decoder that `dependencies = []`
+rules out borrowing; the row below is the correction of that state. A number whose
+provenance is hidden is worse than no number, which is
+why every external figure in `eval/metrics.json` and in the rendered report carries its
+licence, its revision, the exact wrapper, and the sentence saying what the wrapper made
+unmeasurable - asserted by tests against the wording, not against the existence of a field.
+
+
+Bundle N phase 1b is complete: the three datasets phase 1 could pin and not read are
+measured, and the artifact now says what its own numbers cannot show. The unlock was not
+a Parquet decoder - it was `eval/fetch.py --rows`, which asks the datasets-server ROWS API
+for JSON and caches it under the gitignored eval/internal/ tree, so `dependencies = []`
+survives and the corpora stop being a stated gap. NotInject's **339 benign
+trigger-word prompts are flagged 0 times by our text surface**: that is the over-defense
+answer this file asked for, and it is worth nothing on its own, because the same surface
+found only **3 of 263** rows deepset labels as injections and **0 of 561** Bengali smishing
+messages - low over-flagging beside low detection is a narrow scanner, and both halves are
+now printed in the same table so neither can be quoted alone. The disposition numbers
+remained uniform - **0 cleared, 0 accused, 3,005 deferred, 0 model judgments** - and the
+failure this phase had to avoid was presenting that as a result: `eval/report.py` now
+emits `NON_DISCRIMINATING_STATEMENT` beside every corpus that cleared and accused nothing
+(a test fails if it is missing, and another fails if it is stamped onto a corpus that did
+decide), and `external.model_tier` is a required block whose statement says in terms that
+**the model-tier A/B has not run**. The honesty cost of the rows road is recorded rather
+than smoothed: the pinned sha256 describes the repository file, the measured text came from
+Hugging Face's converted Parquet, and the only comparison available between those two
+objects is the split name and the row count - which agrees, split by split, with no
+truncated cell. Deepset is measured with its licence disagreement intact and printed, not
+settled. Phase 2 is now N8 and nothing else: run the tiers over these same wrapped
+messages, record FPR at a stated threshold, and give the deterministic numbers the
+baseline they were supposed to be compared against.
+
+### Bundle S - Weight tiers by measured reliability, not by self-reported confidence  (SCOPED 2026-11-04, NOT STARTED)
+
+Found by the full-stack live A/B, and it is the most consequential finding in docs/LIVE-AB.md.
+
+Clearance requires every consulted tier to vote clean at or above a fixed 0.857 bar, and a
+tier's confidence is its own band mapped through {"high": 0.90, "medium": 0.70, "low": 0.40}.
+Two adjudicators of near-identical measured accuracy - local recall 0.800 / FPR 0.125, remote
+recall 0.831 / FPR 0.145 - produced a fourteen-fold difference in auto-clearance (84 messages
+against 6 of 1,327) and inverted the error profile: the local arm made 8 false clearances and
+1 false accusation, the remote arm 1 and 6. Aggregate selective risk was the same, 5.2% against
+4.8%. The difference is how each model phrases certainty, not how often it is right.
+
+Observed directly on one benign business email: fast tiers alone (classifier clean 1.00,
+injection clean 0.98) dispositioned CLEAN at 0.98; adding an adjudicator that voted clean at
+0.40 dispositioned the same message manual_review, "the consulted tiers agree on clean but are
+not confident enough to act on it". A low-confidence agreement blocks clearance while confident
+agreement from tiers measured at 0.254 and 0.470 false-positive rate produces one. The rule
+rewards overconfidence.
+
+It also reframes an earlier headline: the 84.2% coverage at zero risk on 203 real benign
+business emails came from the fast tiers alone under that rule, which is the same mechanism
+that produced 437 false accusations on the benign Bengali set. That corpus was in-domain, so
+it happened to be right; nothing in the mechanism is what made it right.
+
+Shape of the fix: now that per-tier recall and false-positive rate are measured and recorded,
+weight a tier's contribution by measured reliability rather than by its band, or calibrate each
+model's bands against a held-out split before letting them gate a clearance. Either is a change
+to core adjudication and will move the committed synthetic and adversarial numbers, which is
+why it was scoped and not attempted thirteen hours before a deadline. Bundle R (symmetry for
+accusation) and this one should be designed together: both are the same complaint, that the
+adjudication rule does not use what measurement now knows.
+
+
+### Bundle R - Require a verified finding before an accusation  (SCOPED 2026-11-03, NOT STARTED)
+
+Found by the live model-tier A/B, not by inspection. The clearance veto stops a model from
+wrongly CLEARING a threat, and nothing symmetric stops a model from wrongly ACCUSING, because
+on a message the deterministic layer cannot settle there is no verified finding for a veto to
+defend - so the tiers are the only voice, and out of domain they are not reliable enough to
+accuse on.
+
+Measured: deterministic-only deferred all 3,005 external messages; with live tiers the same
+messages produced 1,059 accusations, 437 of them on the 840-row benign Bengali set, and 21 to
+23 percent of `notinject`, which is benign by construction. On real benign business email the
+same pipeline made zero false accusations, so this is a domain-shift failure and not a general
+one - which is exactly why it was invisible until external corpora were measured.
+
+Two candidate shapes, and the choice is a design decision, not an implementation detail:
+
+1. An accusation requires at least one VERIFIED finding corroborating it, symmetric to the
+   clearance veto. A message whose only adverse evidence is model opinion defers to a human.
+2. Refuse to disposition mail with no authentication headers at all, deferring it, on the
+   grounds that a message whose provenance cannot be checked is not a message a tier should
+   accuse on.
+
+(1) is narrower and keeps working on real mail whose auth fails legitimately; (2) is simpler
+and would have deferred every external corpus row here, which makes it untestable against
+this evidence. Prefer (1) and measure both.
+
+Deliberately NOT implemented during the submission window: it changes core adjudication with
+roughly sixteen hours to the deadline, and the committed synthetic and adversarial numbers are
+verified as they stand. Recorded so the finding is not lost and so nobody re-derives it.
+

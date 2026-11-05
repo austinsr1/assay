@@ -1,0 +1,108 @@
+# stages.yaml -- the machine-readable definition of the triage chain.
+#
+# This file is the single source of truth for the pipeline order. README.md and
+# SKILL.md are validated against it rather than trusted to stay in sync:
+# tools/validate_contract.py fails when the prose and the contract disagree, and
+# tests/test_contract_drift.py proves it fails by breaking the contract on
+# purpose (a dropped stage, a renamed provider, a stripped approval).
+#
+# Shape constraint: src/tenable_email/contract.py parses exactly the subset used
+# here -- a top-level "version" scalar, a "stages" list, and scalar or null
+# values per item. That is deliberate. The shipped core has no runtime
+# dependencies, so it does not carry a YAML library; pyyaml is used only in the
+# test that proves the minimal parser agrees with a real one.
+#
+# Every stage declares: what capability it provides (never a product name, so a
+# different scanner, mail provider or model host can slot in), which component
+# provides it, whether that component reads or writes, whether the stage may be
+# skipped when unconfigured, which model tier if any it calls, and -- for write
+# stages -- the approval language that must appear in the prose.
+version: 1
+stages:
+  - id: intake
+    title: Intake
+    capability: message_acquisition
+    provider: eml_directory
+    access: read-only
+    optional: false
+    model_tier: null
+    approval_required: false
+    approval_language: null
+    description: Acquire reported messages from a directory of .eml files, or from a configured live alert feed when one is available.
+
+  - id: parse-authenticate
+    title: Parse and authenticate
+    capability: message_decoding
+    provider: header_auth_parser
+    access: read-only
+    optional: false
+    model_tier: null
+    approval_required: false
+    approval_language: null
+    description: Decode MIME parts and read the SPF, DKIM, DMARC and ARC outcomes the receiving MTA recorded, keeping absent checks distinct from passing ones.
+
+  - id: deterministic-signals
+    title: Deterministic signals
+    capability: forensic_signal_extraction
+    provider: deterministic_signals
+    access: read-only
+    optional: false
+    model_tier: null
+    approval_required: false
+    approval_language: null
+    description: Extract lookalike domains, anchor-versus-href mismatches, display-name spoofing, forwarding, unwrapped redirects, attachment inventory, bulk headers and injection surface without any model call.
+
+  - id: classifier-cascade
+    title: Classifier cascade
+    capability: classification_cascade
+    provider: onnx_classifier
+    access: read-only
+    optional: true
+    model_tier: classifier
+    approval_required: false
+    approval_language: null
+    description: Query the CPU classifier tiers for phishing, three-way spam, URL reputation and prompt-injection scores, recording any tier with no configured endpoint as unavailable rather than as a finding of absence.
+
+  - id: vision
+    title: Vision
+    capability: image_understanding
+    provider: local_vlm
+    access: read-only
+    optional: true
+    model_tier: vlm
+    approval_required: false
+    approval_language: null
+    description: Extract embedded images and read them with a local vision model for transcribed text and brand impersonation.
+
+  - id: attachment-content
+    title: Attachment structure
+    capability: attachment_structure_inspection
+    provider: attachment_structure_inspector
+    access: read-only
+    optional: true
+    model_tier: null
+    approval_required: false
+    approval_language: null
+    description: Implemented, optional, and off by default behind TENABLE_EMAIL_DEEP_ATTACHMENT_ANALYSIS. When an operator turns it on, the stage quarantines the retained attachment bytes and asks an external optional analyzer (rea, a Node.js CLI) to inspect them, and what comes back is container and artifact structure - per-entry paths, sizes and sha256 digests, the declared format, the analyzer's own coverage status and its limitations - not document text. No PDF or Word text is read, and a plain-text attachment is refused by the analyzer outright as an unsupported target. The response is discarded whole unless both digests it reports match the sha256 computed from the bytes in this message, and a static read is not a safety claim, because nothing here executes the artifact. With the switch off or the analyzer absent, the stage is skipped with an explicit reason rather than passing silently, an unread attachment stays an UNKNOWN in the evidence record, and a high-risk attachment still blocks an automatic clearance whether it was read or not.
+
+  - id: adjudication
+    title: Adjudication
+    capability: disposition_adjudication
+    provider: deterministic_adjudication
+    access: read-only
+    optional: false
+    model_tier: llm
+    approval_required: false
+    approval_language: null
+    description: Combine verified facts, model judgments and explicit unknowns into one disposition with reasons, a confidence band and a narrative analysis.
+
+  - id: disposition-writeback
+    title: Disposition and writeback
+    capability: case_mutation
+    provider: case_record_writeback
+    access: write
+    optional: true
+    model_tier: null
+    approval_required: true
+    approval_language: human approval required
+    description: Apply the disposition outward through a mail label, a case record or an analyst notification, with each individual mutation separately approved.

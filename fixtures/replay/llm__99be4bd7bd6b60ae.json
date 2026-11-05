@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "99be4bd7bd6b60ae81d55a39eabcff23fb44ba30cbc9d913ac63c4246ee9de0f",
+  "latency_ms": 6556.348,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:10:56Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"clean\",\n  \"confidence\": \"medium\",\n  \"attack_type\": \"NONE\",\n  \"reasons\": [\n    \"SPF, DKIM, and DMARC authentication results are all PASS, indicating the message originated from an authorized source for the domain cloudpage-status.test.\",\n    \"The sender domain cloudpage-status.test does not claim to be a protected domain, nor is it a lookalike of a known vendor or protected domain.\",\n    \"The single link points to docs.anyserviceprovider.test, which does not match the sender domain, but there are no anchor mismatches, redirect wrappers, or IP literal hosts detected.\",\n    \"There are no attachments, no dangerous extensions, and no indicators of prompt injection or agent manipulation in the content.\",\n    \"The message content is a standard notification about a weekly service summary, which is consistent with legitimate business communication patterns.\"\n  ],\n  \"analysis\": \"The message passes all major authentication checks (SPF, DKIM, DMARC) and originates from a domain that does not impersonate a known entity. The content is a brief notification regarding a weekly service summary with a single link to a documentation subdomain. While the link host (docs.anyserviceprovider.test) differs from the sender domain (cloudpage-status.test), this is not inherently malicious without other indicators like anchor mismatch or known malicious reputation. The absence of attachments, suspicious headers, or deceptive language supports a classification of clean, likely representing a legitimate automated notification from a service provider.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653849,
+    "id": "chatcmpl-4de2fb7ecae38ab21525c286",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 581,
+      "draft_n_accepted": 239,
+      "predicted_ms": 5272.810491,
+      "predicted_n": 323,
+      "predicted_per_second": 61.068001694658285,
+      "predicted_per_token_ms": 16.37518786024845,
+      "prompt_ms": 1220.9443609999998,
+      "prompt_n": 1020,
+      "prompt_per_second": 835.4189040724028,
+      "prompt_per_token_ms": 1.197004275490196,
+      "total_ms": 6554.928988,
+      "ttft_ms": 1282.118497
+    },
+    "usage": {
+      "completion_tokens": 323,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1020,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1343
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 323,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1020,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1343
+  }
+}

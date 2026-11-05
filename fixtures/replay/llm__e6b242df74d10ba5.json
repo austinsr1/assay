@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "e6b242df74d10ba5004329d23518ce8ce4f699361e980f639120550e70d18b00",
+  "latency_ms": 3659.218,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:11:35Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"threat\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"CREDENTIAL_HARVEST\",\n  \"reasons\": [\n    \"The sender domain 'example-portal-verify.com' is a lookalike of the protected domain 'example', as indicated by the fact 'lookalike_of_protected_or_vendor_domain: yes'.\",\n    \"SPF, DKIM, and DMARC authentication all failed or were absent ('spf_result: FAIL', 'dkim_result: NONE', 'dmarc_result: FAIL'), indicating the email did not originate from an authorized source for the claimed domain.\",\n    \"The message contains a single link to 'example-portal-verify.com/auth/login', which matches the suspicious sender domain and is designed to harvest credentials.\",\n    \"The display name 'it service desk' claims a foreign identity that does not match the actual sender domain, a common social engineering tactic.\",\n    \"The message uses urgency and fear ('suspended within 24 hours', 'permanent loss of email access') to pressure the recipient into clicking the link without verification.\"\n  ],\n  \"analysis\": \"This message is a classic credential harvesting phishing attempt. It uses a lookalike domain to impersonate a legitimate service, fails all email authentication checks, and employs social engineering tactics (urgency, threat of data loss) to lure the user into entering credentials on a malicious site. The link points directly to the suspicious domain, confirming the intent to harvest login information.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653891,
+    "id": "chatcmpl-f48af071b038eb3981899e57",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 560,
+      "draft_n_accepted": 240,
+      "predicted_ms": 3329.82087,
+      "predicted_n": 321,
+      "predicted_per_second": 96.10126565156642,
+      "predicted_per_token_ms": 10.40569021875,
+      "prompt_ms": 318.106341,
+      "prompt_n": 1065,
+      "prompt_per_second": 3347.9370346786013,
+      "prompt_per_token_ms": 0.2986914,
+      "total_ms": 3658.002199,
+      "ttft_ms": 328.181329
+    },
+    "usage": {
+      "completion_tokens": 321,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1065,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1386
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 321,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1065,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1386
+  }
+}

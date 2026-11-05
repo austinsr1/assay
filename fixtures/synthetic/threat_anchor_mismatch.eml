@@ -1,0 +1,23 @@
+Message-ID: <threat-2@example.test>
+Date: Mon, 02 Nov 2026 09:14:00 -0500
+From: Shared Documents <noreply@document-share.test>
+To: staff@example.edu
+Subject: A document was shared with you
+Authentication-Results: document-share.test; spf=pass smtp.mailfrom=document-share.test; dkim=pass header.d=document-share.test; dmarc=pass
+Content-Type: multipart/alternative; boundary="FIXBOUNDARY"
+
+--FIXBOUNDARY
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+A document has been shared with you.
+example.edu
+
+
+--FIXBOUNDARY
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+<p>A document has been shared with you.</p><p><a href="http://harvest-credentials.test/login">example.edu</a></p>
+
+--FIXBOUNDARY--

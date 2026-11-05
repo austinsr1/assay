@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "1872fc4b10f09f2e0dc60213137eea49e427a99496d662731b71f18cc5c10f59",
+  "latency_ms": 2838.36,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:10:40Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"clean\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"NONE\",\n  \"reasons\": [\n    \"The sender domain is googlemail.com and all authentication checks (SPF, DKIM, DMARC) passed, indicating the message originated from a legitimate Google infrastructure.\",\n    \"The message contains no links, attachments, or executable content, eliminating common vectors for malware or credential harvesting.\",\n    \"The body text is a standard Delivery Status Notification (DSN) reporting a permanent failure to a non-existent test address, which is a routine system-generated event.\",\n    \"There are no indicators of prompt injection, social engineering, or malicious intent in the 132 characters of retained body text.\"\n  ],\n  \"analysis\": \"The message is a standard automated delivery failure notification from a verified Google sender. Technical facts confirm strong authentication (SPF/DKIM/DMARC pass) and the absence of any interactive elements like links or attachments. The content describes a failed delivery to a test address, which is a benign system event. There is no evidence of malicious intent, spam, or manipulation.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653838,
+    "id": "chatcmpl-a40b1f38e2efa154eefbad91",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 455,
+      "draft_n_accepted": 178,
+      "predicted_ms": 2434.9046989999997,
+      "predicted_n": 244,
+      "predicted_per_second": 99.79856710605495,
+      "predicted_per_token_ms": 10.020183946502057,
+      "prompt_ms": 376.266941,
+      "prompt_n": 1012,
+      "prompt_per_second": 2689.5798958856712,
+      "prompt_per_token_ms": 0.37180527766798416,
+      "total_ms": 2836.3955779999997,
+      "ttft_ms": 401.490879
+    },
+    "usage": {
+      "completion_tokens": 244,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1012,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1256
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 244,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1012,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1256
+  }
+}

@@ -1,0 +1,23 @@
+Message-ID: <clean-3@example.test>
+Date: Mon, 02 Nov 2026 09:14:00 -0500
+From: DocuSign Electronic Signature Service <dse@docusign.net>
+To: staff@example.edu
+Subject: Please review and sign: Facilities agreement
+Authentication-Results: docusign.net; dkim=pass header.d=docusign.net; spf=pass smtp.mailfrom=docusign.net; dmarc=pass
+Content-Type: multipart/alternative; boundary="FIXBOUNDARY"
+
+--FIXBOUNDARY
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Please review and sign the attached agreement.
+Review Document: https://docusign.net/signing/abc123
+
+
+--FIXBOUNDARY
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+<p>Please review and sign the attached agreement.</p><p><a href="https://docusign.net/signing/abc123">Review Document</a></p>
+
+--FIXBOUNDARY--

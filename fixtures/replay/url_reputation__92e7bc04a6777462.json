@@ -1,0 +1,39 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "92e7bc04a6777462722bc765fc5a9720449b1f2713e04c33a868ae175d7da897",
+  "latency_ms": 164.07,
+  "model": "",
+  "recorded_at": "2026-11-02T21:11:40Z",
+  "response": {
+    "domain": "url",
+    "signals": [
+      {
+        "experimental": false,
+        "input": "https://deposit-confirm.test/verify",
+        "latency_ms": 16.485,
+        "model": "phishscout",
+        "probability": 0.994909,
+        "repo": "saidutta69/PhishScout-v2",
+        "threshold": 0.52,
+        "verdict": "phishing"
+      },
+      {
+        "decision": "phishing_url",
+        "experimental": false,
+        "input": "https://deposit-confirm.test/verify",
+        "latency_ms": 16.366,
+        "model": "cyberjev",
+        "probabilities": {
+          "legitimate": 0.052466,
+          "phishing": 0.947534
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "phishing"
+      }
+    ],
+    "verdict": "flag"
+  },
+  "schema_version": 1,
+  "tier": "url_reputation",
+  "tokens": null
+}

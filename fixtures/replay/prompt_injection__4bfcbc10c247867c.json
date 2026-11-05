@@ -1,0 +1,29 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "4bfcbc10c247867c586fa9d16804dac2ecacafee00464473e75bfd228512dab1",
+  "latency_ms": 155.394,
+  "model": "",
+  "recorded_at": "2026-11-02T21:10:41Z",
+  "response": {
+    "domain": "prompt_injection",
+    "signals": [
+      {
+        "decision": "prompt_injection",
+        "experimental": false,
+        "input": "Registration for spring term opens Monday at 8am.\r\nNo action is needed until then.\r\n\r\nOffice of the Registrar\r\n",
+        "latency_ms": 20.972,
+        "model": "cyberjev",
+        "probabilities": {
+          "injection": 0.217565,
+          "safe": 0.782435
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "safe"
+      }
+    ],
+    "verdict": "safe"
+  },
+  "schema_version": 1,
+  "tier": "prompt_injection",
+  "tokens": null
+}

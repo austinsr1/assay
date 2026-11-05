@@ -1,0 +1,18 @@
+From: "Accounts Payable" <ap@example.edu>
+To: staff@example.edu
+Subject: Internal Sender Risky Attachment
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=security.example.edu; dkim=pass header.d=security.example.edu; dmarc=pass
+Content-Type: multipart/mixed; boundary="MM"
+MIME-Version: 1.0
+
+--MM
+Content-Type: text/plain; charset="utf-8"
+
+Reminder about the policy update.
+--MM
+Content-Type: application/vnd.ms-word.document.macroEnabled.12
+Content-Disposition: attachment; filename="policy.docm"
+Content-Transfer-Encoding: base64
+
+UEsDBBQAAAAIAA==
+--MM--

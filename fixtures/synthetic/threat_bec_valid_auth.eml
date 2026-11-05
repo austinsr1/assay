@@ -1,0 +1,16 @@
+Message-ID: <threat-7@example.test>
+Date: Mon, 02 Nov 2026 09:14:00 -0500
+From: Colleague Name <colleague@example.edu>
+To: finance@example.edu
+Subject: Quick favor - vendor payment
+Reply-To: colleague.personal@mailbox-external.test
+Authentication-Results: example.edu; spf=pass smtp.mailfrom=example.edu; dkim=pass header.d=example.edu header.i=@example.edu; dmarc=pass
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+I am in meetings all day and cannot take a call.
+
+Can you process the attached vendor payment today? The vendor emailed new remittance details and the old account is closed, so please use the new one on the invoice.
+
+Do not mention this to the rest of the team yet, it is not announced.
+

@@ -1,0 +1,8 @@
+From: "IT Service Desk" <security@security.example.edu>
+To: staff@example.edu
+Subject: Object Embed Payload
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=security.example.edu; dkim=pass header.d=security.example.edu; dmarc=pass
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+
+<html><body><object data="https://harvest-credentials.test/doc.pdf"></object><embed src="https://harvest-credentials.test/alt"></body></html>

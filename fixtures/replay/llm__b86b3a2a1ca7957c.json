@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "b86b3a2a1ca7957cb9215ea47fe0df62de006ca78a3b0cefa3c2a9a407375171",
+  "latency_ms": 3184.319,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:11:20Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"threat\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"MALWARE\",\n  \"reasons\": [\n    \"The technical facts indicate that the single attachment has a dangerous extension from an external sender (attachments_dangerous_extension_from_external_sender: 1).\",\n    \"The message body explicitly instructs the recipient to 'enable content to view,' which is a classic social engineering tactic to bypass security controls and execute malicious code.\",\n    \"The DMARC result is FAIL, indicating a lack of domain alignment and authentication integrity for the sender domain vendor-billing.test.\",\n    \"The combination of a dangerous file type and an explicit instruction to enable content strongly suggests an attempt to deliver malware.\"\n  ],\n  \"analysis\": \"The message exhibits high-risk characteristics typical of a malware delivery attempt. The primary indicator is the presence of an attachment with a dangerous extension from an external source, coupled with the body text urging the user to 'enable content.' This specific instruction is a known vector for executing macros or scripts within documents. Additionally, the DMARC failure suggests the email may not be originating from a properly authenticated source for the claimed domain. While the sender domain is not a lookalike of a protected domain, the malicious nature of the attachment and the social engineering prompt outweigh the lack of domain spoofing indicators. The message is classified as a threat due to the high probability of malware execution.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653877,
+    "id": "chatcmpl-a463bfdde9a73b73b2e3d7a6",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 637,
+      "draft_n_accepted": 208,
+      "predicted_ms": 2869.3511839999996,
+      "predicted_n": 300,
+      "predicted_per_second": 104.20474205711588,
+      "predicted_per_token_ms": 9.596492254180601,
+      "prompt_ms": 286.910199,
+      "prompt_n": 983,
+      "prompt_per_second": 3426.159137688933,
+      "prompt_per_token_ms": 0.2918720233977619,
+      "total_ms": 3182.635745,
+      "ttft_ms": 313.284561
+    },
+    "usage": {
+      "completion_tokens": 300,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 983,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1283
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 300,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 983,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1283
+  }
+}

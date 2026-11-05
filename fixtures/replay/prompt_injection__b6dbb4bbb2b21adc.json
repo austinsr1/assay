@@ -1,0 +1,29 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "b6dbb4bbb2b21adce79ea9220c479fde8d154e768b972d75fb5104cc57d0f16e",
+  "latency_ms": 151.598,
+  "model": "",
+  "recorded_at": "2026-11-02T21:11:12Z",
+  "response": {
+    "domain": "prompt_injection",
+    "signals": [
+      {
+        "decision": "prompt_injection",
+        "experimental": false,
+        "input": "I am in meetings all day and cannot take a call.\r\n\r\nCan you process the attached vendor payment today? The vendor emailed new remittance details and the old account is closed, so please use the new one on the invoice.\r\n\r\nDo not mention this to the rest of the team yet, it is not announced.\r\n\r\n",
+        "latency_ms": 28.09,
+        "model": "cyberjev",
+        "probabilities": {
+          "injection": 0.107602,
+          "safe": 0.892398
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "safe"
+      }
+    ],
+    "verdict": "safe"
+  },
+  "schema_version": 1,
+  "tier": "prompt_injection",
+  "tokens": null
+}

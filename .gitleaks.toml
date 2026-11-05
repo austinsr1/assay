@@ -1,0 +1,63 @@
+# gitleaks configuration for this repository.
+#
+# WHY THIS FILE EXISTS
+#
+# The CyberAgents Exchange screens every submission by scanning the linked repository with
+# gitleaks across full git history, and "any detected credential is an immediate rejection"
+# (docs/contributing_checklist.md, Phase 1). Scanned unconfigured, this repository produces
+# 105 findings - every one of them the `generic-api-key` rule firing on a 64-character
+# lowercase hexadecimal string.
+#
+# Those strings are SHA-256 digests, not secrets. The model-tier replay store is
+# content-addressed: fixtures/replay/index.json maps each recording filename to the digest of
+# the request that produced it, so an offline run can prove it is replaying the response that
+# belongs to that exact input rather than some other one. The digest is the cache key. That
+# is why a single file accounts for 52 of the findings - one key per recording - and the rest
+# are the same digests echoed inside the individual recording files.
+#
+# The one remaining finding is tests/test_google_intake.py, which assigns an obvious fake to
+# a field named `token` in order to assert that the value is never used.
+#
+# WHY THIS IS SCOPED BY SHAPE AND NOT BY PATH
+#
+# The first version of this file allowlisted `fixtures/replay/*.json` by path together with a
+# digest regex, on the assumption that gitleaks required both to match. It does not:
+# conditions within one allowlist are combined with OR, so matching the path alone suppressed
+# every rule in those files. A planted GitHub PAT, Slack token and high-entropy assignment
+# inside fixtures/replay/ were all reported clean. An allowlist that blinds a directory is
+# worse than no scanner, because it also produces a green result - so this version matches
+# only the two literal shapes and leaves every file's full ruleset intact.
+#
+# VERIFIED, NOT ASSUMED
+#
+# The same planted secrets were scanned twice against identical history, once with the
+# default ruleset and once with this file:
+#
+#   default ruleset : 109 findings = 105 digest false positives + 4 real secrets
+#   this file       :   4 findings = the same 4 real secrets
+#
+# The four are github-pat and slack-bot-token inside fixtures/replay/ - the directory the
+# earlier version had blinded - plus github-pat and generic-api-key in an unrelated markdown
+# file. Every digest false positive was suppressed and no real credential was.
+#
+# RESIDUAL RISK, STATED RATHER THAN HIDDEN
+#
+# A genuine secret consisting of exactly 64 lowercase hexadecimal characters would be missed
+# anywhere in this repository. No credential format in general use has that shape - AWS
+# access key ids are AKIA-prefixed, GitHub tokens are ghp_ or github_pat_, OpenAI keys are
+# sk-, Google API keys are AIza-prefixed, Slack tokens are xox-prefixed, Stripe keys are
+# sk_live_ - so the exposure is narrow. It is not zero, and it is the accepted cost of
+# suppressing 105 false positives in a content-addressed cache. This is disclosed in README
+# under "Known limitations" rather than left here where only a reviewer reading the config
+# would find it.
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "SHA-256 digests used as content-addressed replay cache keys"
+regexes = ['''\b[0-9a-f]{64}\b''']
+
+[[allowlists]]
+description = "Obvious fake token literal in a test asserting an unused config is refused"
+regexes = ['''\babc123456789\b''']

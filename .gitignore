@@ -1,0 +1,95 @@
+# ============================================================================
+# This repository is intended to become a PUBLIC CyberAgents Exchange listing.
+# The Exchange auto-scans the FULL git history for secrets, and rejection is
+# automatic. Nothing here may be relaxed without a deliberate decision logged
+# in NOTES.md.
+# ============================================================================
+
+# --- credentials / secrets ---
+*.pem
+*.key
+*.p12
+*service_account*.json
+*service-account*.json
+credentials*.json
+client_secret*.json
+.env
+.env.*
+secrets*
+*.token
+*.apikey
+
+# --- real mail and real alert data: NEVER commit ---
+# Real reported-phishing content contains employee addresses (FERPA-adjacent)
+# and live campaign indicators belonging to the employer.
+# Real mail must never be committed - that is the data policy, and the Exchange
+# scans full history. The exceptions below are generated corpora using RFC 2606
+# reserved domains, produced by a committed generator, so they are reproducible
+# and contain nobody's mail. Adding another corpus means adding another negation
+# here, and tests/test_doc_references.py fails the build if a corpus the tests
+# consume is not actually tracked.
+*.eml
+!fixtures/synthetic/*.eml
+!fixtures/adversarial/*.eml
+!fixtures/attachments/*.eml
+*.mbox
+*.msg
+output*.txt
+alerts*.csv
+comparison_*.csv
+*_comparison*.csv
+ground_truth*.csv
+labels*.csv
+
+# --- run roots, receipts, journals and ledgers: operator state, never committed ---
+# A run root is caller-chosen (`--root`), so `tenable-email run --root .` inside
+# this repository would otherwise write receipts/ and journal.jsonl into the
+# working tree. Against the live feed those carry real message-IDs and sender
+# addresses, and the Exchange scans full git history for exactly that.
+receipts/
+journal.jsonl
+run-root/
+ledger/
+ledger.sqlite3
+*.sqlite3
+*.sqlite3-journal
+
+# --- downloaded public evaluation corpora: fetched, never committed ---
+# Licenses include CC-BY-NC-SA, CC-BY-SA, OpenRAIL, GPL and LGPL, and one set
+# declares no license at all. See docs/EVAL-SUITES.md.
+eval/internal/
+
+# --- local working data and scratch ---
+.scratch/
+data/
+private/
+cache/
+*.local.*
+*.bak
+*.bak-*
+
+# --- python ---
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- model artifacts (download, do not version) ---
+*.onnx
+*.gguf
+*.safetensors
+*.bin
+models/
+
+# --- editor / OS ---
+.DS_Store
+*.swp
+*~
+
+# Review bundles and build output - regenerated, never committed
+dist/

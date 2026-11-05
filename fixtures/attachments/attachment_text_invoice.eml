@@ -1,0 +1,24 @@
+Message-ID: <attachment-text@example.test>
+Date: Mon, 02 Nov 2026 09:30:00 -0500
+From: Accounts Payable <ap@example.edu>
+To: staff@example.edu
+Subject: Invoice 2026-114 summary text
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=example.edu; dkim=pass header.d=example.edu header.i=@example.edu; dmarc=pass
+Content-Type: multipart/mixed; boundary="ATTBOUND"
+
+--ATTBOUND
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Summary text for the invoice attached.
+
+
+--ATTBOUND
+Content-Type: text/plain
+Content-Disposition: attachment; filename="invoice-2026-114.txt"
+Content-Transfer-Encoding: base64
+
+SW52b2ljZSAyMDI2LTExNCBzdW1tYXJ5DQotLS0tLS0tLS0tLS0NCkFtb3VudCBkdWU6IDEsMjQw
+LjAwIChmaWN0aW9uYWwpDQpUZXJtczogbmV0IDMwDQpSZWZlcmVuY2U6IFBPLTg4NDENCg==
+
+--ATTBOUND--

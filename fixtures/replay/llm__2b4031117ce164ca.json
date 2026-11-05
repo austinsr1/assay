@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "2b4031117ce164cad514309597a73374443ae3c5574af4e1a86210d039cf920e",
+  "latency_ms": 3101.632,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:11:23Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"threat\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"CREDENTIAL_HARVEST\",\n  \"reasons\": [\n    \"The message claims to be from 'Accounts Payable' at 'invoice-settlement.test', a domain that does not match the authenticated sender domain 'example.edu', indicating a spoofed or forwarded identity.\",\n    \"The body requests immediate wire payment to avoid service interruption, a classic social engineering tactic used in Business Email Compromise (BEC) and invoice fraud.\",\n    \"The message references an 'attached PDF' containing bank details, but the verified technical facts indicate 'attachment_count: 0', creating a significant signal mismatch where the content claims an artifact that does not exist in the technical inventory.\",\n    \"The subject line 'Fwd: Invoice overdue - immediate payment required' creates urgency and pressure, which are hallmarks of malicious phishing attempts rather than legitimate administrative communications.\"\n  ],\n  \"analysis\": \"The message is a forwarded email claiming to be from an external 'Accounts Payable' department at 'invoice-settlement.test'. Although the outer envelope passes SPF, DKIM, and DMARC for 'example.edu', the content explicitly identifies a different sender domain and requests urgent financial action via wire transfer. The technical facts confirm there are no attachments, contradicting the body's claim that bank details are in a PDF. This discrepancy, combined with the urgency and the request for payment to an unverified external entity, strongly indicates a fraudulent attempt to harvest funds or credentials, likely a Business Email Compromise or invoice fraud scheme.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653880,
+    "id": "chatcmpl-e737d3bb4880fe2287a71795",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 616,
+      "draft_n_accepted": 245,
+      "predicted_ms": 2781.551767,
+      "predicted_n": 334,
+      "predicted_per_second": 119.71734768724151,
+      "predicted_per_token_ms": 8.35300830930931,
+      "prompt_ms": 311.91049699999996,
+      "prompt_n": 1066,
+      "prompt_per_second": 3417.647082265398,
+      "prompt_per_token_ms": 0.2925989652908067,
+      "total_ms": 3099.304028,
+      "ttft_ms": 317.752261
+    },
+    "usage": {
+      "completion_tokens": 334,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1066,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1400
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 334,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1066,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1400
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "9fee8c8a60690a2ad9216e01478ca3e7c16e48433731a63dc842380a71c22e4d",
+  "latency_ms": 4287.553,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:11:17Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"threat\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"BEC\",\n  \"reasons\": [\n    \"The message exhibits classic Business Email Compromise (BEC) indicators by requesting an urgent financial transaction ('process the attached vendor payment today') and citing a change in remittance details.\",\n    \"The instruction to 'Do not mention this to the rest of the team yet' is a social engineering tactic designed to isolate the victim and prevent verification with colleagues, which is a hallmark of BEC attacks.\",\n    \"The technical facts indicate 'reply_to_differs_from_sender: yes' with the reply-to domain being 'mailbox-external.test', which is a strong indicator of a compromised account or spoofing attempt where the attacker controls the reply address to intercept responses.\",\n    \"Although SPF, DKIM, and DMARC pass for 'example.edu', the combination of a mismatched reply-to domain and high-pressure financial requests outweighs the authentication signals, suggesting a compromised internal account or a sophisticated spoofing scenario.\"\n  ],\n  \"analysis\": \"The message is a high-confidence Business Email Compromise (BEC) attempt. It leverages urgency ('in meetings all day', 'today') and secrecy ('Do not mention this') to manipulate the recipient into processing a fraudulent payment. The technical fact that the Reply-To header points to an external domain ('mailbox-external.test') while the sender domain is 'example.edu' is a critical red flag, indicating that the email is likely being sent from a compromised account or via a service that allows external reply routing. While authentication protocols (SPF/DKIM/DMARC) pass, this is consistent with a compromised legitimate account. The request for a vendor payment with changed details is a direct financial fraud attempt.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653872,
+    "id": "chatcmpl-5a15677ca6060c46c51de120",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 756,
+      "draft_n_accepted": 267,
+      "predicted_ms": 3886.8714809999997,
+      "predicted_n": 376,
+      "predicted_per_second": 96.47862087364962,
+      "predicted_per_token_ms": 10.364990615999998,
+      "prompt_ms": 383.036888,
+      "prompt_n": 1042,
+      "prompt_per_second": 2720.3646245162686,
+      "prompt_per_token_ms": 0.3675977811900192,
+      "total_ms": 4285.378348,
+      "ttft_ms": 398.506867
+    },
+    "usage": {
+      "completion_tokens": 376,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1042,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1418
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 376,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1042,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1418
+  }
+}

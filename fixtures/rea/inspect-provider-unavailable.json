@@ -1,0 +1,28 @@
+{
+ "error": "Analysis failed",
+ "code": "provider_unavailable",
+ "category": "unavailable",
+ "message": "Provider selection failed local readiness checks. No target-support refusal was reported. Review the local provider diagnostics or run `rea doctor`, then retry.",
+ "retryable": true,
+ "remediation": {
+  "action": "Provider selection failed local readiness checks. No target-support refusal was reported. Review the local provider diagnostics or run `rea doctor`, then retry."
+ },
+ "candidates_rejected_for_not_configured": [
+  {
+   "provider_id": "ghidra",
+   "code": "not_configured"
+  },
+  {
+   "provider_id": "hopper",
+   "code": "executable_missing"
+  },
+  {
+   "provider_id": "ida",
+   "code": "not_configured"
+  },
+  {
+   "provider_id": "kuna",
+   "code": "not_configured"
+  }
+ ]
+}

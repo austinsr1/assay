@@ -1,0 +1,29 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "8511a89508b7ea30ad3c5b52eaf84a10c995047c844a511e5de1b92cd567ca6c",
+  "latency_ms": 162.757,
+  "model": "",
+  "recorded_at": "2026-11-02T21:11:02Z",
+  "response": {
+    "domain": "prompt_injection",
+    "signals": [
+      {
+        "decision": "prompt_injection",
+        "experimental": false,
+        "input": "Winter clearance ends Sunday.\r\nShop now: https://example-outfitters.com/sale\r\nUnsubscribe: https://example-outfitters.com/u/1\r\n\r\n",
+        "latency_ms": 23.531,
+        "model": "cyberjev",
+        "probabilities": {
+          "injection": 0.229653,
+          "safe": 0.770347
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "safe"
+      }
+    ],
+    "verdict": "safe"
+  },
+  "schema_version": 1,
+  "tier": "prompt_injection",
+  "tokens": null
+}

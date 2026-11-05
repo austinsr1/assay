@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "d67933abf66f14470aaa8f3be6efaab89f7d70eda2d23d44667f263f8674b879",
+  "latency_ms": 3159.738,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:10:44Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"clean\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"NONE\",\n  \"reasons\": [\n    \"The message passes SPF, DKIM, and DMARC authentication checks for the sender domain example.edu, indicating the email originated from an authorized source for that domain.\",\n    \"The sender domain example.edu is a legitimate educational institution domain, and the display name 'Office of the Registrar' is consistent with the sender's identity without claiming a foreign or lookalike identity.\",\n    \"The message contains zero links and zero attachments, eliminating the primary vectors for credential harvesting or malware delivery.\",\n    \"The body text is a standard informational notification about registration timing with no urgent calls to action, requests for credentials, or suspicious instructions.\",\n    \"There are no deterministic prompt injection indicators or attempts to manipulate automated analysis systems within the content.\"\n  ],\n  \"analysis\": \"The message is a standard administrative notification from a university registrar. Technical authentication (SPF, DKIM, DMARC) all pass for the sender domain example.edu. The content is benign, containing no links, attachments, or requests for user action other than being aware of a future date. The lack of interactive elements and the consistent sender identity strongly indicate a legitimate communication.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653841,
+    "id": "chatcmpl-cab8f8f59b02250332cc074d",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 518,
+      "draft_n_accepted": 195,
+      "predicted_ms": 2775.351008,
+      "predicted_n": 270,
+      "predicted_per_second": 96.92467699566743,
+      "predicted_per_token_ms": 10.317289992565057,
+      "prompt_ms": 356.25051099999996,
+      "prompt_n": 991,
+      "prompt_per_second": 2781.750395861187,
+      "prompt_per_token_ms": 0.3594858839556004,
+      "total_ms": 3157.9134409999997,
+      "ttft_ms": 382.562433
+    },
+    "usage": {
+      "completion_tokens": 270,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 991,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1261
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 270,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 991,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1261
+  }
+}

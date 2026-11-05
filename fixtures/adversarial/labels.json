@@ -1,0 +1,110 @@
+[
+  {
+    "file": "form_action_credential_harvest.eml",
+    "case": "form_action_credential_harvest",
+    "status": "closed",
+    "exercises": "a password form posting to a foreign domain; the whole payload is a form and there is no anchor anywhere in the message"
+  },
+  {
+    "file": "meta_refresh_redirect.eml",
+    "case": "meta_refresh_redirect",
+    "status": "closed",
+    "exercises": "an automatic redirect in the head, with a benign anchor in the body to satisfy a link check that only reads anchors"
+  },
+  {
+    "file": "iframe_to_attacker.eml",
+    "case": "iframe_to_attacker",
+    "status": "closed",
+    "exercises": "an embedded frame loading a foreign page inside the client"
+  },
+  {
+    "file": "script_src_payload.eml",
+    "case": "script_src_payload",
+    "status": "closed",
+    "exercises": "a remote script, which is arbitrary code in any client that renders it"
+  },
+  {
+    "file": "object_embed_payload.eml",
+    "case": "object_embed_payload",
+    "status": "closed",
+    "exercises": "object data and embed src, two more destination-bearing attributes"
+  },
+  {
+    "file": "css_url_beacon.eml",
+    "case": "css_url_beacon",
+    "status": "closed",
+    "exercises": "a url() destination inside a style block, invisible to text scanning"
+  },
+  {
+    "file": "style_attribute_beacon.eml",
+    "case": "style_attribute_beacon",
+    "status": "closed",
+    "exercises": "a url() destination inside a style attribute rather than a style block"
+  },
+  {
+    "file": "base_href_hijack.eml",
+    "case": "base_href_hijack",
+    "status": "closed",
+    "exercises": "a base element that silently retargets every relative link; the anchor itself reads as harmless"
+  },
+  {
+    "file": "event_handler_redirect.eml",
+    "case": "event_handler_redirect",
+    "status": "closed",
+    "exercises": "a destination inside an inline event handler attribute"
+  },
+  {
+    "file": "img_src_beacon.eml",
+    "case": "img_src_beacon",
+    "status": "closed",
+    "exercises": "a tracking beacon that leaks the recipient address on load"
+  },
+  {
+    "file": "button_formaction_override.eml",
+    "case": "button_formaction_override",
+    "status": "closed",
+    "exercises": "a form whose action is benign but whose submit button overrides it with formaction, so the destination a reader inspects is not the destination the browser posts to"
+  },
+  {
+    "file": "svg_image_and_use_href.eml",
+    "case": "svg_image_and_use_href",
+    "status": "closed",
+    "exercises": "destinations inside SVG markup, where neither <image href> nor <use xlink:href> is an anchor and neither was enumerated"
+  },
+  {
+    "file": "input_image_formaction.eml",
+    "case": "input_image_formaction",
+    "status": "closed",
+    "exercises": "an image input whose src is the organization's own domain while its formaction posts credentials elsewhere"
+  },
+  {
+    "file": "nested_redirect_wrapper.eml",
+    "case": "nested_redirect_wrapper",
+    "status": "closed",
+    "exercises": "a redirect wrapper whose url= parameter contains a second wrapper, so a one-hop unwrap reports the inner trusted wrapper as the destination"
+  },
+  {
+    "file": "html_alternative_hides_injection.eml",
+    "case": "html_alternative_hides_injection",
+    "status": "closed",
+    "exercises": "R04: injection text in the HTML alternative while the plain-text alternative is benign. Closed by scanning every MIME alternative rather than only the one `msg.body` selects, and labelling each hit with the part that produced it"
+  },
+  {
+    "file": "html_beyond_cap_while_text_is_short.eml",
+    "case": "html_beyond_cap_while_text_is_short",
+    "status": "closed",
+    "exercises": "R05: a short plain-text part beside an HTML part longer than the body cap. The cap discards the anchor and `truncated` used to report False, because only the text part's length was considered. Closed in two parts: truncation is now tracked per MIME part and aggregated, and a truncated message can no longer support an automatic clearance at all, since reporting that content was cut is not the same as examining it"
+  },
+  {
+    "file": "forged_auth_single_header.eml",
+    "case": "forged_auth_single_header",
+    "status": "open",
+    "exercises": "R01 residual: a single sender-supplied Authentication-Results claiming dmarc=pass, with no genuine header present to contradict it. Nothing in a raw .eml distinguishes this from a receiver-added header, so closing it needs the receiving system's own metadata rather than a parser change"
+  },
+  {
+    "file": "internal_sender_risky_attachment.eml",
+    "case": "internal_sender_risky_attachment",
+    "status": "closed",
+    "exercises": "R06: a macro-enabled document from an authenticated internal sender. Closed by making an unexamined high-risk attachment block a clearance whoever sent it, while keeping only the external variant as a THREAT trigger -- an internal sender with a macro document goes to a person rather than being accused"
+  }
+]

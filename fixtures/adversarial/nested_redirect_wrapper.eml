@@ -1,0 +1,8 @@
+From: "IT Service Desk" <security@security.example.edu>
+To: staff@example.edu
+Subject: Nested Redirect Wrapper
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=security.example.edu; dkim=pass header.d=security.example.edu; dmarc=pass
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+
+<html><body><a href="https://safelinks.protection.outlook.com/?url=https%3A%2F%2Fsafelinks.protection.outlook.com%2F%3Furl%3Dhttps%253A%252F%252Fharvest-credentials.test%252Fverify&data=05">Review the secured document</a></body></html>

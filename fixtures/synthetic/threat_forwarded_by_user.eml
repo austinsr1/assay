@@ -1,0 +1,20 @@
+Message-ID: <threat-4@example.test>
+Date: Mon, 02 Nov 2026 09:14:00 -0500
+From: Reporting User <reporter@example.edu>
+To: helpdesk@example.edu
+Subject: Fwd: Invoice overdue - immediate payment required
+Authentication-Results: example.edu; spf=pass smtp.mailfrom=example.edu; dkim=pass header.d=example.edu; dmarc=pass
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Is this real?
+
+---------- Forwarded message ---------
+From: Accounts Payable <ap@invoice-settlement.test>
+Date: Mon, 02 Nov 2026 08:00:00 -0500
+Subject: Invoice overdue - immediate payment required
+To: reporter@example.edu
+
+Your invoice is overdue. Wire payment to the account below today to avoid service interruption.
+Bank details are in the attached PDF.
+

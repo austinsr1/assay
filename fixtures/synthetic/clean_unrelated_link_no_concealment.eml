@@ -1,0 +1,23 @@
+Message-ID: <clean-5@example.test>
+Date: Mon, 02 Nov 2026 09:14:00 -0500
+From: Cloud Page Status <no-reply@cloudpage-status.test>
+To: staff@example.edu
+Subject: Weekly service summary for your workspace
+Authentication-Results: cloudpage-status.test; spf=pass smtp.mailfrom=cloudpage-status.test; dkim=pass header.d=cloudpage-status.test; dmarc=pass
+Content-Type: multipart/alternative; boundary="FIXBOUNDARY"
+
+--FIXBOUNDARY
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+The weekly service summary for your workspace is ready.
+docs.anyserviceprovider.test/weekly/2291: https://docs.anyserviceprovider.test/weekly/2291
+
+
+--FIXBOUNDARY
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+<p>The weekly service summary for your workspace is ready.</p><p><a href="https://docs.anyserviceprovider.test/weekly/2291">docs.anyserviceprovider.test/weekly/2291</a></p>
+
+--FIXBOUNDARY--

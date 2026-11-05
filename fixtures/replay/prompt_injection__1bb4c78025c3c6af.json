@@ -1,0 +1,29 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "1bb4c78025c3c6af047ba50aab237c774fcf9f3eb20d87fba9b71ae0826f77ab",
+  "latency_ms": 106.888,
+  "model": "",
+  "recorded_at": "2026-11-02T21:10:49Z",
+  "response": {
+    "domain": "prompt_injection",
+    "signals": [
+      {
+        "decision": "prompt_injection",
+        "experimental": false,
+        "input": "The weekly service summary for your workspace is ready.\r\ndocs.anyserviceprovider.test/weekly/2291: https://docs.anyserviceprovider.test/weekly/2291\r\n\r\n",
+        "latency_ms": 29.606,
+        "model": "cyberjev",
+        "probabilities": {
+          "injection": 0.063163,
+          "safe": 0.936837
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "safe"
+      }
+    ],
+    "verdict": "safe"
+  },
+  "schema_version": 1,
+  "tier": "prompt_injection",
+  "tokens": null
+}

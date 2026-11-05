@@ -1,0 +1,196 @@
+{
+  "capabilities": [
+    {
+      "provider": {
+        "id": "native-macos",
+        "name": "macOS native inspection utilities",
+        "version": null
+      },
+      "shared_limitations": [
+        "Availability and textual formats depend on the installed macOS/Xcode toolchain."
+      ],
+      "groups": [
+        {
+          "operations": [
+            "capture_native_ui_scenario",
+            "observe_native_calls"
+          ],
+          "effects": [
+            "launches_process",
+            "may_show_ui",
+            "may_access_network",
+            "may_write_filesystem"
+          ],
+          "limitations": [],
+          "available": false,
+          "reason": "Native macOS utilities require macOS.",
+          "availability_code": "unsupported_host"
+        },
+        {
+          "operations": [
+            "demangle_swift",
+            "inspect_macho",
+            "inspect_plist",
+            "list_architectures"
+          ],
+          "effects": [
+            "launches_process"
+          ],
+          "limitations": [],
+          "available": false,
+          "reason": "Native macOS utilities require macOS.",
+          "availability_code": "unsupported_host"
+        },
+        {
+          "operations": [
+            "inspect_native_dispatch_metadata"
+          ],
+          "effects": [],
+          "limitations": [],
+          "available": false,
+          "reason": "Native macOS utilities require macOS.",
+          "availability_code": "unsupported_host"
+        },
+        {
+          "operations": [
+            "inspect_signature",
+            "observe_native_ui"
+          ],
+          "effects": [
+            "launches_process",
+            "may_write_filesystem"
+          ],
+          "limitations": [],
+          "available": false,
+          "reason": "Native macOS utilities require macOS.",
+          "availability_code": "unsupported_host"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "rea-artifact-graph",
+        "name": "REA safe artifact graph provider",
+        "version": "1"
+      },
+      "shared_limitations": [
+        "DMG child inventory automatically uses a read-only native macOS mount; PKG remains root-hash-only.",
+        "ASAR files discovered in filesystem-backed inventories are expanded without bulk extraction; other nested containers remain recorded only."
+      ],
+      "groups": [
+        {
+          "operations": [
+            "decode_interface_builder",
+            "inspect_keyed_archive",
+            "trace_dylib_resolution"
+          ],
+          "effects": [],
+          "limitations": [],
+          "available": true,
+          "reason": null,
+          "availability_code": null
+        },
+        {
+          "operations": [
+            "extract_artifact",
+            "inspect_artifact"
+          ],
+          "effects": [
+            "launches_process",
+            "may_write_filesystem"
+          ],
+          "limitations": [],
+          "available": true,
+          "reason": null,
+          "availability_code": null
+        },
+        {
+          "operations": [
+            "inspect_asset_catalog"
+          ],
+          "effects": [
+            "launches_process"
+          ],
+          "limitations": [],
+          "available": false,
+          "reason": "Apple asset catalogs require macOS assetutil.",
+          "availability_code": "unsupported_host"
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "rea-dotnet-static",
+        "name": "REA managed static analysis provider",
+        "version": "1"
+      },
+      "shared_limitations": [],
+      "groups": [
+        {
+          "operations": [
+            "inspect_managed_artifact"
+          ],
+          "effects": [],
+          "limitations": [
+            "This capability inventories PE/CLI identity only; inspect_managed_members admits metadata members, signatures, and CIL anchors.",
+            "It never loads the target assembly, resolves dependencies through a CLR, decompiles C#, or executes target code."
+          ],
+          "available": true,
+          "reason": null,
+          "availability_code": null
+        },
+        {
+          "operations": [
+            "inspect_managed_members"
+          ],
+          "effects": [],
+          "limitations": [
+            "This capability decodes PE/CLI metadata members, signatures, and file-backed method bodies; decompiled C# reconstruction and cross-build member comparison are separate operations.",
+            "It never loads the target assembly, resolves dependencies through a CLR, decompiles C#, or executes target code."
+          ],
+          "available": true,
+          "reason": null,
+          "availability_code": null
+        },
+        {
+          "operations": [
+            "inspect_managed_native_boundaries"
+          ],
+          "effects": [],
+          "limitations": [
+            "This capability inventories managed declarations for native boundaries only; native exports, thunks, and addresses require separate native-provider evidence.",
+            "It never loads the target assembly, resolves dependencies through a CLR, decompiles C#, or executes target code."
+          ],
+          "available": true,
+          "reason": null,
+          "availability_code": null
+        }
+      ]
+    },
+    {
+      "provider": {
+        "id": "sqlite",
+        "name": "REA SQLite database inspector",
+        "version": null
+      },
+      "shared_limitations": [
+        "SQLite inspection requires Node.js 24.x >=24.15 or 26+ with the native DatabaseSync.limits API. Other REA features retain their published runtime requirements. The inspection worker verifies the API before querying the snapshot."
+      ],
+      "groups": [
+        {
+          "operations": [
+            "inspect_sqlite_database"
+          ],
+          "effects": [
+            "launches_process",
+            "may_write_filesystem"
+          ],
+          "limitations": [],
+          "available": false,
+          "reason": "SQLite inspection requires Node.js 24.x >=24.15 or 26+ with the native DatabaseSync.limits API. Other REA features retain their published runtime requirements. The inspection worker verifies the API before querying the snapshot.",
+          "availability_code": "unsupported_version"
+        }
+      ]
+    }
+  ]
+}

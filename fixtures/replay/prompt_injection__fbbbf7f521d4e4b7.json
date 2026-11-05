@@ -1,0 +1,29 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "fbbbf7f521d4e4b7d193e3e6af6f32530428b38138cfcc172d169135d3f4ff76",
+  "latency_ms": 169.535,
+  "model": "",
+  "recorded_at": "2026-11-02T21:11:08Z",
+  "response": {
+    "domain": "prompt_injection",
+    "signals": [
+      {
+        "decision": "prompt_injection",
+        "experimental": false,
+        "input": "A document has been shared with you.\r\nexample.edu\r\n\r\n",
+        "latency_ms": 25.525,
+        "model": "cyberjev",
+        "probabilities": {
+          "injection": 0.974433,
+          "safe": 0.025567
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "injection"
+      }
+    ],
+    "verdict": "injection"
+  },
+  "schema_version": 1,
+  "tier": "prompt_injection",
+  "tokens": null
+}

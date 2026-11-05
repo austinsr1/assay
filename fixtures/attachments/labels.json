@@ -1,0 +1,47 @@
+[
+  {
+    "file": "attachment_zip_summary.eml",
+    "case": "attachment_zip_summary",
+    "label": "benign",
+    "exercises": [
+      "zip_attachment",
+      "attachment_bytes",
+      "container_inventory",
+      "digest_bound_analysis"
+    ],
+    "notes": "A ZIP whose bytes are retained, so the attachment layer has a container to hash and hand to the optional static analyzer. Built by _zip_payload() with stdlib zipfile; sha256 of the archive is 920186e6d469ba5abc6d680d3662bee77518987301c256781d827f44c3e453d1. Payload is two text files with fictional content."
+  },
+  {
+    "file": "attachment_text_invoice.eml",
+    "case": "attachment_text_invoice",
+    "label": "benign",
+    "exercises": [
+      "text_attachment",
+      "attachment_bytes",
+      "readable_extension"
+    ],
+    "notes": "The simplest retained payload: a plain-text part with ordinary business content. Included so the analysis path is exercised by a non-container as well as by a ZIP, and so a reader can compare what the analyzer reports for each."
+  },
+  {
+    "file": "attachment_over_limit.eml",
+    "case": "attachment_over_limit",
+    "label": "benign",
+    "exercises": [
+      "oversized_part",
+      "truncated",
+      "hash_retained_without_bytes"
+    ],
+    "notes": "A 32760-byte text part: the largest attachment in either corpus. It exceeds the shipped 8 MiB retention limit only when a test lowers it, which is what tests/test_attachments.py does rather than commit 11 MB of base64 to a public repository; under that lowered limit the part is hashed, its size and sha256 are recorded and its bytes are dropped, so the deep-analysis component must refuse it instead of analyzing nothing and reporting an empty container."
+  },
+  {
+    "file": "attachment_traversal_filename.eml",
+    "case": "attachment_traversal_filename",
+    "label": "benign",
+    "exercises": [
+      "untrusted_filename",
+      "path_traversal_name",
+      "name_not_used_as_path"
+    ],
+    "notes": "The Content-Disposition filename is a path-traversal shape. The payload is one inert line: what this case exists to test is that a filename from an untrusted message never becomes a path the analyzer writes to. src/tenable_email/attachments.py stages the bytes under a name derived from the digest and keeps only a sanitized extension."
+  }
+]

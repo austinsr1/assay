@@ -1,0 +1,8 @@
+From: "IT Service Desk" <security@security.example.edu>
+To: staff@example.edu
+Subject: Iframe To Attacker
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=security.example.edu; dkim=pass header.d=security.example.edu; dmarc=pass
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+
+<html><body><iframe src="https://harvest-credentials.test/phish" width="600" height="400"></iframe></body></html>

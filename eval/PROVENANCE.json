@@ -1,0 +1,556 @@
+{
+  "commit": "21a9f7d39532ec5bac0dcf1aca0fa5b77eda5741",
+  "datasets": {
+    "deepset/prompt-injections": {
+      "api_url": "https://huggingface.co/api/datasets/deepset/prompt-injections",
+      "datasets_server_licenses": [
+        "cc-by-4.0"
+      ],
+      "files": {
+        "README.md": {
+          "bytes": 500,
+          "fetched_at": "2026-11-03T22:44:51Z",
+          "format": "text",
+          "local_path": "eval/internal/deepset-prompt-injections/README.md",
+          "role": "dataset-card",
+          "row_count": null,
+          "row_count_method": "not a row-bearing file (dataset card / prose)",
+          "sha256": "d90b4518dfe06154deeec938243d1ec9119bdfbfd2105aee9cf1567999764b94",
+          "source_url": "https://huggingface.co/datasets/deepset/prompt-injections/resolve/4f61ecb038e9c3fb77e21034b22511b523772cdd/README.md",
+          "upstream_digest_match": null,
+          "upstream_lfs_sha256": null
+        },
+        "data/test-00000-of-00001-701d16158af87368.parquet": {
+          "bytes": 10892,
+          "fetched_at": "2026-11-03T22:44:51Z",
+          "format": "parquet",
+          "local_path": "eval/internal/deepset-prompt-injections/test-00000-of-00001-701d16158af87368.parquet",
+          "role": "labelled-injection-messages",
+          "row_count": 116,
+          "row_count_method": "Parquet FileMetaData num_rows (footer field 3, Thrift compact)",
+          "sha256": "39ac797cabc157eeed58435a08593b2952bb6cb16fc394a2d383f447cc7b246e",
+          "source_url": "https://huggingface.co/datasets/deepset/prompt-injections/resolve/4f61ecb038e9c3fb77e21034b22511b523772cdd/data/test-00000-of-00001-701d16158af87368.parquet",
+          "upstream_digest_match": true,
+          "upstream_lfs_sha256": "39ac797cabc157eeed58435a08593b2952bb6cb16fc394a2d383f447cc7b246e"
+        },
+        "data/train-00000-of-00001-9564e8b05b4757ab.parquet": {
+          "bytes": 40323,
+          "fetched_at": "2026-11-03T22:44:50Z",
+          "format": "parquet",
+          "local_path": "eval/internal/deepset-prompt-injections/train-00000-of-00001-9564e8b05b4757ab.parquet",
+          "role": "labelled-injection-messages",
+          "row_count": 546,
+          "row_count_method": "Parquet FileMetaData num_rows (footer field 3, Thrift compact)",
+          "sha256": "2e10bc7ab30f542c97e4e83e2a5683000b5057d25ec10908784c631d44124c04",
+          "source_url": "https://huggingface.co/datasets/deepset/prompt-injections/resolve/4f61ecb038e9c3fb77e21034b22511b523772cdd/data/train-00000-of-00001-9564e8b05b4757ab.parquet",
+          "upstream_digest_match": true,
+          "upstream_lfs_sha256": "2e10bc7ab30f542c97e4e83e2a5683000b5057d25ec10908784c631d44124c04"
+        }
+      },
+      "license_field": "cardData.license",
+      "license_limits": [
+        "cardData.license says apache-2.0 while the datasets-server conversion metadata reports cc-by-4.0 for the same dataset. The gate acts on the card, which is the declaration the upstream author made in the repository, and records the disagreement in the manifest so a reader sees it rather than discovering it. That disagreement is NOT resolved by this corpus being measured: if the converted metadata is the operative licence, an Apache-2.0 MIT submission still cannot ship derived artifacts of it, and only the rows came from the converter.",
+        "Ships only as Parquet, so its text does not come from the repository file: the rows are read from the datasets-server ROWS API, which serves Hugging Face's converted Parquet, and it is that conversion which declares cc-by-4.0. The pinned sha256 describes the repository object; the two objects are cross-checked by row count and split name.",
+        "Upstream labels are the integers 0 and 1 in the JSON rows. 1 maps to 'hostile' (must not be cleared) and 0 to 'clean' (must not be accused); 1 is not mapped to 'threat', which would assert a credential-harvest judgement about a text prompt."
+      ],
+      "license_observed": "apache-2.0",
+      "license_observed_at_fetch": "apache-2.0",
+      "license_verified_on": "2026-11-03",
+      "revision": "4f61ecb038e9c3fb77e21034b22511b523772cdd",
+      "revision_source": "https://huggingface.co/api/datasets/deepset/prompt-injections field 'sha'",
+      "rows": {
+        "test": {
+          "api_url_for_split": "https://datasets-server.huggingface.co/rows?dataset=deepset/prompt-injections&config=default&split=test&offset={offset}&length={length}",
+          "api_url_template": "https://datasets-server.huggingface.co/rows?dataset={dataset}&config={config}&split={split}&offset={offset}&length={length}",
+          "bytes": 31933,
+          "cache_contains_row_text": true,
+          "config": "default",
+          "conversion_note": "Two different objects, both recorded. The repository file (sha256 pinned in the manifest, fetched from the /resolve/ URL at the pinned revision) is the artifact the licence and that digest describe. The text this harness measured came from the Hugging Face datasets-server ROWS API, which serves the dataset's own CONVERTED Parquet: those bytes are produced by Hugging Face's converter, are NOT the repository file, and do not carry the pinned digest. What survives the distinction is the row count and the split name, cross-checked between the two objects; what does not is any claim that the measured text was hash-verified against the repository file. It was verified against the retrieval recorded beside it.",
+          "local_path": "eval/internal/deepset-prompt-injections/rows/test.json",
+          "num_rows_total": 116,
+          "pagination": {
+            "length": 100,
+            "num_rows_per_page_reported_by_service": 100,
+            "offsets": [
+              0,
+              100
+            ],
+            "pages_requested": 2
+          },
+          "pinned_file_row_count": 116,
+          "pinned_file_sha256": "39ac797cabc157eeed58435a08593b2952bb6cb16fc394a2d383f447cc7b246e",
+          "repo_path": "data/test-00000-of-00001-701d16158af87368.parquet",
+          "retrieved_at": "2026-11-04T00:02:20Z",
+          "revision": "4f61ecb038e9c3fb77e21034b22511b523772cdd",
+          "row_counts_agree": true,
+          "rows_retrieved": 116,
+          "rows_with_truncated_cells": 0,
+          "sha256": "8dbaceb427e036f2c6b755236321b9c10a34c5a23228a164f5bc50c64eaa1c01",
+          "source": "datasets-server ROWS API - Hugging Face's converted Parquet, NOT the repository file at the pinned revision",
+          "split": "test",
+          "splits_endpoint": "https://datasets-server.huggingface.co/splits?dataset=deepset/prompt-injections"
+        },
+        "train": {
+          "api_url_for_split": "https://datasets-server.huggingface.co/rows?dataset=deepset/prompt-injections&config=default&split=train&offset={offset}&length={length}",
+          "api_url_template": "https://datasets-server.huggingface.co/rows?dataset={dataset}&config={config}&split={split}&offset={offset}&length={length}",
+          "bytes": 137732,
+          "cache_contains_row_text": true,
+          "config": "default",
+          "conversion_note": "Two different objects, both recorded. The repository file (sha256 pinned in the manifest, fetched from the /resolve/ URL at the pinned revision) is the artifact the licence and that digest describe. The text this harness measured came from the Hugging Face datasets-server ROWS API, which serves the dataset's own CONVERTED Parquet: those bytes are produced by Hugging Face's converter, are NOT the repository file, and do not carry the pinned digest. What survives the distinction is the row count and the split name, cross-checked between the two objects; what does not is any claim that the measured text was hash-verified against the repository file. It was verified against the retrieval recorded beside it.",
+          "local_path": "eval/internal/deepset-prompt-injections/rows/train.json",
+          "num_rows_total": 546,
+          "pagination": {
+            "length": 100,
+            "num_rows_per_page_reported_by_service": 100,
+            "offsets": [
+              0,
+              100,
+              200,
+              300,
+              400,
+              500
+            ],
+            "pages_requested": 6
+          },
+          "pinned_file_row_count": 546,
+          "pinned_file_sha256": "2e10bc7ab30f542c97e4e83e2a5683000b5057d25ec10908784c631d44124c04",
+          "repo_path": "data/train-00000-of-00001-9564e8b05b4757ab.parquet",
+          "retrieved_at": "2026-11-04T00:02:19Z",
+          "revision": "4f61ecb038e9c3fb77e21034b22511b523772cdd",
+          "row_counts_agree": true,
+          "rows_retrieved": 546,
+          "rows_with_truncated_cells": 0,
+          "sha256": "56bf907b736ce364c2dd91faa5d574c7cb1509a08d773092f8bcc87ca64aa3f0",
+          "source": "datasets-server ROWS API - Hugging Face's converted Parquet, NOT the repository file at the pinned revision",
+          "split": "train",
+          "splits_endpoint": "https://datasets-server.huggingface.co/splits?dataset=deepset/prompt-injections"
+        }
+      },
+      "rows_source_note": "Two different objects, both recorded. The repository file (sha256 pinned in the manifest, fetched from the /resolve/ URL at the pinned revision) is the artifact the licence and that digest describe. The text this harness measured came from the Hugging Face datasets-server ROWS API, which serves the dataset's own CONVERTED Parquet: those bytes are produced by Hugging Face's converter, are NOT the repository file, and do not carry the pinned digest. What survives the distinction is the row count and the split name, cross-checked between the two objects; what does not is any claim that the measured text was hash-verified against the repository file. It was verified against the retrieval recorded beside it.",
+      "slug": "deepset-prompt-injections"
+    },
+    "jackhhao/jailbreak-classification": {
+      "api_url": "https://huggingface.co/api/datasets/jackhhao/jailbreak-classification",
+      "datasets_server_licenses": [],
+      "files": {
+        "README.md": {
+          "bytes": 988,
+          "fetched_at": "2026-11-03T22:44:51Z",
+          "format": "text",
+          "local_path": "eval/internal/jackhhao-jailbreak-classification/README.md",
+          "role": "dataset-card",
+          "row_count": null,
+          "row_count_method": "not a row-bearing file (dataset card / prose)",
+          "sha256": "4698cabf6cef60b56885cdd49c6a4386909c16715e89a06ba1e80ebef8fc93be",
+          "source_url": "https://huggingface.co/datasets/jackhhao/jailbreak-classification/resolve/2f2ceeb39658696fd3f462403562b6eea5306287/README.md",
+          "upstream_digest_match": null,
+          "upstream_lfs_sha256": null
+        },
+        "default/jailbreak_dataset_test.csv": {
+          "bytes": 453350,
+          "fetched_at": "2026-11-03T22:44:51Z",
+          "format": "csv",
+          "local_path": "eval/internal/jackhhao-jailbreak-classification/jailbreak_dataset_test.csv",
+          "role": "labelled-jailbreak-messages",
+          "row_count": 400,
+          "row_count_method": "csv.reader records minus the header line (quoted fields may contain newlines, so this is not a line count)",
+          "sha256": "a546ce540973d8f5ef87ce3be4bd21ee5923154b9dda86eba5a12c7fa00829da",
+          "source_url": "https://huggingface.co/datasets/jackhhao/jailbreak-classification/resolve/2f2ceeb39658696fd3f462403562b6eea5306287/default/jailbreak_dataset_test.csv",
+          "upstream_digest_match": null,
+          "upstream_lfs_sha256": null
+        }
+      },
+      "license_field": "cardData.license",
+      "license_limits": [
+        "Text aimed at an LLM, not email. No headers, no links, no attachments.",
+        "Upstream labels are 'jailbreak' and 'benign'. They map to 'hostile' (must not be cleared) and 'clean' (must not be accused); 'jailbreak' is not a claim that the message is a credential phish."
+      ],
+      "license_observed": "apache-2.0",
+      "license_observed_at_fetch": "apache-2.0",
+      "license_verified_on": "2026-11-03",
+      "revision": "2f2ceeb39658696fd3f462403562b6eea5306287",
+      "revision_source": "https://huggingface.co/api/datasets/jackhhao/jailbreak-classification field 'sha'",
+      "rows": {},
+      "slug": "jackhhao-jailbreak-classification"
+    },
+    "leolee99/NotInject": {
+      "api_url": "https://huggingface.co/api/datasets/leolee99/NotInject",
+      "datasets_server_licenses": [],
+      "files": {
+        "README.md": {
+          "bytes": 2973,
+          "fetched_at": "2026-11-03T22:44:52Z",
+          "format": "text",
+          "local_path": "eval/internal/notinject/README.md",
+          "role": "dataset-card",
+          "row_count": null,
+          "row_count_method": "not a row-bearing file (dataset card / prose)",
+          "sha256": "ffaf685021522a526f94af2047e5099ec6b7439a462c67e0ecaca0d631a0d43f",
+          "source_url": "https://huggingface.co/datasets/leolee99/NotInject/resolve/847ae76cf8fea5ed325429e569ae8cfef022d2e0/README.md",
+          "upstream_digest_match": null,
+          "upstream_lfs_sha256": null
+        },
+        "data/NotInject_one-00000-of-00001.parquet": {
+          "bytes": 10859,
+          "fetched_at": "2026-11-03T22:44:51Z",
+          "format": "parquet",
+          "local_path": "eval/internal/notinject/NotInject_one-00000-of-00001.parquet",
+          "role": "benign-messages",
+          "row_count": 113,
+          "row_count_method": "Parquet FileMetaData num_rows (footer field 3, Thrift compact)",
+          "sha256": "5b1d3a8ec341205305efd8c6d2cabeb5ba0f594dd8726b08ee7fde1a46ddc6ec",
+          "source_url": "https://huggingface.co/datasets/leolee99/NotInject/resolve/847ae76cf8fea5ed325429e569ae8cfef022d2e0/data/NotInject_one-00000-of-00001.parquet",
+          "upstream_digest_match": true,
+          "upstream_lfs_sha256": "5b1d3a8ec341205305efd8c6d2cabeb5ba0f594dd8726b08ee7fde1a46ddc6ec"
+        },
+        "data/NotInject_three-00000-of-00001.parquet": {
+          "bytes": 13009,
+          "fetched_at": "2026-11-03T22:44:52Z",
+          "format": "parquet",
+          "local_path": "eval/internal/notinject/NotInject_three-00000-of-00001.parquet",
+          "role": "benign-messages",
+          "row_count": 113,
+          "row_count_method": "Parquet FileMetaData num_rows (footer field 3, Thrift compact)",
+          "sha256": "d5c685b123570c092a0f374ba6bdf324b2026d905a2751a243eb2bb360d411a8",
+          "source_url": "https://huggingface.co/datasets/leolee99/NotInject/resolve/847ae76cf8fea5ed325429e569ae8cfef022d2e0/data/NotInject_three-00000-of-00001.parquet",
+          "upstream_digest_match": true,
+          "upstream_lfs_sha256": "d5c685b123570c092a0f374ba6bdf324b2026d905a2751a243eb2bb360d411a8"
+        },
+        "data/NotInject_two-00000-of-00001.parquet": {
+          "bytes": 11183,
+          "fetched_at": "2026-11-03T22:44:52Z",
+          "format": "parquet",
+          "local_path": "eval/internal/notinject/NotInject_two-00000-of-00001.parquet",
+          "role": "benign-messages",
+          "row_count": 113,
+          "row_count_method": "Parquet FileMetaData num_rows (footer field 3, Thrift compact)",
+          "sha256": "a5a8c1b3b851b0b5acc3b6caf8bfee26d7da631b2967dd31ca90358df8883feb",
+          "source_url": "https://huggingface.co/datasets/leolee99/NotInject/resolve/847ae76cf8fea5ed325429e569ae8cfef022d2e0/data/NotInject_two-00000-of-00001.parquet",
+          "upstream_digest_match": true,
+          "upstream_lfs_sha256": "a5a8c1b3b851b0b5acc3b6caf8bfee26d7da631b2967dd31ca90358df8883feb"
+        }
+      },
+      "license_field": "cardData.license",
+      "license_limits": [
+        "Ships only as Parquet, so its text does not come from the repository file: the rows are read from the datasets-server ROWS API, which serves Hugging Face's converted Parquet. The pinned sha256 describes the repository object, the retrieval record describes the converted one, and the two are cross-checked by row count and split name - not by digest, because they are different bytes.",
+        "No label column of any kind. The set is benign by the upstream card's stated purpose - prompts that contain injection trigger words and are not injections - so it carries zero positives by construction and can only measure over-defense, never coverage.",
+        "The three NotInject_* files are the same bytes as train/validation/test (identical upstream LFS digests); one of each is fetched."
+      ],
+      "license_observed": "mit",
+      "license_observed_at_fetch": "mit",
+      "license_verified_on": "2026-11-03",
+      "revision": "847ae76cf8fea5ed325429e569ae8cfef022d2e0",
+      "revision_source": "https://huggingface.co/api/datasets/leolee99/NotInject field 'sha'",
+      "rows": {
+        "NotInject_one": {
+          "api_url_for_split": "https://datasets-server.huggingface.co/rows?dataset=leolee99/NotInject&config=default&split=NotInject_one&offset={offset}&length={length}",
+          "api_url_template": "https://datasets-server.huggingface.co/rows?dataset={dataset}&config={config}&split={split}&offset={offset}&length={length}",
+          "bytes": 35317,
+          "cache_contains_row_text": true,
+          "config": "default",
+          "conversion_note": "Two different objects, both recorded. The repository file (sha256 pinned in the manifest, fetched from the /resolve/ URL at the pinned revision) is the artifact the licence and that digest describe. The text this harness measured came from the Hugging Face datasets-server ROWS API, which serves the dataset's own CONVERTED Parquet: those bytes are produced by Hugging Face's converter, are NOT the repository file, and do not carry the pinned digest. What survives the distinction is the row count and the split name, cross-checked between the two objects; what does not is any claim that the measured text was hash-verified against the repository file. It was verified against the retrieval recorded beside it.",
+          "local_path": "eval/internal/notinject/rows/NotInject_one.json",
+          "num_rows_total": 113,
+          "pagination": {
+            "length": 100,
+            "num_rows_per_page_reported_by_service": 100,
+            "offsets": [
+              0,
+              100
+            ],
+            "pages_requested": 2
+          },
+          "pinned_file_row_count": 113,
+          "pinned_file_sha256": "5b1d3a8ec341205305efd8c6d2cabeb5ba0f594dd8726b08ee7fde1a46ddc6ec",
+          "repo_path": "data/NotInject_one-00000-of-00001.parquet",
+          "retrieved_at": "2026-11-04T00:02:04Z",
+          "revision": "847ae76cf8fea5ed325429e569ae8cfef022d2e0",
+          "row_counts_agree": true,
+          "rows_retrieved": 113,
+          "rows_with_truncated_cells": 0,
+          "sha256": "4d24ce8f6630f80b39763816f22729262944656d02ead311ae6e41bd7396b275",
+          "source": "datasets-server ROWS API - Hugging Face's converted Parquet, NOT the repository file at the pinned revision",
+          "split": "NotInject_one",
+          "splits_endpoint": "https://datasets-server.huggingface.co/splits?dataset=leolee99/NotInject"
+        },
+        "NotInject_three": {
+          "api_url_for_split": "https://datasets-server.huggingface.co/rows?dataset=leolee99/NotInject&config=default&split=NotInject_three&offset={offset}&length={length}",
+          "api_url_template": "https://datasets-server.huggingface.co/rows?dataset={dataset}&config={config}&split={split}&offset={offset}&length={length}",
+          "bytes": 43092,
+          "cache_contains_row_text": true,
+          "config": "default",
+          "conversion_note": "Two different objects, both recorded. The repository file (sha256 pinned in the manifest, fetched from the /resolve/ URL at the pinned revision) is the artifact the licence and that digest describe. The text this harness measured came from the Hugging Face datasets-server ROWS API, which serves the dataset's own CONVERTED Parquet: those bytes are produced by Hugging Face's converter, are NOT the repository file, and do not carry the pinned digest. What survives the distinction is the row count and the split name, cross-checked between the two objects; what does not is any claim that the measured text was hash-verified against the repository file. It was verified against the retrieval recorded beside it.",
+          "local_path": "eval/internal/notinject/rows/NotInject_three.json",
+          "num_rows_total": 113,
+          "pagination": {
+            "length": 100,
+            "num_rows_per_page_reported_by_service": 100,
+            "offsets": [
+              0,
+              100
+            ],
+            "pages_requested": 2
+          },
+          "pinned_file_row_count": 113,
+          "pinned_file_sha256": "d5c685b123570c092a0f374ba6bdf324b2026d905a2751a243eb2bb360d411a8",
+          "repo_path": "data/NotInject_three-00000-of-00001.parquet",
+          "retrieved_at": "2026-11-04T00:02:07Z",
+          "revision": "847ae76cf8fea5ed325429e569ae8cfef022d2e0",
+          "row_counts_agree": true,
+          "rows_retrieved": 113,
+          "rows_with_truncated_cells": 0,
+          "sha256": "5f476d36372c63bcfd3484e85ad3e31308ab67af697d527cc1e3e106bcd7f2c7",
+          "source": "datasets-server ROWS API - Hugging Face's converted Parquet, NOT the repository file at the pinned revision",
+          "split": "NotInject_three",
+          "splits_endpoint": "https://datasets-server.huggingface.co/splits?dataset=leolee99/NotInject"
+        },
+        "NotInject_two": {
+          "api_url_for_split": "https://datasets-server.huggingface.co/rows?dataset=leolee99/NotInject&config=default&split=NotInject_two&offset={offset}&length={length}",
+          "api_url_template": "https://datasets-server.huggingface.co/rows?dataset={dataset}&config={config}&split={split}&offset={offset}&length={length}",
+          "bytes": 37839,
+          "cache_contains_row_text": true,
+          "config": "default",
+          "conversion_note": "Two different objects, both recorded. The repository file (sha256 pinned in the manifest, fetched from the /resolve/ URL at the pinned revision) is the artifact the licence and that digest describe. The text this harness measured came from the Hugging Face datasets-server ROWS API, which serves the dataset's own CONVERTED Parquet: those bytes are produced by Hugging Face's converter, are NOT the repository file, and do not carry the pinned digest. What survives the distinction is the row count and the split name, cross-checked between the two objects; what does not is any claim that the measured text was hash-verified against the repository file. It was verified against the retrieval recorded beside it.",
+          "local_path": "eval/internal/notinject/rows/NotInject_two.json",
+          "num_rows_total": 113,
+          "pagination": {
+            "length": 100,
+            "num_rows_per_page_reported_by_service": 100,
+            "offsets": [
+              0,
+              100
+            ],
+            "pages_requested": 2
+          },
+          "pinned_file_row_count": 113,
+          "pinned_file_sha256": "a5a8c1b3b851b0b5acc3b6caf8bfee26d7da631b2967dd31ca90358df8883feb",
+          "repo_path": "data/NotInject_two-00000-of-00001.parquet",
+          "retrieved_at": "2026-11-04T00:02:05Z",
+          "revision": "847ae76cf8fea5ed325429e569ae8cfef022d2e0",
+          "row_counts_agree": true,
+          "rows_retrieved": 113,
+          "rows_with_truncated_cells": 0,
+          "sha256": "55418f399fa1336320b16e45de999626c43d23f72a1833d770e92e6b5e2cbd8f",
+          "source": "datasets-server ROWS API - Hugging Face's converted Parquet, NOT the repository file at the pinned revision",
+          "split": "NotInject_two",
+          "splits_endpoint": "https://datasets-server.huggingface.co/splits?dataset=leolee99/NotInject"
+        }
+      },
+      "rows_source_note": "Two different objects, both recorded. The repository file (sha256 pinned in the manifest, fetched from the /resolve/ URL at the pinned revision) is the artifact the licence and that digest describe. The text this harness measured came from the Hugging Face datasets-server ROWS API, which serves the dataset's own CONVERTED Parquet: those bytes are produced by Hugging Face's converter, are NOT the repository file, and do not carry the pinned digest. What survives the distinction is the row count and the split name, cross-checked between the two objects; what does not is any claim that the measured text was hash-verified against the repository file. It was verified against the retrieval recorded beside it.",
+      "slug": "notinject"
+    },
+    "microsoft/llmail-inject-challenge": {
+      "api_url": "https://huggingface.co/api/datasets/microsoft/llmail-inject-challenge",
+      "datasets_server_licenses": [],
+      "files": {
+        "README.md": {
+          "bytes": 23628,
+          "fetched_at": "2026-11-03T22:44:53Z",
+          "format": "text",
+          "local_path": "eval/internal/llmail-inject-challenge/README.md",
+          "role": "dataset-card",
+          "row_count": null,
+          "row_count_method": "not a row-bearing file (dataset card / prose)",
+          "sha256": "d85767e349ab1abbaf43db9390c4e906e34954e5df3a1335c8f1516efa64e812",
+          "source_url": "https://huggingface.co/datasets/microsoft/llmail-inject-challenge/resolve/1063bdf01ec8762b812d5e06ee768a06faa5a6f7/README.md",
+          "upstream_digest_match": null,
+          "upstream_lfs_sha256": null
+        },
+        "data/emails_for_fp_tests.json": {
+          "bytes": 55486,
+          "fetched_at": "2026-11-03T22:44:52Z",
+          "format": "json",
+          "local_path": "eval/internal/llmail-inject-challenge/emails_for_fp_tests.json",
+          "role": "benign-false-positive-test-messages",
+          "row_count": 203,
+          "row_count_method": "len() of the decoded JSON list (list)",
+          "sha256": "4ddd950b5dbaa8548f5597c886d8e09a051ba07f80a9291fdcca9c2397d22abe",
+          "source_url": "https://huggingface.co/datasets/microsoft/llmail-inject-challenge/resolve/1063bdf01ec8762b812d5e06ee768a06faa5a6f7/data/emails_for_fp_tests.json",
+          "upstream_digest_match": null,
+          "upstream_lfs_sha256": null
+        },
+        "data/levels_descriptions.json": {
+          "bytes": 884,
+          "fetched_at": "2026-11-03T22:44:52Z",
+          "format": "json",
+          "local_path": "eval/internal/llmail-inject-challenge/levels_descriptions.json",
+          "role": "challenge-metadata",
+          "row_count": 2,
+          "row_count_method": "len() of the decoded JSON object (dict)",
+          "sha256": "d1391d6fa8bb074b1603bb20699df6c1ada3c6add64db495e1a39faebc0cd400",
+          "source_url": "https://huggingface.co/datasets/microsoft/llmail-inject-challenge/resolve/1063bdf01ec8762b812d5e06ee768a06faa5a6f7/data/levels_descriptions.json",
+          "upstream_digest_match": null,
+          "upstream_lfs_sha256": null
+        },
+        "data/objectives_descriptions.json": {
+          "bytes": 379,
+          "fetched_at": "2026-11-03T22:44:52Z",
+          "format": "json",
+          "local_path": "eval/internal/llmail-inject-challenge/objectives_descriptions.json",
+          "role": "challenge-metadata",
+          "row_count": 5,
+          "row_count_method": "len() of the decoded JSON object (dict)",
+          "sha256": "daed5cacc5126790073e1a8dfc650b8024c903c415f1e11a189a8171c0c0f183",
+          "source_url": "https://huggingface.co/datasets/microsoft/llmail-inject-challenge/resolve/1063bdf01ec8762b812d5e06ee768a06faa5a6f7/data/objectives_descriptions.json",
+          "upstream_digest_match": null,
+          "upstream_lfs_sha256": null
+        },
+        "data/scenarios.json": {
+          "bytes": 38812,
+          "fetched_at": "2026-11-03T22:44:52Z",
+          "format": "json",
+          "local_path": "eval/internal/llmail-inject-challenge/scenarios.json",
+          "role": "challenge-metadata",
+          "row_count": 4,
+          "row_count_method": "len() of the decoded JSON object (dict)",
+          "sha256": "3d7c55fd04826dd29fa11b9f9912ae270fffb16a6c52a7eb2bff00457d378e4f",
+          "source_url": "https://huggingface.co/datasets/microsoft/llmail-inject-challenge/resolve/1063bdf01ec8762b812d5e06ee768a06faa5a6f7/data/scenarios.json",
+          "upstream_digest_match": null,
+          "upstream_lfs_sha256": null
+        },
+        "data/system_prompt.json": {
+          "bytes": 3065,
+          "fetched_at": "2026-11-03T22:44:53Z",
+          "format": "json",
+          "local_path": "eval/internal/llmail-inject-challenge/system_prompt.json",
+          "role": "challenge-metadata",
+          "row_count": 2,
+          "row_count_method": "len() of the decoded JSON object (dict)",
+          "sha256": "f5d0eb0b02f548476e32f39f190de7ebf1614c0816049c4d7b0047869c28131b",
+          "source_url": "https://huggingface.co/datasets/microsoft/llmail-inject-challenge/resolve/1063bdf01ec8762b812d5e06ee768a06faa5a6f7/data/system_prompt.json",
+          "upstream_digest_match": null,
+          "upstream_lfs_sha256": null
+        }
+      },
+      "license_field": "cardData.license",
+      "license_limits": [
+        "The files under data/ are JSON, not RFC 822 messages. There is no MIME structure, so no authentication layer to evaluate.",
+        "emails_for_fp_tests.json carries no per-row label; the set is benign by the declaring file's stated purpose, which is recorded as label_source."
+      ],
+      "license_observed": "mit",
+      "license_observed_at_fetch": "mit",
+      "license_verified_on": "2026-11-03",
+      "revision": "1063bdf01ec8762b812d5e06ee768a06faa5a6f7",
+      "revision_source": "https://huggingface.co/api/datasets/microsoft/llmail-inject-challenge field 'sha'",
+      "rows": {},
+      "slug": "llmail-inject-challenge"
+    },
+    "shariul-islam/bengali-sms-smishing-dataset": {
+      "api_url": "https://huggingface.co/api/datasets/shariul-islam/bengali-sms-smishing-dataset",
+      "datasets_server_licenses": [],
+      "files": {
+        "README.md": {
+          "bytes": 3030,
+          "fetched_at": "2026-11-03T22:44:53Z",
+          "format": "text",
+          "local_path": "eval/internal/bengali-sms-smishing/README.md",
+          "role": "dataset-card",
+          "row_count": null,
+          "row_count_method": "not a row-bearing file (dataset card / prose)",
+          "sha256": "96ef40f0466dbd2a40f2e0ce7da8d4a2650257f4dee7d6f656c4d63952b47abc",
+          "source_url": "https://huggingface.co/datasets/shariul-islam/bengali-sms-smishing-dataset/resolve/9d7c131cc63187c54dfd069d8070776c82f0be45/README.md",
+          "upstream_digest_match": null,
+          "upstream_lfs_sha256": null
+        },
+        "data/test-00000-of-00001.parquet": {
+          "bytes": 117557,
+          "fetched_at": "2026-11-03T22:44:53Z",
+          "format": "parquet",
+          "local_path": "eval/internal/bengali-sms-smishing/test-00000-of-00001.parquet",
+          "role": "labelled-smishing-messages",
+          "row_count": 1401,
+          "row_count_method": "Parquet FileMetaData num_rows (footer field 3, Thrift compact)",
+          "sha256": "2719d61aaf82b4b38e256e7e0d5ecee4a19588a7f522b863c713a435d0dffa31",
+          "source_url": "https://huggingface.co/datasets/shariul-islam/bengali-sms-smishing-dataset/resolve/9d7c131cc63187c54dfd069d8070776c82f0be45/data/test-00000-of-00001.parquet",
+          "upstream_digest_match": true,
+          "upstream_lfs_sha256": "2719d61aaf82b4b38e256e7e0d5ecee4a19588a7f522b863c713a435d0dffa31"
+        }
+      },
+      "license_field": "cardData.license",
+      "license_limits": [
+        "SMS, not email, and not English. A poor result here is information about domain transfer, not about the pipeline's email behaviour, and a good one is not evidence about phishing either.",
+        "Ships only as Parquet, so its text does not come from the repository file: the rows are read from the datasets-server ROWS API, which serves Hugging Face's converted Parquet. The pinned sha256 describes the repository object and the two are cross-checked by row count.",
+        "Upstream labels are 'smish', 'normal' and 'promo'. 'smish' maps to 'hostile'; 'normal' and 'promo' map to 'clean' by the corpus default, which reads a promotional SMS as 'must not be accused' rather than as a legitimate business email - a weaker claim than llmail-fp-tests makes, and recorded as the corpus's own label_source."
+      ],
+      "license_observed": "mit",
+      "license_observed_at_fetch": "mit",
+      "license_verified_on": "2026-11-03",
+      "revision": "9d7c131cc63187c54dfd069d8070776c82f0be45",
+      "revision_source": "https://huggingface.co/api/datasets/shariul-islam/bengali-sms-smishing-dataset field 'sha'",
+      "rows": {
+        "test": {
+          "api_url_for_split": "https://datasets-server.huggingface.co/rows?dataset=shariul-islam/bengali-sms-smishing-dataset&config=default&split=test&offset={offset}&length={length}",
+          "api_url_template": "https://datasets-server.huggingface.co/rows?dataset={dataset}&config={config}&split={split}&offset={offset}&length={length}",
+          "bytes": 419460,
+          "cache_contains_row_text": true,
+          "config": "default",
+          "conversion_note": "Two different objects, both recorded. The repository file (sha256 pinned in the manifest, fetched from the /resolve/ URL at the pinned revision) is the artifact the licence and that digest describe. The text this harness measured came from the Hugging Face datasets-server ROWS API, which serves the dataset's own CONVERTED Parquet: those bytes are produced by Hugging Face's converter, are NOT the repository file, and do not carry the pinned digest. What survives the distinction is the row count and the split name, cross-checked between the two objects; what does not is any claim that the measured text was hash-verified against the repository file. It was verified against the retrieval recorded beside it.",
+          "local_path": "eval/internal/bengali-sms-smishing/rows/test.json",
+          "num_rows_total": 1401,
+          "pagination": {
+            "length": 100,
+            "num_rows_per_page_reported_by_service": 100,
+            "offsets": [
+              0,
+              100,
+              200,
+              300,
+              400,
+              500,
+              600,
+              700,
+              800,
+              900,
+              1000,
+              1100,
+              1200,
+              1300,
+              1400
+            ],
+            "pages_requested": 15
+          },
+          "pinned_file_row_count": 1401,
+          "pinned_file_sha256": "2719d61aaf82b4b38e256e7e0d5ecee4a19588a7f522b863c713a435d0dffa31",
+          "repo_path": "data/test-00000-of-00001.parquet",
+          "retrieved_at": "2026-11-04T00:03:14Z",
+          "revision": "9d7c131cc63187c54dfd069d8070776c82f0be45",
+          "row_counts_agree": true,
+          "rows_retrieved": 1401,
+          "rows_with_truncated_cells": 0,
+          "sha256": "6b47632619248ae1eb614e491a20971b7e20fbebd653f48e5cdb3ae27bcf87b0",
+          "source": "datasets-server ROWS API - Hugging Face's converted Parquet, NOT the repository file at the pinned revision",
+          "split": "test",
+          "splits_endpoint": "https://datasets-server.huggingface.co/splits?dataset=shariul-islam/bengali-sms-smishing-dataset"
+        }
+      },
+      "rows_source_note": "Two different objects, both recorded. The repository file (sha256 pinned in the manifest, fetched from the /resolve/ URL at the pinned revision) is the artifact the licence and that digest describe. The text this harness measured came from the Hugging Face datasets-server ROWS API, which serves the dataset's own CONVERTED Parquet: those bytes are produced by Hugging Face's converter, are NOT the repository file, and do not carry the pinned digest. What survives the distinction is the row count and the split name, cross-checked between the two objects; what does not is any claim that the measured text was hash-verified against the repository file. It was verified against the retrieval recorded beside it.",
+      "slug": "bengali-sms-smishing"
+    }
+  },
+  "policy": "The datasets named here are fetched at evaluation time into eval/internal/, which is gitignored. Nothing downloaded is committed - this file is, and it is measurements about bytes, not bytes. For a Parquet-only corpus, two different objects are recorded and they are not the same bytes: the pinned sha256 is the repository file, and the text that was measured came from the datasets-server ROWS API's converted Parquet. See docs/EVAL-SUITES.md and the licence gate in eval/fetch.py.",
+  "recorded_by": "eval/fetch.py",
+  "refused": {
+    "SetFit/enron_spam": {
+      "license_observed": "None",
+      "observed_field": "cardData.license",
+      "reason": "No licence is declared. Undeclared does not mean granted: we have no permission to redistribute or to ship derived artifacts, so the set is refused even though it is the most convenient benign English-email corpus available and every other survey in docs/EVAL-SUITES.md used it.",
+      "verified_on": "2026-11-03"
+    },
+    "zefang-liu/phishing-email-dataset": {
+      "license_observed": "lgpl-3.0",
+      "observed_field": "cardData.license",
+      "reason": "LGPL-3.0 is copyleft. This repository is MIT and is destined for a public listing, so an LGPL corpus cannot be folded into the submission's artifacts. Refused on licence, not on quality.",
+      "verified_on": "2026-11-03"
+    }
+  },
+  "refused_without_the_sharealike_flag": {
+    "geodesic-research/bipia": {
+      "license_observed": "cc-by-sa-4.0",
+      "observed_field": "cardData.license",
+      "reason": "CC-BY-SA-4.0 is share-alike: a derivative of BIPIA must be licensed under the same terms, which is incompatible with shipping an MIT submission that includes it.",
+      "verified_on": "2026-11-03"
+    }
+  },
+  "schema_version": 1,
+  "written_at": "2026-11-04T00:51:31Z"
+}

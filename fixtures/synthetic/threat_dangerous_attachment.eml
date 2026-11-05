@@ -1,0 +1,21 @@
+Message-ID: <threat-5@example.test>
+Date: Mon, 02 Nov 2026 09:20:00 -0500
+From: Vendor Accounts <accounts@vendor-billing.test>
+To: staff@example.edu
+Subject: Revised invoice for review
+Authentication-Results: vendor-billing.test; spf=pass smtp.mailfrom=vendor-billing.test; dkim=none; dmarc=fail
+Content-Type: multipart/mixed; boundary="MIXBOUND"
+
+--MIXBOUND
+Content-Type: text/plain; charset="utf-8"
+
+Please review the revised invoice attached and enable content to view.
+
+--MIXBOUND
+Content-Type: application/vnd.ms-word.document.macroEnabled.12
+Content-Disposition: attachment; filename="invoice-revised.docm"
+Content-Transfer-Encoding: base64
+
+UEsDBBQAAAAIAAAAAACKIYOwWgAAAFoAAAAIAAAAbWltZXR5cGU=
+
+--MIXBOUND--

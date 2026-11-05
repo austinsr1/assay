@@ -1,0 +1,8 @@
+From: "IT Service Desk" <security@security.example.edu>
+To: staff@example.edu
+Subject: Svg Image And Use Href
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=security.example.edu; dkim=pass header.d=security.example.edu; dmarc=pass
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+
+<html><body><p>Brand notice.</p><svg width="200" height="80"><image href="https://harvest-credentials.test/logo.png" width="200" height="80"/><use xlink:href="https://harvest-credentials.test/sprite#x"/></svg></body></html>

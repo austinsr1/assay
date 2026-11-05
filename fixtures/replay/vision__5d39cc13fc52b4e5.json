@@ -1,0 +1,53 @@
+{
+  "endpoint_role": "estate-vlm",
+  "key": "5d39cc13fc52b4e585d0b23e624e3cfcbe9a3b2f081d569aeab7dae6cf29a799",
+  "latency_ms": 3099.201,
+  "model": "unsloth/Qwen3.5-4B-GGUF:Q4_K_XL",
+  "recorded_at": "2026-11-02T21:11:27Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n\"transcribed_text\": \"Microsoft Account Security\\nYour account will be suspended in 24 hours\\nPassword: [input field]\\nConfirm password: [input field]\\nVerify now\\nhttp://example-portal-verify.test/auth\",\n\"urls\": [ \"http://example-portal-verify.test/auth\" ],\n\"impersonates\": \"Microsoft\",\n\"brand_impersonation\": true,\n\"verdict\": \"threat\",\n\"confidence\": 0.95,\n\"reasons\": [ \"The URL uses a suspicious domain ending in .test instead of a legitimate Microsoft domain\", \"The page mimics Microsoft's login form layout and branding to collect credentials\", \"The message about account suspension is a common social engineering tactic used in phishing\"]\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653887,
+    "id": "chatcmpl-xmu5Eahp6sStoGF7QEmbgnexop7BtSt4",
+    "model": "unsloth/Qwen3.5-4B-GGUF:Q4_K_XL",
+    "object": "chat.completion",
+    "system_fingerprint": "b9982-99f3dc322",
+    "timings": {
+      "cache_n": 373,
+      "predicted_ms": 2790.51,
+      "predicted_n": 162,
+      "predicted_per_second": 58.05390412505241,
+      "predicted_per_token_ms": 17.22537037037037,
+      "prompt_ms": 287.541,
+      "prompt_n": 4,
+      "prompt_per_second": 13.911059640190443,
+      "prompt_per_token_ms": 71.88525
+    },
+    "usage": {
+      "completion_tokens": 162,
+      "prompt_tokens": 377,
+      "prompt_tokens_details": {
+        "cached_tokens": 373
+      },
+      "total_tokens": 539
+    }
+  },
+  "schema_version": 1,
+  "tier": "vision",
+  "tokens": {
+    "completion_tokens": 162,
+    "prompt_tokens": 377,
+    "prompt_tokens_details": {
+      "cached_tokens": 373
+    },
+    "total_tokens": 539
+  }
+}

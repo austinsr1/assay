@@ -1,0 +1,30 @@
+Message-ID: <spam-1@example.test>
+Date: Mon, 02 Nov 2026 09:14:00 -0500
+From: Example Outfitters <news@example-outfitters.com>
+To: staff@example.edu
+Subject: Winter clearance - 40 percent off this weekend
+Authentication-Results: example-outfitters.com; dkim=pass header.d=example-outfitters.com; spf=pass smtp.mailfrom=example-outfitters.com; dmarc=pass
+List-Unsubscribe: <https://example-outfitters.com/u/1>, <mailto:u@example-outfitters.com?subject=unsub>
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+List-Id: promo.example-outfitters.com
+Precedence: bulk
+Feedback-ID: 1:promo:example-outfitters
+X-Mailer: BulkSender 4.1
+Content-Type: multipart/alternative; boundary="FIXBOUNDARY"
+
+--FIXBOUNDARY
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Winter clearance ends Sunday.
+Shop now: https://example-outfitters.com/sale
+Unsubscribe: https://example-outfitters.com/u/1
+
+
+--FIXBOUNDARY
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+<p>Winter clearance ends Sunday.</p><p><a href="https://example-outfitters.com/sale">Shop now</a></p><p><a href="https://example-outfitters.com/u/1">Unsubscribe</a></p>
+
+--FIXBOUNDARY--

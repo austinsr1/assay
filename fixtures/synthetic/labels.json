@@ -1,0 +1,162 @@
+[
+  {
+    "file": "clean_internal_registrar.eml",
+    "case": "clean_internal_registrar",
+    "label": "clean",
+    "exercises": [
+      "auth_pass",
+      "protected_domain",
+      "no_links"
+    ],
+    "notes": "Fully aligned internal mail. Must never be flagged."
+  },
+  {
+    "file": "clean_delivery_failure.eml",
+    "case": "clean_delivery_failure",
+    "label": "clean",
+    "exercises": [
+      "auto_submitted",
+      "boilerplate_suppression",
+      "precedence"
+    ],
+    "notes": "Automated bounce. The predecessor engine needed a rule for this class."
+  },
+  {
+    "file": "clean_vendor_docusign.eml",
+    "case": "clean_vendor_docusign",
+    "label": "clean",
+    "exercises": [
+      "trusted_domain",
+      "auth_pass",
+      "legitimate_external"
+    ],
+    "notes": "Authenticated third-party service mail. Trusted-domain match is a signal, not proof of safety."
+  },
+  {
+    "file": "spam_bulk_marketing.eml",
+    "case": "spam_bulk_marketing",
+    "label": "spam",
+    "exercises": [
+      "list_unsubscribe",
+      "rfc8058",
+      "precedence_bulk",
+      "spam_class"
+    ],
+    "notes": "Legitimate marketing someone over-reported. Header signals resolve this at near-zero false-positive cost, where Enron-trained models measured a 0.959 false-positive rate."
+  },
+  {
+    "file": "threat_lookalike_credential_harvest.eml",
+    "case": "threat_lookalike_credential_harvest",
+    "label": "threat",
+    "exercises": [
+      "lookalike_domain",
+      "spf_fail",
+      "dkim_none",
+      "dmarc_fail",
+      "reply_to_mismatch",
+      "urgency"
+    ],
+    "notes": "The case that defeated both LFM and FraudFoxAI in the predecessor's testing. Deterministic lookalike detection catches it."
+  },
+  {
+    "file": "threat_anchor_mismatch.eml",
+    "case": "threat_anchor_mismatch",
+    "label": "threat",
+    "exercises": [
+      "anchor_mismatch",
+      "trusted_display_untrusted_destination"
+    ],
+    "notes": "Visible text advertises the protected domain; the href goes elsewhere. This is why links must be parsed from markup rather than read as text."
+  },
+  {
+    "file": "threat_redirect_wrapped.eml",
+    "case": "threat_redirect_wrapped",
+    "label": "threat",
+    "exercises": [
+      "redirect_unwrap",
+      "safelinks",
+      "resolved_host_differs"
+    ],
+    "notes": "Destination hidden behind a URL-rewriting proxy. The reference playbook asks an LLM to percent-decode this; it is deterministic."
+  },
+  {
+    "file": "threat_forwarded_by_user.eml",
+    "case": "threat_forwarded_by_user",
+    "label": "threat",
+    "exercises": [
+      "forwarding",
+      "inner_sender_extraction",
+      "wrapper_is_internal"
+    ],
+    "notes": "A user forwarded a phish to the helpdesk. The outer From is the reporting user and must not be judged as the sender."
+  },
+  {
+    "file": "threat_dangerous_attachment.eml",
+    "case": "threat_dangerous_attachment",
+    "label": "threat",
+    "exercises": [
+      "attachment_extension",
+      "dangerous_and_external",
+      "macro_document"
+    ],
+    "notes": "Macro-bearing document from an external sender. Only the MIME inventory is asserted here; content extraction is a separate stage."
+  },
+  {
+    "file": "threat_prompt_injection.eml",
+    "case": "threat_prompt_injection",
+    "label": "threat",
+    "exercises": [
+      "injection_surface",
+      "untrusted_content_fence"
+    ],
+    "notes": "Message content attempting to steer the analysis pipeline. The predecessor engine had no guard for this at all; the reference relies on the model resisting it. We detect and record the attempt."
+  },
+  {
+    "file": "threat_bec_valid_auth.eml",
+    "case": "threat_bec_valid_auth",
+    "label": "threat",
+    "exercises": [
+      "auth_passes_but_malicious",
+      "no_link_signal",
+      "intent_only"
+    ],
+    "notes": "Business email compromise shape: authentication passes, there is no suspicious link, and the only evidence is the request itself. This is the case the reference playbook's domain-match rule gets wrong, and the one that must reach the adjudication tier rather than being auto-cleared by deterministic rules."
+  },
+  {
+    "file": "clean_security_newsletter_discussing_injection.eml",
+    "case": "clean_security_newsletter_discussing_injection",
+    "label": "clean",
+    "exercises": [
+      "injection_false_positive",
+      "quotes_vs_contains",
+      "bulk_headers"
+    ],
+    "notes": "A legitimate security newsletter that QUOTES prompt-injection phrases while discussing them. The deterministic scanner fires on this, and that is the point: it must not become a THREAT verdict. Distinguishing 'contains an instruction aimed at an agent' from 'quotes an instruction while discussing it' is not something a regex can do reliably. Horizon-Labs' own card lists discussing prompt injection as a non-injection. A university SOC subscribes to exactly these newsletters."
+  },
+  {
+    "file": "clean_unrelated_link_no_concealment.eml",
+    "case": "clean_unrelated_link_no_concealment",
+    "label": "clean",
+    "exercises": [
+      "auth_pass",
+      "host_matches_neither",
+      "no_redirect_wrapper",
+      "mismatch_is_not_decisive"
+    ],
+    "notes": "The counter-fixture for the redirect-concealment rule: passing authentication, a legitimate external sender, and a link to a domain that matches neither the sender nor the trusted list -- with no wrapper hiding it. The reference playbook's prompt calls a destination mismatch \"a very strong indicator of a threat\"; mail to unrelated services is ordinary, so a mismatch must not be decisive in either direction. If this dispositions as anything but clean, the rule keyed on mismatch instead of on concealment."
+  },
+  {
+    "file": "threat_image_credential_harvest.eml",
+    "case": "threat_image_credential_harvest",
+    "label": "threat",
+    "exercises": [
+      "inline_image",
+      "content_id",
+      "image_sha256",
+      "vision_tier",
+      "lookalike_domain",
+      "auth_fail"
+    ],
+    "notes": "Credential harvesting drawn in pixels: the login form is an inline image part with a Content-ID, so there is no anchor to analyse and nothing for text scanning to match. Parity gaps 5 and 6 in docs/PARITY.md. Asset sha256 2b129bc3fd9fcfc2cd36b998166c30f2a637c48df7c1894743640f040ccdb510."
+  }
+]

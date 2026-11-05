@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "d0d02434ec7c6d819ae8afbf2cbcd7e442a70a737d9e2965ab9817e20f8daa2d",
+  "latency_ms": 5107.72,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:11:07Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"spam\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"SPAM\",\n  \"reasons\": [\n    \"The message contains bulk headers, a List-Unsubscribe header, and an RFC 8058 one-click unsubscribe mechanism, which are standard indicators of unsolicited commercial email.\",\n    \"The sender domain example-outfitters.com matches the host of the links provided in the message, and authentication checks (SPF, DKIM, DMARC) all passed, indicating the email originated from the claimed domain.\",\n    \"The content is a promotional offer for a winter clearance sale, which is commercial in nature but does not exhibit malicious intent such as credential harvesting or malware distribution.\"\n  ],\n  \"analysis\": \"The message is a legitimate promotional email from a verified sender domain. Technical facts confirm that the sender, SPF, DKIM, and DMARC all align with example-outfitters.com, and the links point to the same domain. The presence of bulk headers and unsubscribe options classifies this as unsolicited commercial mail (spam) rather than a threat. There are no indicators of phishing, malware, or business email compromise.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653862,
+    "id": "chatcmpl-80c517643ce903385497400e",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 448,
+      "draft_n_accepted": 185,
+      "predicted_ms": 4618.50478,
+      "predicted_n": 250,
+      "predicted_per_second": 53.91355251558276,
+      "predicted_per_token_ms": 18.548211967871488,
+      "prompt_ms": 375.11308099999997,
+      "prompt_n": 1024,
+      "prompt_per_second": 2729.843484183907,
+      "prompt_per_token_ms": 0.36632136816406247,
+      "total_ms": 5105.789035,
+      "ttft_ms": 487.284255
+    },
+    "usage": {
+      "completion_tokens": 250,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1024,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1274
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 250,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1024,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1274
+  }
+}

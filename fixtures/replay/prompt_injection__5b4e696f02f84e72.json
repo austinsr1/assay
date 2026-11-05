@@ -1,0 +1,29 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "5b4e696f02f84e721e00dd0c8e01ddc56c13496c8e1408a41ac1f865f2f756d7",
+  "latency_ms": 170.483,
+  "model": "",
+  "recorded_at": "2026-11-02T21:11:31Z",
+  "response": {
+    "domain": "prompt_injection",
+    "signals": [
+      {
+        "decision": "prompt_injection",
+        "experimental": false,
+        "input": "Dear User,\r\nYour mailbox has exceeded its storage quota and will be suspended within 24 hours.\r\nVerify Mailbox: http://example-portal-verify.com/auth/login?u=TARGET\r\nFailure to act will result in permanent loss of email access.\r\n\r\n",
+        "latency_ms": 22.382,
+        "model": "cyberjev",
+        "probabilities": {
+          "injection": 0.999419,
+          "safe": 0.000581
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "injection"
+      }
+    ],
+    "verdict": "injection"
+  },
+  "schema_version": 1,
+  "tier": "prompt_injection",
+  "tokens": null
+}

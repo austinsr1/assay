@@ -1,0 +1,13 @@
+Message-ID: <clean-1@example.test>
+Date: Mon, 02 Nov 2026 09:14:00 -0500
+From: Office of the Registrar <registrar@example.edu>
+To: student@example.edu
+Subject: Spring registration opens Monday
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=example.edu; dkim=pass header.d=example.edu header.i=@example.edu; dmarc=pass
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Registration for spring term opens Monday at 8am.
+No action is needed until then.
+
+Office of the Registrar

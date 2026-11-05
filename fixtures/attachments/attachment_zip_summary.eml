@@ -1,0 +1,28 @@
+Message-ID: <attachment-zip@example.test>
+Date: Mon, 02 Nov 2026 09:30:00 -0500
+From: Finance Shared Drive <finance@example.edu>
+To: staff@example.edu
+Subject: Quarterly summary archive for the November review
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=example.edu; dkim=pass header.d=example.edu header.i=@example.edu; dmarc=pass
+Content-Type: multipart/mixed; boundary="ATTBOUND"
+
+--ATTBOUND
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+The quarterly summary is archived for the review meeting.
+
+
+--ATTBOUND
+Content-Type: application/zip
+Content-Disposition: attachment; filename="quarterly-summary.zip"
+Content-Transfer-Encoding: base64
+
+UEsDBBQAAAAAAABIYl14G8QoKwAAACsAAAAVAAAAcXVhcnRlcmx5LXN1bW1hcnkudHh0UXVhcnRl
+cmx5IHN1bW1hcnkgLSBhbGwgZmlndXJlcyBmaWN0aW9uYWwuClBLAwQUAAAAAAAASGJd28nUhiQA
+AAAkAAAAEAAAAG5vdGVzL2FnZW5kYS50eHRBZ2VuZGE6IGJ1ZGdldCwgZmFjaWxpdGllcywgcm9z
+dGVyLgpQSwECFAMUAAAAAAAASGJdeBvEKCsAAAArAAAAFQAAAAAAAAAAAAAAgAEAAAAAcXVhcnRl
+cmx5LXN1bW1hcnkudHh0UEsBAhQDFAAAAAAAAEhiXdvJ1IYkAAAAJAAAABAAAAAAAAAAAAAAAIAB
+XgAAAG5vdGVzL2FnZW5kYS50eHRQSwUGAAAAAAIAAgCBAAAAsAAAAAAA
+
+--ATTBOUND--

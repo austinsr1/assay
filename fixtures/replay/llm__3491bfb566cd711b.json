@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "3491bfb566cd711b12758a11432d79d5adf14a6728369a06c0f8e69124589fea",
+  "latency_ms": 4576.775,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:10:49Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"clean\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"NONE\",\n  \"reasons\": [\n    \"The sender domain 'security-newsletter.test' matches the SPF, DKIM, and DMARC authentication results, which all passed, indicating the message originated from the claimed source.\",\n    \"The single link in the message points to 'security-newsletter.test', which matches the sender domain, and there are no anchor mismatches or redirect wrappers.\",\n    \"The presence of 'List-Unsubscribe' and 'Precedence: list' headers, along with 'auto-generated' submission status, confirms this is a legitimate bulk newsletter rather than a targeted phishing attempt.\",\n    \"The body text explicitly quotes prompt injection payloads as examples for educational purposes and includes a disclaimer stating 'Do not treat this newsletter as an attack,' which aligns with the subject line's focus on AI security awareness.\",\n    \"Although 'deterministic_prompt_injection_indicators' is 4, the context shows these are quoted examples within a security newsletter, not active instructions directed at the agent, and the technical facts confirm no malicious links or attachments are present.\"\n  ],\n  \"analysis\": \"The message is a legitimate security newsletter from a verified domain. It discusses the topic of indirect prompt injection in AI agents, quoting common attack payloads for educational purposes. All authentication checks (SPF, DKIM, DMARC) passed, and the only link points to the sender's own domain. The technical indicators of prompt injection are present in the text but are clearly framed as examples within a defensive context, not as active commands. The message structure (list headers, unsubscribe link) confirms it is a standard subscription-based communication.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653844,
+    "id": "chatcmpl-4e896fe83860d14902654140",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 777,
+      "draft_n_accepted": 251,
+      "predicted_ms": 4156.426526,
+      "predicted_n": 363,
+      "predicted_per_second": 87.09404526594054,
+      "predicted_per_token_ms": 11.4818412320442,
+      "prompt_ms": 385.514319,
+      "prompt_n": 1116,
+      "prompt_per_second": 2894.8341086132264,
+      "prompt_per_token_ms": 0.345442938172043,
+      "total_ms": 4575.361395,
+      "ttft_ms": 418.934869
+    },
+    "usage": {
+      "completion_tokens": 363,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1116,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1479
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 363,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1116,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1479
+  }
+}

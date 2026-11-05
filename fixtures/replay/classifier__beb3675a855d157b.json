@@ -1,0 +1,20 @@
+{
+  "endpoint_role": "onnx-classifier",
+  "key": "beb3675a855d157b3645debbc1abf505e9936c9a841e2db61af84ddf1c0f2a05",
+  "latency_ms": 134.879,
+  "model": "xanderabim/fraudfoxai-phishing",
+  "recorded_at": "2026-11-02T21:10:56Z",
+  "response": {
+    "confidence": 0.999513,
+    "is_phishing": false,
+    "model": "xanderabim/fraudfoxai-phishing",
+    "phishing_score": 0.000487,
+    "processing_time_ms": 26.24,
+    "runtime": "onnxruntime",
+    "safe_score": 0.999513,
+    "verdict": "SAFE"
+  },
+  "schema_version": 1,
+  "tier": "classifier",
+  "tokens": null
+}

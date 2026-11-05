@@ -1,0 +1,8 @@
+From: "IT Service Desk" <security@security.example.edu>
+To: staff@example.edu
+Subject: Meta Refresh Redirect
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=security.example.edu; dkim=pass header.d=security.example.edu; dmarc=pass
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+
+<html><head><meta http-equiv="refresh" content="0;url=https://harvest-credentials.test/go"></head><body><p>Loading your document.</p><a href="https://example.edu/docs">View document</a></body></html>

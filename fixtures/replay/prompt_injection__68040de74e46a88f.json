@@ -1,0 +1,29 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "68040de74e46a88f4acf5cdff6436cc2efa0d5862e09871964034648ae3b5eaf",
+  "latency_ms": 160.287,
+  "model": "",
+  "recorded_at": "2026-11-02T21:11:24Z",
+  "response": {
+    "domain": "prompt_injection",
+    "signals": [
+      {
+        "decision": "prompt_injection",
+        "experimental": false,
+        "input": "A security notice is attached as an image.\r\nOpen the attachment to review the notice.\r\n",
+        "latency_ms": 19.211,
+        "model": "cyberjev",
+        "probabilities": {
+          "injection": 0.060069,
+          "safe": 0.939931
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "safe"
+      }
+    ],
+    "verdict": "safe"
+  },
+  "schema_version": 1,
+  "tier": "prompt_injection",
+  "tokens": null
+}

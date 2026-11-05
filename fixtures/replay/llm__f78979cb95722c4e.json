@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "f78979cb95722c4e83fbfe7c8a2c7f3324294df986927536c5a8d464fdc695c0",
+  "latency_ms": 5044.752,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:11:02Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"clean\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"NONE\",\n  \"reasons\": [\n    \"SPF, DKIM, and DMARC authentication results are all PASS for the sender domain docusign.net, indicating the message originated from an authorized source for that domain.\",\n    \"The single link in the message points to docusign.net, which matches the sender domain and is identified as a trusted host in the technical facts.\",\n    \"There are no lookalike domains, foreign identity claims, or reply-to mismatches detected in the header analysis.\",\n    \"The message body contains no deterministic prompt injection indicators or suspicious attachments.\"\n  ],\n  \"analysis\": \"The message is a standard document signing request from DocuSign. All technical authentication checks (SPF, DKIM, DMARC) passed for the legitimate docusign.net domain. The link provided matches the sender's domain and is recognized as trusted. There are no indicators of phishing, malware, or social engineering in the content or headers. The message appears to be a legitimate business communication.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653856,
+    "id": "chatcmpl-350ae95ae9548b1603391d53",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 462,
+      "draft_n_accepted": 171,
+      "predicted_ms": 4731.165403999999,
+      "predicted_n": 238,
+      "predicted_per_second": 50.09336596002891,
+      "predicted_per_token_ms": 19.96272322362869,
+      "prompt_ms": 283.547214,
+      "prompt_n": 1007,
+      "prompt_per_second": 3551.436763543725,
+      "prompt_per_token_ms": 0.281576180734856,
+      "total_ms": 5043.414146,
+      "ttft_ms": 312.248742
+    },
+    "usage": {
+      "completion_tokens": 238,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1007,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1245
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 238,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1007,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1245
+  }
+}

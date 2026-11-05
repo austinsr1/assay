@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "83f8771f0c7993b76fc99b75ca27305b3d732dc31ed6775c6968dcf753a17294",
+  "latency_ms": 4259.279,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:11:12Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"threat\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"CREDENTIAL_HARVEST\",\n  \"reasons\": [\n    \"The single link in the message points to 'harvest-credentials.test', a domain that explicitly indicates credential harvesting intent and does not match the sender domain 'document-share.test' or any trusted domain.\",\n    \"The link anchor text 'example.edu' does not match the actual destination host 'harvest-credentials.test', creating a deceptive mismatch that misleads the user about the link's destination.\",\n    \"The message claims a document was shared, but the technical facts show 'attachment_count: 0' and 'attachment_readable_document_count: 0', indicating the promised document is not present and the link is the primary vector for interaction.\"\n  ],\n  \"analysis\": \"The message exhibits classic phishing characteristics despite passing SPF, DKIM, and DMARC authentication. The sender domain 'document-share.test' is not a known protected or vendor domain, and the authentication pass only confirms the email originated from that specific domain, not that the domain is legitimate or benign. The critical indicator is the single link, which directs the user to 'harvest-credentials.test'. This domain name is a strong deterministic signal of malicious intent (credential harvesting). Furthermore, the link's display text ('example.edu') is a mismatch with the actual host, a common social engineering tactic to build false trust. The absence of an actual attachment contradicts the subject line's claim, reinforcing that the link is the intended action. The combination of a deceptive link destination, anchor mismatch, and lack of actual content confirms this is a credential harvesting attempt.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653868,
+    "id": "chatcmpl-d468b88f71646041c41ef8ac",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 721,
+      "draft_n_accepted": 248,
+      "predicted_ms": 3876.368572,
+      "predicted_n": 352,
+      "predicted_per_second": 90.54866519540032,
+      "predicted_per_token_ms": 11.043785105413106,
+      "prompt_ms": 358.603933,
+      "prompt_n": 986,
+      "prompt_per_second": 2749.5515505124145,
+      "prompt_per_token_ms": 0.3636956724137931,
+      "total_ms": 4256.896793,
+      "ttft_ms": 380.528221
+    },
+    "usage": {
+      "completion_tokens": 352,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 986,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1338
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 352,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 986,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1338
+  }
+}

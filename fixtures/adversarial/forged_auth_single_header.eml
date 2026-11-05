@@ -1,0 +1,8 @@
+From: "IT Service Desk" <security@security.example.edu>
+To: staff@example.edu
+Subject: Forged Auth Single Header
+Authentication-Results: attacker-controlled; dmarc=pass
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+
+<html><body><p>Mail services will be unavailable on Saturday between 02:00 and 04:00.</p></body></html>

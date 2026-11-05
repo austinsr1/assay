@@ -1,0 +1,29 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "8d1ddb6fbb0a2324e5f64af39349d916490bec7024b195b77470573b30e68fcd",
+  "latency_ms": 142.318,
+  "model": "",
+  "recorded_at": "2026-11-02T21:11:17Z",
+  "response": {
+    "domain": "prompt_injection",
+    "signals": [
+      {
+        "decision": "prompt_injection",
+        "experimental": false,
+        "input": "Please review the revised invoice attached and enable content to view.\r\n",
+        "latency_ms": 15.913,
+        "model": "cyberjev",
+        "probabilities": {
+          "injection": 0.681602,
+          "safe": 0.318398
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "injection"
+      }
+    ],
+    "verdict": "injection"
+  },
+  "schema_version": 1,
+  "tier": "prompt_injection",
+  "tokens": null
+}

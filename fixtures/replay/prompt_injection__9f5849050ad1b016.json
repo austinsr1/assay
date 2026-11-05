@@ -1,0 +1,29 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "9f5849050ad1b0161fec540c4c84ebb712b06cc15eca3b7e36394c5a309cdfb9",
+  "latency_ms": 171.606,
+  "model": "",
+  "recorded_at": "2026-11-02T21:10:38Z",
+  "response": {
+    "domain": "prompt_injection",
+    "signals": [
+      {
+        "decision": "prompt_injection",
+        "experimental": false,
+        "input": "** This is a system-generated message **\r\n\r\nDelivery to the following recipient failed permanently:\r\n   someone@nonexistent.test\r\n\r\n",
+        "latency_ms": 20.726,
+        "model": "cyberjev",
+        "probabilities": {
+          "injection": 0.998826,
+          "safe": 0.001174
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "injection"
+      }
+    ],
+    "verdict": "injection"
+  },
+  "schema_version": 1,
+  "tier": "prompt_injection",
+  "tokens": null
+}

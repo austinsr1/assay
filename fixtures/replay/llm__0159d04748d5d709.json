@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "0159d04748d5d709afac3d3b2d269fc29bbc71fa6b384642235dcf32402ffc17",
+  "latency_ms": 4718.625,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:11:45Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"threat\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"CREDENTIAL_HARVEST\",\n  \"reasons\": [\n    \"The message uses an urgent subject line ('Urgent: direct deposit change requires confirmation') and imperative body text ('Confirm your direct deposit details immediately') to create pressure, which is a classic social engineering tactic for credential harvesting.\",\n    \"The single link in the message points to 'deposit-confirm.test', a domain that does not match the sender domain 'payroll-direct.test' or any known trusted vendor domain, indicating a potential lookalike or malicious destination.\",\n    \"The display name claims a foreign identity ('payroll') while the sender domain is 'payroll-direct.test', creating a discrepancy that suggests impersonation of a legitimate internal service.\",\n    \"The link is wrapped in a 'safelinks.protection.outlook.com' redirect, which is often used by attackers to obfuscate the final destination and bypass basic URL filters, although the underlying host 'deposit-confirm.test' is still exposed in the URL parameters.\"\n  ],\n  \"analysis\": \"The message exhibits strong indicators of a credential harvesting attack. Despite passing SPF, DKIM, and DMARC authentication (which only verifies the sending server's identity, not the user's intent), the content is highly suspicious. The sender domain 'payroll-direct.test' is not a known protected domain, but the display name 'payroll' attempts to impersonate a trusted internal function. The urgency in the subject and body, combined with a link to an unrelated domain ('deposit-confirm.test') wrapped in a redirect service, strongly suggests an attempt to trick the user into entering sensitive financial or login credentials. The mismatch between the sender domain and the link destination is a critical red flag. The authentication passes are likely due to a compromised account or a spoofed domain that has valid DNS records, but the behavioral and structural indicators point to malicious intent.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653900,
+    "id": "chatcmpl-f7db246c64d49e99341434a1",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 777,
+      "draft_n_accepted": 297,
+      "predicted_ms": 4366.461553,
+      "predicted_n": 409,
+      "predicted_per_second": 93.43950359981562,
+      "predicted_per_token_ms": 10.702111649509805,
+      "prompt_ms": 320.618178,
+      "prompt_n": 1034,
+      "prompt_per_second": 3225.019886427026,
+      "prompt_per_token_ms": 0.3100756073500967,
+      "total_ms": 4717.003377,
+      "ttft_ms": 350.54182399999996
+    },
+    "usage": {
+      "completion_tokens": 409,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1034,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1443
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 409,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1034,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1443
+  }
+}

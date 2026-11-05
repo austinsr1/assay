@@ -1,0 +1,29 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "4e35cf6dcb3e4772a5e00d9116cecdc2ac560d80eb447c735fd6c7882bd0c631",
+  "latency_ms": 169.281,
+  "model": "",
+  "recorded_at": "2026-11-02T21:10:56Z",
+  "response": {
+    "domain": "prompt_injection",
+    "signals": [
+      {
+        "decision": "prompt_injection",
+        "experimental": false,
+        "input": "Please review and sign the attached agreement.\r\nReview Document: https://docusign.net/signing/abc123\r\n\r\n",
+        "latency_ms": 18.37,
+        "model": "cyberjev",
+        "probabilities": {
+          "injection": 0.900549,
+          "safe": 0.099451
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "injection"
+      }
+    ],
+    "verdict": "injection"
+  },
+  "schema_version": 1,
+  "tier": "prompt_injection",
+  "tokens": null
+}

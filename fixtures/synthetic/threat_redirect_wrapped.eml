@@ -1,0 +1,23 @@
+Message-ID: <threat-3@example.test>
+Date: Mon, 02 Nov 2026 09:14:00 -0500
+From: Payroll Direct <payroll@payroll-direct.test>
+To: staff@example.edu
+Subject: Urgent: direct deposit change requires confirmation
+Authentication-Results: payroll-direct.test; spf=pass smtp.mailfrom=payroll-direct.test; dkim=pass header.d=payroll-direct.test; dmarc=pass
+Content-Type: multipart/alternative; boundary="FIXBOUNDARY"
+
+--FIXBOUNDARY
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Confirm your direct deposit details immediately.
+Confirm Deposit: https://safelinks.protection.outlook.com/?url=https%3A%2F%2Fdeposit-confirm.test%2Fverify&data=05
+
+
+--FIXBOUNDARY
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+<p>Confirm your direct deposit details immediately.</p><p><a href="https://safelinks.protection.outlook.com/?url=https%3A%2F%2Fdeposit-confirm.test%2Fverify&amp;data=05">Confirm Deposit</a></p>
+
+--FIXBOUNDARY--

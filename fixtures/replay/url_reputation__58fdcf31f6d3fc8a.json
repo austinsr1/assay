@@ -1,0 +1,39 @@
+{
+  "endpoint_role": "security-model-estate",
+  "key": "58fdcf31f6d3fc8a9770a7b195f70f11e3f11eaafd0ce5b99dcb4c62d948e385",
+  "latency_ms": 133.183,
+  "model": "",
+  "recorded_at": "2026-11-02T21:11:02Z",
+  "response": {
+    "domain": "url",
+    "signals": [
+      {
+        "experimental": false,
+        "input": "https://example-outfitters.com/sale",
+        "latency_ms": 17.458,
+        "model": "phishscout",
+        "probability": 0.907005,
+        "repo": "saidutta69/PhishScout-v2",
+        "threshold": 0.52,
+        "verdict": "phishing"
+      },
+      {
+        "decision": "phishing_url",
+        "experimental": false,
+        "input": "https://example-outfitters.com/sale",
+        "latency_ms": 22.045,
+        "model": "cyberjev",
+        "probabilities": {
+          "legitimate": 0.837602,
+          "phishing": 0.162398
+        },
+        "repo": "sdmlai/cyber-jev",
+        "verdict": "legitimate"
+      }
+    ],
+    "verdict": "flag"
+  },
+  "schema_version": 1,
+  "tier": "url_reputation",
+  "tokens": null
+}

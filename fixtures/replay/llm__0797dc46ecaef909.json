@@ -1,0 +1,64 @@
+{
+  "endpoint_role": "local-llm",
+  "key": "0797dc46ecaef90983045aea92990a8dfeae63c073286ef2190232afe0d8d1e7",
+  "latency_ms": 4076.199,
+  "model": "Qwen3.6-27B",
+  "recorded_at": "2026-11-02T21:11:31Z",
+  "response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"verdict\": \"threat\",\n  \"confidence\": \"high\",\n  \"attack_type\": \"CREDENTIAL_HARVEST\",\n  \"reasons\": [\n    \"The sender domain 'example-portal-verify.test' is a lookalike of the protected domain 'example', indicating an attempt to impersonate a trusted entity.\",\n    \"SPF, DKIM, and DMARC authentication all failed or were absent, confirming the message did not originate from an authorized source for the claimed domain.\",\n    \"The subject line creates urgency by threatening account suspension within 24 hours, a common social engineering tactic to bypass user caution.\",\n    \"The message instructs the user to open an attached image to review a 'security notice,' a technique often used to hide malicious payloads or direct users to phishing sites via QR codes or embedded links within images.\"\n  ],\n  \"analysis\": \"The message exhibits multiple high-confidence indicators of a phishing attack. The sender domain is a lookalike of a protected domain, and all email authentication protocols (SPF, DKIM, DMARC) failed. The content uses urgency ('suspended in 24 hours') and directs the user to open an attachment, which is a common vector for credential harvesting or malware delivery. The combination of failed authentication, domain impersonation, and social engineering tactics confirms malicious intent.\"\n}",
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1793653887,
+    "id": "chatcmpl-a77a442c33cc2198e454e1fa",
+    "model": "Qwen3.6-27B",
+    "object": "chat.completion",
+    "system_fingerprint": "radiance-1.10.0",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 504,
+      "draft_n_accepted": 213,
+      "predicted_ms": 3758.338538,
+      "predicted_n": 286,
+      "predicted_per_second": 75.8313805737316,
+      "predicted_per_token_ms": 13.18715276491228,
+      "prompt_ms": 290.513272,
+      "prompt_n": 1007,
+      "prompt_per_second": 3466.2788142773734,
+      "prompt_per_token_ms": 0.2884938152929493,
+      "total_ms": 4073.883859,
+      "ttft_ms": 315.545321
+    },
+    "usage": {
+      "completion_tokens": 286,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1007,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 1293
+    }
+  },
+  "schema_version": 1,
+  "tier": "llm",
+  "tokens": {
+    "completion_tokens": 286,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1007,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1293
+  }
+}

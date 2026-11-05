@@ -1,0 +1,318 @@
+{
+  "entries": {
+    "classifier__09543952c3af9d3e.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "09543952c3af9d3ee6b2f53b7d0baffebc5c8f5799fa91a83f180eac8aa837aa",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__2a3e2b793a31a03f.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "2a3e2b793a31a03f54e93f8b5adbde3e65c69ae94e9b0482fe2fed781b29297b",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__2eaa5c225e6fa99c.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "2eaa5c225e6fa99ca5c117cbabb30cc51555bcdee7b578f488bcec44b889b587",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__73388ab7b8bb0989.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "73388ab7b8bb09898deea2baa448dac03e03a6a483b292e9f2eeb5c0fbf9c126",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__765708f43317914e.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "765708f43317914ef53325885c02966455a55b103e1220c73dd665cbad7a1df4",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__87fbeb59d4e84685.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "87fbeb59d4e846855f6ce0499b643e496eaf14630343325872d12ae23f7047e9",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__8de5fc58b6234353.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "8de5fc58b6234353d3fdfe96e20136c50154c894b2d8da56d9b008fd4bd9d20b",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__9e88faefde60b04e.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "9e88faefde60b04e10f71a03e5a2c10c48611998bdbac441910c673c172925e9",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__a5764dfa8711f71d.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "a5764dfa8711f71d1de724131393a0a31fe2cb2b09fbd1aa31b95ab7da6fac11",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__a910bfdf901d49ea.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "a910bfdf901d49ea2dca2ec78d1ac54b8a54bd5b8a151546cfc7dda909c685b4",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__beb3675a855d157b.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "beb3675a855d157b3645debbc1abf505e9936c9a841e2db61af84ddf1c0f2a05",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__dcb9bb71aa661ada.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "dcb9bb71aa661adad11c5783b69ec5dacac09f41d10c491df088736e866dbe7f",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__df10c82532084da4.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "df10c82532084da49785a5fd961f70c52398e5e4636559857938b57a45a4b280",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "classifier__f26120888b5df0f0.json": {
+      "endpoint_role": "onnx-classifier",
+      "key": "f26120888b5df0f05d6ee212003912216d85ea0e7e6d3407b84066f5271b2c66",
+      "model": "xanderabim/fraudfoxai-phishing",
+      "tier": "classifier"
+    },
+    "llm__0159d04748d5d709.json": {
+      "endpoint_role": "local-llm",
+      "key": "0159d04748d5d709afac3d3b2d269fc29bbc71fa6b384642235dcf32402ffc17",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__0797dc46ecaef909.json": {
+      "endpoint_role": "local-llm",
+      "key": "0797dc46ecaef90983045aea92990a8dfeae63c073286ef2190232afe0d8d1e7",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__1872fc4b10f09f2e.json": {
+      "endpoint_role": "local-llm",
+      "key": "1872fc4b10f09f2e0dc60213137eea49e427a99496d662731b71f18cc5c10f59",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__2b4031117ce164ca.json": {
+      "endpoint_role": "local-llm",
+      "key": "2b4031117ce164cad514309597a73374443ae3c5574af4e1a86210d039cf920e",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__3491bfb566cd711b.json": {
+      "endpoint_role": "local-llm",
+      "key": "3491bfb566cd711b12758a11432d79d5adf14a6728369a06c0f8e69124589fea",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__5d9ee29590a34708.json": {
+      "endpoint_role": "local-llm",
+      "key": "5d9ee29590a3470851835a0174311b8109ccbfbee11e67a5ec351e8aa80c2314",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__83f8771f0c7993b7.json": {
+      "endpoint_role": "local-llm",
+      "key": "83f8771f0c7993b76fc99b75ca27305b3d732dc31ed6775c6968dcf753a17294",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__99be4bd7bd6b60ae.json": {
+      "endpoint_role": "local-llm",
+      "key": "99be4bd7bd6b60ae81d55a39eabcff23fb44ba30cbc9d913ac63c4246ee9de0f",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__9fee8c8a60690a2a.json": {
+      "endpoint_role": "local-llm",
+      "key": "9fee8c8a60690a2ad9216e01478ca3e7c16e48433731a63dc842380a71c22e4d",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__b86b3a2a1ca7957c.json": {
+      "endpoint_role": "local-llm",
+      "key": "b86b3a2a1ca7957cb9215ea47fe0df62de006ca78a3b0cefa3c2a9a407375171",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__d0d02434ec7c6d81.json": {
+      "endpoint_role": "local-llm",
+      "key": "d0d02434ec7c6d819ae8afbf2cbcd7e442a70a737d9e2965ab9817e20f8daa2d",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__d67933abf66f1447.json": {
+      "endpoint_role": "local-llm",
+      "key": "d67933abf66f14470aaa8f3be6efaab89f7d70eda2d23d44667f263f8674b879",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__e6b242df74d10ba5.json": {
+      "endpoint_role": "local-llm",
+      "key": "e6b242df74d10ba5004329d23518ce8ce4f699361e980f639120550e70d18b00",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "llm__f78979cb95722c4e.json": {
+      "endpoint_role": "local-llm",
+      "key": "f78979cb95722c4e83fbfe7c8a2c7f3324294df986927536c5a8d464fdc695c0",
+      "model": "Qwen3.6-27B",
+      "tier": "llm"
+    },
+    "prompt_injection__1bb4c78025c3c6af.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "1bb4c78025c3c6af047ba50aab237c774fcf9f3eb20d87fba9b71ae0826f77ab",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__1c262c9e9131975c.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "1c262c9e9131975c3582b2af0756f3bc11144a3d4f4e11bb4a6dcdf24e2d223b",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__4bfcbc10c247867c.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "4bfcbc10c247867c586fa9d16804dac2ecacafee00464473e75bfd228512dab1",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__4e35cf6dcb3e4772.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "4e35cf6dcb3e4772a5e00d9116cecdc2ac560d80eb447c735fd6c7882bd0c631",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__5b4e696f02f84e72.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "5b4e696f02f84e721e00dd0c8e01ddc56c13496c8e1408a41ac1f865f2f756d7",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__68040de74e46a88f.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "68040de74e46a88f4acf5cdff6436cc2efa0d5862e09871964034648ae3b5eaf",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__790c9e51245dbddf.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "790c9e51245dbddfa701847f890f9cfe69911d8b27e43ff452005911ce8f12cc",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__8511a89508b7ea30.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "8511a89508b7ea30ad3c5b52eaf84a10c995047c844a511e5de1b92cd567ca6c",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__859bcc16c3863862.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "859bcc16c3863862113860d56f45ea8225647bac4d27cef0183ffce8c84e765d",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__8d1ddb6fbb0a2324.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "8d1ddb6fbb0a2324e5f64af39349d916490bec7024b195b77470573b30e68fcd",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__9f5849050ad1b016.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "9f5849050ad1b0161fec540c4c84ebb712b06cc15eca3b7e36394c5a309cdfb9",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__b6dbb4bbb2b21adc.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "b6dbb4bbb2b21adce79ea9220c479fde8d154e768b972d75fb5104cc57d0f16e",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__d870461563dd5824.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "d870461563dd5824266a21d4389aad8caac9d1149046041c9bf5e642d4f97a06",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "prompt_injection__fbbbf7f521d4e4b7.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "fbbbf7f521d4e4b7d193e3e6af6f32530428b38138cfcc172d169135d3f4ff76",
+      "model": "",
+      "tier": "prompt_injection"
+    },
+    "url_reputation__085be25e01a0b5e8.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "085be25e01a0b5e8a86cd479bd996dd3792c751782326ff9e6c26eaf1afc96a4",
+      "model": "",
+      "tier": "url_reputation"
+    },
+    "url_reputation__503caa85d58b9914.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "503caa85d58b99145c6ceea40d7423292d7c06385c4bd8bc2870abf75350d740",
+      "model": "",
+      "tier": "url_reputation"
+    },
+    "url_reputation__58fdcf31f6d3fc8a.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "58fdcf31f6d3fc8a9770a7b195f70f11e3f11eaafd0ce5b99dcb4c62d948e385",
+      "model": "",
+      "tier": "url_reputation"
+    },
+    "url_reputation__92e7bc04a6777462.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "92e7bc04a6777462722bc765fc5a9720449b1f2713e04c33a868ae175d7da897",
+      "model": "",
+      "tier": "url_reputation"
+    },
+    "url_reputation__9332b0437351034d.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "9332b0437351034d95cdde95bdeaf6e4679fa7a837f4a587291b1278a72a67cc",
+      "model": "",
+      "tier": "url_reputation"
+    },
+    "url_reputation__9d89579bc732828b.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "9d89579bc732828b3b7d752ff8df35f7f9cd586cb69139eba9da992be9f6ffbb",
+      "model": "",
+      "tier": "url_reputation"
+    },
+    "url_reputation__c1410b71dda23c1b.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "c1410b71dda23c1bf493220927c7a2e921f5951b6a7730dd455cff61e209f3f9",
+      "model": "",
+      "tier": "url_reputation"
+    },
+    "url_reputation__cd2e286ef834fc90.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "cd2e286ef834fc902fecdcf7c944a294adfd790306a5d0d0d856bfa6a9b1e1dc",
+      "model": "",
+      "tier": "url_reputation"
+    },
+    "url_reputation__e99efe4572dc91b6.json": {
+      "endpoint_role": "security-model-estate",
+      "key": "e99efe4572dc91b690dd99b6ec107efe7d52eb061098b115b8d3a14bc0c9e8cc",
+      "model": "",
+      "tier": "url_reputation"
+    },
+    "vision__5d39cc13fc52b4e5.json": {
+      "endpoint_role": "estate-vlm",
+      "key": "5d39cc13fc52b4e585d0b23e624e3cfcbe9a3b2f081d569aeab7dae6cf29a799",
+      "model": "unsloth/Qwen3.5-4B-GGUF:Q4_K_XL",
+      "tier": "vision"
+    }
+  },
+  "note": "Recordings of model responses, generated from fixtures/synthetic/ only. Each file names a tier and the content address of the request that produced it; endpoint_role is a role label, never an address.",
+  "schema_version": 1
+}
