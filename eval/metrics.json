@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "commit": "21a9f7d39532ec5bac0dcf1aca0fa5b77eda5741",
-  "commit_short": "21a9f7d",
+  "commit": "44d3f7e36c48f43c0d1a98a1502faae2785dbbce",
+  "commit_short": "44d3f7e",
   "branch": "main",
-  "dirty": true,
+  "dirty": false,
   "corpora": [
     "synthetic",
     "adversarial"
@@ -122758,6 +122758,19 @@
         },
         "measurement_limits": []
       }
+    },
+    "reproduced_here": false,
+    "carried_forward": {
+      "statement": "The `external` block of this artifact was not produced by the run that wrote this file. It is the block that was already in this file, carried forward because a run that was not asked to make this measurement does not get to delete it.",
+      "carried_from": {
+        "path": "eval/metrics.json",
+        "commit": "21a9f7d39532ec5bac0dcf1aca0fa5b77eda5741",
+        "commit_short": "21a9f7d",
+        "branch": "main"
+      },
+      "why": "measuring the external corpora needs the public data eval/fetch.py downloaded under the licence gate, which lives in eval/internal/ and is gitignored by policy, so it is absent on a fresh clone, in a review bundle and in a public export - and this invocation did not pass --external in any case",
+      "asked_for_by": "--external",
+      "regenerate_with": "python3 eval/run.py --json --external -o eval/metrics.json"
     }
   }
 }

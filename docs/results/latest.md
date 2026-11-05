@@ -4,10 +4,10 @@
 
 | | |
 |---|---|
-| Generated (UTC) | 2026-11-05T01:17:04Z |
-| Describes commit | `666ad6ff245230914be6fd0e9464fe161ad969ac` |
+| Generated (UTC) | 2026-11-05T01:18:21Z |
+| Describes commit | `44d3f7e36c48f43c0d1a98a1502faae2785dbbce` |
 | Branch | `main` |
-| Uncommitted changes at run time | yes - code had uncommitted changes; these results may describe code that is not in 666ad6f |
+| Uncommitted changes at run time | yes - code had uncommitted changes; these results may describe code that is not in 44d3f7e |
 | Command | `python3 -m pytest tests/ -v -o addopts= --junitxml=docs/results/junit.xml` |
 | Exit code | 0 |
 | Collected | 1288 |
@@ -31,7 +31,7 @@ repository.
 ## Summary line
 
 ```
-======================= 1287 passed, 1 xfailed in 39.45s =======================
+======================= 1287 passed, 1 xfailed in 25.86s =======================
 ```
 
 ## Per-test results
